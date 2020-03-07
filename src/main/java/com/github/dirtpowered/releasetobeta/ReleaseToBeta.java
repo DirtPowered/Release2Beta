@@ -1,36 +1,45 @@
 package com.github.dirtpowered.releasetobeta;
 
 import com.github.dirtpowered.betaprotocollib.BetaLib;
+import com.github.dirtpowered.betaprotocollib.packet.data.AnimationPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.BedAndWeatherPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.BlockChangePacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.BlockItemSwitchPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.ChatPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.HandshakePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.KickDisconnectPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.LoginPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.MapChunkPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.MultiBlockChangePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.PlayerLookMovePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.PreChunkPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SetSlotPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SpawnPositionPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.UpdateHealthPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.UpdateTimePacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.WindowItemsPacketData;
 import com.github.dirtpowered.releasetobeta.network.InternalServer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.session.SessionRegistry;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.AnimationTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.BedAndWeatherTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.BlockChangeTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.BlockItemSwitchTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.ChatTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.HandshakeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.KickDisconnectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.LoginTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.MapChunkTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.MultiBlockChangeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PlayerLookMoveTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PreChunkTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SetSlotTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SpawnPositionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.UpdateHealthTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.UpdateTimeTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.WindowItemsTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientChatTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientCloseWindowTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientKeepAliveTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerChangeHeldItemTranslator;
@@ -55,6 +64,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlaye
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerRotationPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerStatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerSwingArmPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientCloseWindowPacket;
 import com.github.steveice10.mc.protocol.packet.login.client.LoginStartPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -94,6 +104,10 @@ public class ReleaseToBeta implements Runnable {
         betaToModernTranslatorRegistry.registerTranslator(UpdateHealthPacketData.class, new UpdateHealthTranslator());
         betaToModernTranslatorRegistry.registerTranslator(BedAndWeatherPacketData.class, new BedAndWeatherTranslator());
         betaToModernTranslatorRegistry.registerTranslator(SetSlotPacketData.class, new SetSlotTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(MultiBlockChangePacketData.class, new MultiBlockChangeTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(BlockItemSwitchPacketData.class, new BlockItemSwitchTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(WindowItemsPacketData.class, new WindowItemsTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(AnimationPacketData.class, new AnimationTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());
@@ -107,6 +121,7 @@ public class ReleaseToBeta implements Runnable {
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerStatePacket.class, new ClientPlayerStateTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerActionPacket.class, new ClientPlayerActionTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerPlaceBlockPacket.class, new ClientPlayerPlaceBlockTranslator());
+        modernToBetaTranslatorRegistry.registerTranslator(ClientCloseWindowPacket.class, new ClientCloseWindowTranslator());
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Main Thread"));
         executor.scheduleAtFixedRate(this, 0L, 50L, TimeUnit.MILLISECONDS);

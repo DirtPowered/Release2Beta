@@ -13,8 +13,6 @@ import com.github.steveice10.packetlib.Session;
 
 public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
-    //modernSession.send(new ServerBlockChangePacket(new BlockChangeRecord(new Position(x + chunkX, y + columnCurrentHeight, z + chunkZ), new BlockState(data[index], 0))));
-
     @Override
     public void translate(MapChunkPacketData packet, BetaClientSession session, Session modernSession) {
         int chunkX = packet.getX() / 16;
