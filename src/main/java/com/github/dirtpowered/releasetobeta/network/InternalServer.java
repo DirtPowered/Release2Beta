@@ -69,7 +69,7 @@ public class InternalServer implements Tickable {
         this.server.setGlobalFlag(MinecraftConstants.SERVER_INFO_BUILDER_KEY, (ServerInfoBuilder) session ->
                 new ServerStatusInfo(new VersionInfo(MinecraftConstants.GAME_VERSION, MinecraftConstants.PROTOCOL_VERSION),
                         new PlayerInfo(1, 0, new GameProfile[0]),
-                        new TextMessage("a DirtPowered 1.7.3 beta server"), null));
+                        new TextMessage("DirtPowered 1.7.3 beta server"), null));
 
         server.setGlobalFlag(MinecraftConstants.SERVER_LOGIN_HANDLER_KEY, (ServerLoginHandler) this::createClientSession);
 
@@ -100,10 +100,13 @@ public class InternalServer implements Tickable {
     }
 
     private void createClientSession(Session session) {
+        //TODO: make it correct
         Bootstrap b = new Bootstrap();
         b.group(new NioEventLoopGroup())
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.SO_KEEPALIVE, true)
+                .option(ChannelOption.TCP_NODELAY, true)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) {
@@ -115,7 +118,6 @@ public class InternalServer implements Tickable {
                         releaseToBeta.getSessionRegistry().addSession(betaClientSession, session);
                     }
                 });
-
         b.connect("localhost", 25567);
     }
 

@@ -1,6 +1,6 @@
 package com.github.dirtpowered.releasetobeta.utils;
 
-import com.github.dirtpowered.betaprotocollib.utils.BetaItemStack;
+import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -26,6 +26,10 @@ public class Utils {
             list.add(itemStack);
         }
         return list.toArray(new ItemStack[0]);
+    }
+
+    public static int toModernPos(int pos) {
+        return pos / 32;
     }
 
     public static void debug(Object clazz) {

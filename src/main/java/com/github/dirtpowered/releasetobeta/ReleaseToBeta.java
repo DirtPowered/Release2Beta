@@ -6,10 +6,15 @@ import com.github.dirtpowered.betaprotocollib.packet.data.BedAndWeatherPacketDat
 import com.github.dirtpowered.betaprotocollib.packet.data.BlockChangePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.BlockItemSwitchPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.ChatPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.EntityDestroyPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.EntityMoveLookPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.EntityPositionPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.EntityTeleportPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.HandshakePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.KickDisconnectPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.LoginPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.MapChunkPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.MobSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.MultiBlockChangePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.PlayerLookMovePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.PreChunkPacketData;
@@ -26,10 +31,15 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.BedA
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.BlockChangeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.BlockItemSwitchTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.ChatTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityDestroyTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityMoveLookTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityPositionTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityTeleportTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.HandshakeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.KickDisconnectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.LoginTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.MapChunkTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.MobSpawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.MultiBlockChangeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PlayerLookMoveTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PreChunkTranslator;
@@ -108,6 +118,11 @@ public class ReleaseToBeta implements Runnable {
         betaToModernTranslatorRegistry.registerTranslator(BlockItemSwitchPacketData.class, new BlockItemSwitchTranslator());
         betaToModernTranslatorRegistry.registerTranslator(WindowItemsPacketData.class, new WindowItemsTranslator());
         betaToModernTranslatorRegistry.registerTranslator(AnimationPacketData.class, new AnimationTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(MobSpawnPacketData.class, new MobSpawnTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(EntityPositionPacketData.class, new EntityPositionTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(EntityTeleportPacketData.class, new EntityTeleportTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(EntityMoveLookPacketData.class, new EntityMoveLookTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(EntityDestroyPacketData.class, new EntityDestroyTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());

@@ -32,7 +32,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             handler.translate(packet, this, releaseToBeta.getSessionRegistry().getSessions().inverse().get(this));
             //Logger.info("[client] translating {}", packet.getClass().getSimpleName());
         } else {
-            if (!packet.getClass().getSimpleName().contains("ntity"))
+            //if (!packet.getClass().getSimpleName().contains("ntity"))
                 Logger.warn("[client] missing 'BetaToModern' translator for {}", packet.getClass().getSimpleName());
         }
     }

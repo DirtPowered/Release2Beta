@@ -1,7 +1,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta;
 
+import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.betaprotocollib.packet.data.BlockPlacePacketData;
-import com.github.dirtpowered.betaprotocollib.utils.BetaItemStack;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.data.MagicValues;

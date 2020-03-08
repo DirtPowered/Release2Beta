@@ -1,7 +1,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
+import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.betaprotocollib.packet.data.WindowItemsPacketData;
-import com.github.dirtpowered.betaprotocollib.utils.BetaItemStack;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;

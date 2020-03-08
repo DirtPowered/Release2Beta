@@ -22,7 +22,7 @@ public class ModernPlayer {
         this.entityId = entityId;
     }
 
-    public void sendMessage(String message) {
+    void sendMessage(String message) {
         session.getMain().getServer().getClientFromBetaSession(session).send(new ServerChatPacket(message));
     }
 }
