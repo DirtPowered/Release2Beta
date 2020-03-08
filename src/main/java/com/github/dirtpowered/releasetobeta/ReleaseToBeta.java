@@ -9,6 +9,7 @@ import com.github.dirtpowered.betaprotocollib.packet.data.ChatPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityDestroyPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityMoveLookPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityPositionPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.EntityStatusPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityTeleportPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.HandshakePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.KickDisconnectPacketData;
@@ -34,6 +35,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.Chat
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityDestroyTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityMoveLookTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityPositionTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityStatusTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityTeleportTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.HandshakeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.KickDisconnectTranslator;
@@ -53,12 +55,14 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.Clie
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientKeepAliveTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerChangeHeldItemTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerInteractEntityTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerPlaceBlockTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerPositionRotationTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerPositionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerRotationTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerStateTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerSwingArmTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerUseItemTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientRequestTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.LoginStartTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.BetaToModernTranslatorRegistry;
@@ -68,12 +72,14 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.ClientKeepAlivePac
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientRequestPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerActionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerChangeHeldItemPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerInteractEntityPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPlaceBlockPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPositionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPositionRotationPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerRotationPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerStatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerSwingArmPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerUseItemPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientCloseWindowPacket;
 import com.github.steveice10.mc.protocol.packet.login.client.LoginStartPacket;
 import com.github.steveice10.packetlib.Session;
@@ -123,6 +129,7 @@ public class ReleaseToBeta implements Runnable {
         betaToModernTranslatorRegistry.registerTranslator(EntityTeleportPacketData.class, new EntityTeleportTranslator());
         betaToModernTranslatorRegistry.registerTranslator(EntityMoveLookPacketData.class, new EntityMoveLookTranslator());
         betaToModernTranslatorRegistry.registerTranslator(EntityDestroyPacketData.class, new EntityDestroyTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(EntityStatusPacketData.class, new EntityStatusTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());
@@ -137,6 +144,8 @@ public class ReleaseToBeta implements Runnable {
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerActionPacket.class, new ClientPlayerActionTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerPlaceBlockPacket.class, new ClientPlayerPlaceBlockTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientCloseWindowPacket.class, new ClientCloseWindowTranslator());
+        modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerInteractEntityPacket.class, new ClientPlayerInteractEntityTranslator());
+        modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerUseItemPacket.class, new ClientPlayerUseItemTranslator());
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Main Thread"));
         executor.scheduleAtFixedRate(this, 0L, 50L, TimeUnit.MILLISECONDS);
