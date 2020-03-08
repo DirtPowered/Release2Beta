@@ -6,8 +6,8 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.pmw.tinylog.Logger;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Utils {
     public static ItemStack betaItemStackToItemStack(BetaItemStack itemStack) {
@@ -15,8 +15,17 @@ public class Utils {
     }
 
     public static ItemStack[] convertItemStacks(BetaItemStack[] itemStacks) {
-        return Arrays.stream(itemStacks).filter(Objects::nonNull).map(item ->
-                new ItemStack(item.getBlockId(), item.getAmount(), item.getData())).toArray(ItemStack[]::new);
+        List<ItemStack> list = new ArrayList<>();
+        for (BetaItemStack item : itemStacks) {
+            ItemStack itemStack;
+            if (item != null)
+                itemStack = new ItemStack(item.getBlockId(), item.getAmount(), item.getData());
+            else
+                itemStack = new ItemStack(0);
+
+            list.add(itemStack);
+        }
+        return list.toArray(new ItemStack[0]);
     }
 
     public static void debug(Object clazz) {
