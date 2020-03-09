@@ -6,7 +6,9 @@ import com.github.dirtpowered.betaprotocollib.packet.data.BedAndWeatherPacketDat
 import com.github.dirtpowered.betaprotocollib.packet.data.BlockChangePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.BlockItemSwitchPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.ChatPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.CollectPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityDestroyPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.EntityMetadataPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityMoveLookPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityPositionPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityStatusPacketData;
@@ -36,7 +38,9 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.BedA
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.BlockChangeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.BlockItemSwitchTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.ChatTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.CollectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityDestroyTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityMetadataTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityMoveLookTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityPositionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityStatusTranslator;
@@ -144,6 +148,8 @@ public class ReleaseToBeta implements Runnable {
         betaToModernTranslatorRegistry.registerTranslator(EntityVelocityPacketData.class, new EntityVelocityTranslator());
         betaToModernTranslatorRegistry.registerTranslator(VehicleSpawnPacketData.class, new VehicleSpawnTranslator());
         betaToModernTranslatorRegistry.registerTranslator(PickupSpawnPacketData.class, new PickupSpawnTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(EntityMetadataPacketData.class, new EntityMetadataTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(CollectPacketData.class, new CollectTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());

@@ -12,6 +12,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntit
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
 import com.github.steveice10.packetlib.Session;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData> {
@@ -19,6 +20,7 @@ public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData
     @Override
     public void translate(PickupSpawnPacketData packet, BetaClientSession session, Session modernSession) {
         Utils.debug(packet);
+
         int entityId = packet.getEntityId();
         UUID uuid = UUID.randomUUID();
 
@@ -30,9 +32,16 @@ public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData
         float pitch = packet.getPitch();
 
         BetaItemStack itemStack = packet.getItemStack();
-        EntityMetadata metadata = new EntityMetadata(5, MetadataType.ITEM, Utils.betaItemStackToItemStack(itemStack));
 
-        //modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, ObjectType.ITEM, x, y, z, yaw, pitch));
-       // modernSession.send(new ServerEntityMetadataPacket(entityId, new EntityMetadata[] { metadata }));
+        EntityMetadata[] metadata = Arrays.asList(
+                new EntityMetadata(6, MetadataType.ITEM, Utils.betaItemStackToItemStack(itemStack)),
+                new EntityMetadata(4, MetadataType.BOOLEAN, false),
+                new EntityMetadata(1, MetadataType.INT, 300),
+                new EntityMetadata(3, MetadataType.BOOLEAN, false),
+                new EntityMetadata(5, MetadataType.BOOLEAN, false)
+        ).toArray(new EntityMetadata[0]);
+
+        modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, ObjectType.ITEM, x, y, z, yaw, pitch));
+        modernSession.send(new ServerEntityMetadataPacket(entityId, metadata));
     }
 }

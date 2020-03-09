@@ -16,7 +16,7 @@ public class PacketEncoder extends MessageToMessageEncoder {
     protected void encode(ChannelHandlerContext ctx, Object message, List out) throws Exception {
         if (message instanceof Packet) {
             Packet packet = (Packet) message;
-            Class<? extends Packet> clazz = packet.getClass();
+            //Class<? extends Packet> clazz = packet.getClass();
 
             AbstractPacket abstractPacket = (AbstractPacket) packet.getPacketClass().newInstance();
             //Logger.info("sending {} packet", clazz.getSimpleName());

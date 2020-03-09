@@ -32,7 +32,6 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
         ObjectType type = null;
         ObjectData data = null;
 
-        //TODO: to center location
         double x = Utils.toModernPos(packet.getX());
         double y = Utils.toModernPos(packet.getY());
         double z = Utils.toModernPos(packet.getZ());
@@ -81,6 +80,9 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
         } else if (packet.getType() == 71) {
             data = new FallingBlockData(13, 0);
         }
+
+        if (type == null) //server sends weird IDs sometimes
+            return;
 
         modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, type, data, x, y, z, 0, 0));
         modernSession.send(new ServerEntityVelocityPacket(entityId, vecX, vecY, vecZ));

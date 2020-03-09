@@ -56,7 +56,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
     }
 
     private int getLight(byte[] data, int x, int y, int z) {
-        return 15;
+        return 4;
     }
 
     private int getMetadata(byte[] data, int x, int y, int z) {
