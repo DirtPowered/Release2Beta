@@ -3,6 +3,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityMoveLookPacketData;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityPositionRotationPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -11,14 +12,13 @@ public class EntityMoveLookTranslator implements BetaToModern<EntityMoveLookPack
     @Override
     public void translate(EntityMoveLookPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
-        int x = packet.getX() / 32;
-        int y = packet.getY() / 32;
-        int z = packet.getZ() / 32;
-        //TODO: calculate movement
+        double x = Utils.toModernPos(packet.getX());
+        double y = Utils.toModernPos(packet.getY());
+        double z = Utils.toModernPos(packet.getZ());
 
         float yaw = packet.getYaw();
         float pitch = packet.getPitch();
 
-        modernSession.send(new ServerEntityPositionRotationPacket(entityId, 0, 0, 0, yaw, pitch, true));
+        modernSession.send(new ServerEntityPositionRotationPacket(entityId, x, y, z, yaw, pitch, true));
     }
 }
