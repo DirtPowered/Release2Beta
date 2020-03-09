@@ -14,6 +14,10 @@ public class Utils {
         return itemStack == null ? new ItemStack(0) : new ItemStack(itemStack.getBlockId(), itemStack.getAmount(), itemStack.getData());
     }
 
+    public static BetaItemStack itemStackToBetaItemStack(ItemStack itemStack) {
+        return new BetaItemStack(itemStack.getId(), itemStack.getAmount(), itemStack.getData());
+    }
+
     public static ItemStack[] convertItemStacks(BetaItemStack[] itemStacks) {
         List<ItemStack> list = new ArrayList<>();
         for (BetaItemStack item : itemStacks) {
@@ -34,6 +38,10 @@ public class Utils {
 
     public static Float toFloat(double doubleValue) {
         return (float) doubleValue;
+    }
+
+    public static boolean isTileEntity(int blockId) {
+        return blockId == 54; //TODO: add more
     }
 
     public static void debug(Object clazz) {

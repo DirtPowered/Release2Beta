@@ -125,7 +125,7 @@ public class InternalServer implements Tickable {
         return releaseToBeta.getSessionRegistry().getSessions().get(session);
     }
 
-    public Session getClientFromBetaSession(BetaClientSession session) {
+    public Session getServerSession(BetaClientSession session) {
         return releaseToBeta.getSessionRegistry().getSessions().inverse().get(session);
     }
 

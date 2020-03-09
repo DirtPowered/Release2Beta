@@ -58,6 +58,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         Logger.info("[client] disconnected");
+        player.kick("beta server closed connection");
         ctx.close();
     }
 
@@ -82,10 +83,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     @Override
     public void tick() {
-
     }
 
-    ReleaseToBeta getMain() {
+    public ReleaseToBeta getMain() {
         return releaseToBeta;
     }
 

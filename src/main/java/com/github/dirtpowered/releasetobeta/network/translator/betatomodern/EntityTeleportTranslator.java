@@ -6,7 +6,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModer
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityTeleportPacket;
 import com.github.steveice10.packetlib.Session;
-import org.pmw.tinylog.Logger;
 
 public class EntityTeleportTranslator implements BetaToModern<EntityTeleportPacketData> {
 
@@ -20,7 +19,7 @@ public class EntityTeleportTranslator implements BetaToModern<EntityTeleportPack
         float yaw = packet.getYaw();
         float pitch = packet.getPitch();
 
-        Logger.info("TeleportPosition({}): X:{}, Y:{}, Z:{}", entityId, x, y, z);
+        //Logger.info("TeleportPosition({}): X:{}, Y:{}, Z:{}", entityId, x, y, z);
         modernSession.send(new ServerEntityTeleportPacket(entityId, x, y, z, yaw, pitch, true));
     }
 }

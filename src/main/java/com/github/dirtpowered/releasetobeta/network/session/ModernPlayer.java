@@ -1,6 +1,7 @@
 package com.github.dirtpowered.releasetobeta.network.session;
 
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
 
 public class ModernPlayer {
     private int entityId;
@@ -23,6 +24,10 @@ public class ModernPlayer {
     }
 
     void sendMessage(String message) {
-        session.getMain().getServer().getClientFromBetaSession(session).send(new ServerChatPacket(message));
+        session.getMain().getServer().getServerSession(session).send(new ServerChatPacket(message));
+    }
+
+    void kick(String reason) {
+        session.getMain().getServer().getServerSession(session).send(new ServerDisconnectPacket(reason));
     }
 }

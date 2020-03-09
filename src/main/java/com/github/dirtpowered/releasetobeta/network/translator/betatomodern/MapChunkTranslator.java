@@ -45,7 +45,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     int typeIndex = (Math.min(16, x) * 16 + Math.min(16, z)) * 128 + Math.min(128, y + height);
                     int blockId = chunk[typeIndex];
                     int blockData = getMetadata(chunk, x, y, z);
-
+                    //TODO: spawn tile entities too (chests, furnaces)
                     storage.set(x, y, z, new BlockState(blockId, blockData));
                     blockLight.set(x, y, z, getLight(chunk, x, y, z));
                 }
