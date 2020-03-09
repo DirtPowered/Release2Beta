@@ -19,9 +19,9 @@ public class MobSpawnTranslator implements BetaToModern<MobSpawnPacketData> {
         int entityId = packet.getEntityId();
         UUID uuid = UUID.randomUUID();
 
-        int x = Utils.toModernPos(packet.getX());
-        int y = Utils.toModernPos(packet.getY());
-        int z = Utils.toModernPos(packet.getZ());
+        double x = Utils.toModernPos(packet.getX());
+        double y = Utils.toModernPos(packet.getY());
+        double z = Utils.toModernPos(packet.getZ());
 
         float yaw = packet.getYaw();
         float pitch = packet.getPitch();

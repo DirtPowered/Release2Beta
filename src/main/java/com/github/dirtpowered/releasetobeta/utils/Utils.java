@@ -28,8 +28,8 @@ public class Utils {
         return list.toArray(new ItemStack[0]);
     }
 
-    public static int toModernPos(int pos) {
-        return pos / 32;
+    public static double toModernPos(int pos) {
+        return pos / 32.0D;
     }
 
     public static Float toFloat(double doubleValue) {
