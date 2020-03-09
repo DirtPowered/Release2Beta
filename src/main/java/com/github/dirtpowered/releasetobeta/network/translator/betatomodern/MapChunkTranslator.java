@@ -44,7 +44,8 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                 for (int z = 0; z < 16; z++) {
                     int typeIndex = (Math.min(16, x) * 16 + Math.min(16, z)) * 128 + Math.min(128, y + height);
                     int blockId = chunk[typeIndex];
-                    int blockData = 0;
+                    int blockData = getMetadata(chunk, x, y, z);
+
                     storage.set(x, y, z, new BlockState(blockId, blockData));
                     blockLight.set(x, y, z, getLight(chunk, x, y, z));
                 }
@@ -56,5 +57,9 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     private int getLight(byte[] data, int x, int y, int z) {
         return 15;
+    }
+
+    private int getMetadata(byte[] data, int x, int y, int z) {
+        return 0;
     }
 }

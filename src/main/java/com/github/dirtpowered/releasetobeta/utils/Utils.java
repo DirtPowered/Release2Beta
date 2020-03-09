@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Utils {
     public static ItemStack betaItemStackToItemStack(BetaItemStack itemStack) {
-        return new ItemStack(itemStack.getBlockId(), itemStack.getAmount(), itemStack.getData());
+        return itemStack == null ? new ItemStack(0) : new ItemStack(itemStack.getBlockId(), itemStack.getAmount(), itemStack.getData());
     }
 
     public static ItemStack[] convertItemStacks(BetaItemStack[] itemStacks) {
@@ -30,6 +30,10 @@ public class Utils {
 
     public static int toModernPos(int pos) {
         return pos / 32;
+    }
+
+    public static Float toFloat(double doubleValue) {
+        return (float) doubleValue;
     }
 
     public static void debug(Object clazz) {

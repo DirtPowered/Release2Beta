@@ -11,18 +11,22 @@ import com.github.dirtpowered.betaprotocollib.packet.data.EntityMoveLookPacketDa
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityPositionPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityStatusPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityTeleportPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.EntityVelocityPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.ExplosionPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.HandshakePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.KickDisconnectPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.LoginPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.MapChunkPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.MobSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.MultiBlockChangePacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.PickupSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.PlayerLookMovePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.PreChunkPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SetSlotPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SpawnPositionPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.UpdateHealthPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.UpdateTimePacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.VehicleSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.WindowItemsPacketData;
 import com.github.dirtpowered.releasetobeta.network.InternalServer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -37,21 +41,26 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.Enti
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityPositionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityStatusTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityTeleportTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityVelocityTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.ExplosionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.HandshakeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.KickDisconnectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.LoginTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.MapChunkTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.MobSpawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.MultiBlockChangeTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PickupSpawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PlayerLookMoveTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PreChunkTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SetSlotTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SpawnPositionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.UpdateHealthTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.UpdateTimeTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.VehicleSpawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.WindowItemsTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientChatTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientCloseWindowTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientHandshakeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientKeepAliveTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerChangeHeldItemTranslator;
@@ -67,6 +76,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.Clie
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.LoginStartTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.BetaToModernTranslatorRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.ModernToBetaTranslatorRegistry;
+import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientKeepAlivePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientRequestPacket;
@@ -130,6 +140,10 @@ public class ReleaseToBeta implements Runnable {
         betaToModernTranslatorRegistry.registerTranslator(EntityMoveLookPacketData.class, new EntityMoveLookTranslator());
         betaToModernTranslatorRegistry.registerTranslator(EntityDestroyPacketData.class, new EntityDestroyTranslator());
         betaToModernTranslatorRegistry.registerTranslator(EntityStatusPacketData.class, new EntityStatusTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(ExplosionPacketData.class, new ExplosionTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(EntityVelocityPacketData.class, new EntityVelocityTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(VehicleSpawnPacketData.class, new VehicleSpawnTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(PickupSpawnPacketData.class, new PickupSpawnTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());
@@ -146,6 +160,7 @@ public class ReleaseToBeta implements Runnable {
         modernToBetaTranslatorRegistry.registerTranslator(ClientCloseWindowPacket.class, new ClientCloseWindowTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerInteractEntityPacket.class, new ClientPlayerInteractEntityTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerUseItemPacket.class, new ClientPlayerUseItemTranslator());
+        modernToBetaTranslatorRegistry.registerTranslator(HandshakePacket.class, new ClientHandshakeTranslator());
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Main Thread"));
         executor.scheduleAtFixedRate(this, 0L, 50L, TimeUnit.MILLISECONDS);

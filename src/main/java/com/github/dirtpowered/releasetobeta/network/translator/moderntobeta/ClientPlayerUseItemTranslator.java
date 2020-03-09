@@ -13,7 +13,7 @@ public class ClientPlayerUseItemTranslator implements ModernToBeta<ClientPlayerU
      * This packet has a special case where X, Y, Z, and Direction are all -1.
      * This special packet indicates that the currently held item for the player
      * should have its state updated such as eating food, shooting bows, using buckets, etc.
-     * <p>
+     *
      * https://wiki.vg/index.php?title=Protocol&oldid=689#Player_Block_Placement_.280x0F.29
      */
 

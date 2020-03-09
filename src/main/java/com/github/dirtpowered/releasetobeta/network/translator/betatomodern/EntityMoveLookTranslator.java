@@ -11,9 +11,9 @@ public class EntityMoveLookTranslator implements BetaToModern<EntityMoveLookPack
     @Override
     public void translate(EntityMoveLookPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
-        int x = packet.getX();
-        int y = packet.getY();
-        int z = packet.getZ();
+        int x = packet.getX() / 32;
+        int y = packet.getY() / 32;
+        int z = packet.getZ() / 32;
         //TODO: calculate movement
 
         float yaw = packet.getYaw();
