@@ -48,6 +48,7 @@ public class InternalServer implements Tickable {
     private final TextMessage motd = new TextMessage("ReleaseToBeta server");
     private Server server;
     private ReleaseToBeta releaseToBeta;
+    private NioEventLoopGroup loopGroup;
 
     public InternalServer(ReleaseToBeta releaseToBeta) {
         this.releaseToBeta = releaseToBeta;
@@ -65,7 +66,12 @@ public class InternalServer implements Tickable {
 
             ModernToBeta handler = releaseToBeta.getModernToBetaTranslatorRegistry().getByPacket(packet);
             if (handler != null) {
-                handler.translate(packet, modernSession, getSessionFromServerSession(modernSession));
+                BetaClientSession clientSession = getSessionFromServerSession(modernSession);
+                if (clientSession == null) {
+                    Logger.warn("[server] not all packets were sent");
+                    return;
+                }
+                handler.translate(packet, modernSession, clientSession);
             } else {
                 Logger.warn("[server] missing 'ModernToBeta' translator for {}", packet.getClass().getSimpleName());
             }
@@ -146,7 +152,8 @@ public class InternalServer implements Tickable {
         try {
             Bootstrap clientBootstrap = new Bootstrap();
 
-            clientBootstrap.group(group);
+            loopGroup = new NioEventLoopGroup();
+            clientBootstrap.group(loopGroup);
             clientBootstrap.channel(NioSocketChannel.class);
             clientBootstrap
                     .option(ChannelOption.SO_KEEPALIVE, true)

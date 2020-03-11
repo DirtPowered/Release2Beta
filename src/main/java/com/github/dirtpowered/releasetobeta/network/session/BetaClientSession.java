@@ -54,31 +54,24 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Packet packet) {
-        //Logger.info("Processing packet {} from clientID: {}", packet.getPacketClass().getSimpleName(), clientId);
         processPacket(packet);
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) {
         Logger.info("[client] connected");
-
-        super.channelActive(ctx);
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(ChannelHandlerContext ctx) {
         Logger.info("[client] disconnected");
         ctx.close();
-
-        super.channelInactive(ctx);
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
         Logger.warn("[client] closed connection: {}", cause.getMessage());
         context.close();
-
-        super.exceptionCaught(context, cause);
     }
 
     public String getClientId() {
@@ -103,6 +96,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public void disconnect() {
-        channel.close();
+        if (channel.isActive())
+            channel.close();
     }
 }
