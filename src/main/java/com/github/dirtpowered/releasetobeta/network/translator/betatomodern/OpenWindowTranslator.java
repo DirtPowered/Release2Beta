@@ -25,9 +25,9 @@ public class OpenWindowTranslator implements BetaToModern<OpenWindowPacketData> 
             case 0:
                 windowType = WindowType.CHEST;
                 break;
-            /*case 1:
+            case 1:
                 windowType = WindowType.CRAFTING_TABLE; //Woah! There's a bug in mcprotocollib?
-                break;*/
+                break;
             case 2:
                 windowType = WindowType.FURNACE;
                 break;

@@ -3,17 +3,20 @@ package com.github.dirtpowered.releasetobeta.network.session;
 import com.github.steveice10.packetlib.Session;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import org.pmw.tinylog.Logger;
 
 public class SessionRegistry {
 
     private final BiMap<Session, BetaClientSession> sessions = HashBiMap.create();
 
-    public void addSession(final BetaClientSession client, Session session) {
+    void addSession(BetaClientSession client, Session session) {
         sessions.put(session, client);
+        Logger.info("[count={}] adding new session (id: {})", sessions.size(), client.getClientId());
     }
 
-    public void removeSession(final Session session) {
-        sessions.remove(session);
+    public void removeSession(BetaClientSession client) {
+        sessions.inverse().remove(client);
+        Logger.info("[count={}] removing session (id: {})", sessions.size(), client.getClientId());
     }
 
     public BiMap<Session, BetaClientSession> getSessions() {

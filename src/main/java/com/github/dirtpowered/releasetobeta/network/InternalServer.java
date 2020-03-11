@@ -24,36 +24,50 @@ import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.pmw.tinylog.Logger;
 
-import java.util.Map;
+import java.net.InetSocketAddress;
+import java.util.AbstractMap;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class InternalServer implements Tickable {
 
-    private final Queue<Packet> packetQueue = new LinkedBlockingQueue<>();
+    /*
+     * NOTE: Everything is broken here...
+     */
+
+    private final Queue<AbstractMap.SimpleEntry<Session, Packet>> packetQueue = new LinkedBlockingQueue<>();
+    private final VersionInfo versionInfo = new VersionInfo(MinecraftConstants.GAME_VERSION, MinecraftConstants.PROTOCOL_VERSION);
+    private final PlayerInfo playerInfo = new PlayerInfo(0, 0, new GameProfile[0]);
+    private final TextMessage motd = new TextMessage("ReleaseToBeta server");
     private Server server;
     private ReleaseToBeta releaseToBeta;
 
     public InternalServer(ReleaseToBeta releaseToBeta) {
         this.releaseToBeta = releaseToBeta;
+
         createServer();
     }
 
     @SuppressWarnings("unchecked")
     private void handleIncomingPackets(BetaClientSession betaSession, Session modernSession) {
-        Packet packet;
-        while ((packet = packetQueue.poll()) != null) {
+        AbstractMap.SimpleEntry<Session, Packet> entries;
+        while ((entries = packetQueue.poll()) != null) {
+            Packet packet = entries.getValue();
+
             ModernToBeta handler = releaseToBeta.getModernToBetaTranslatorRegistry().getByPacket(packet);
             if (handler != null) {
-                handler.translate(packet, modernSession, betaSession);
-                //Logger.info("[server] translating {}", packet.getClass().getSimpleName());
+                if (entries.getKey().equals(modernSession)) {
+                    handler.translate(packet, modernSession, betaSession);
+                }
             } else {
                 Logger.warn("[server] missing 'ModernToBeta' translator for {}", packet.getClass().getSimpleName());
             }
@@ -61,64 +75,45 @@ public class InternalServer implements Tickable {
     }
 
     private void createServer() {
-        this.server = new Server("localhost", 25565, MinecraftProtocol.class, new TcpSessionFactory());
-        this.server.setGlobalFlag(MinecraftConstants.VERIFY_USERS_KEY, false);
+        server = new Server("localhost", 25565, MinecraftProtocol.class, new TcpSessionFactory());
+        server.setGlobalFlag(MinecraftConstants.VERIFY_USERS_KEY, false);
+        server.setGlobalFlag(MinecraftConstants.SERVER_COMPRESSION_THRESHOLD, 256);
+        server.setGlobalFlag(MinecraftConstants.SERVER_INFO_BUILDER_KEY, (ServerInfoBuilder) session -> {
+            return new ServerStatusInfo(versionInfo, playerInfo, motd, null);
+        });
 
-        server.setGlobalFlag(MinecraftConstants.SERVER_COMPRESSION_THRESHOLD, 100);
+        server.setGlobalFlag(MinecraftConstants.SERVER_LOGIN_HANDLER_KEY, (ServerLoginHandler) session -> {
+            try {
+                if (session.isConnected()) {
+                    createClientSession(session);
+                }
 
-        this.server.setGlobalFlag(MinecraftConstants.SERVER_INFO_BUILDER_KEY, (ServerInfoBuilder) session ->
-                new ServerStatusInfo(new VersionInfo(MinecraftConstants.GAME_VERSION, MinecraftConstants.PROTOCOL_VERSION),
-                        new PlayerInfo(1, 0, new GameProfile[0]),
-                        new TextMessage("DirtPowered 1.7.3 beta server"), null));
-
-        server.setGlobalFlag(MinecraftConstants.SERVER_LOGIN_HANDLER_KEY, (ServerLoginHandler) this::createClientSession);
+            } catch (InterruptedException e) {
+                Logger.error("Error: {}", e.getMessage());
+            }
+        });
 
         server.addListener(new ServerAdapter() {
-
             @Override
             public void sessionAdded(SessionAddedEvent event) {
                 event.getSession().addListener(new SessionAdapter() {
                     @Override
                     public void packetReceived(PacketReceivedEvent event) {
-                        packetQueue.add(event.getPacket());
+                        packetQueue.add(new AbstractMap.SimpleEntry<>(event.getSession(), event.getPacket()));
                     }
                 });
             }
 
             @Override
             public void sessionRemoved(SessionRemovedEvent event) {
-                releaseToBeta.getSessionRegistry().removeSession(event.getSession());
-                getClientFromSession(event.getSession()).disconnect();
+                BetaClientSession session = getClientFromSession(event.getSession());
+
+                releaseToBeta.getSessionRegistry().removeSession(session);
+                session.disconnect();
             }
         });
 
         server.bind();
-    }
-
-    public Server getServer() {
-        return server;
-    }
-
-    private void createClientSession(Session session) {
-        //TODO: make it correct
-        Bootstrap b = new Bootstrap();
-        b.group(new NioEventLoopGroup())
-                .channel(NioSocketChannel.class)
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
-                .handler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel ch) {
-                        BetaClientSession betaClientSession = new BetaClientSession(releaseToBeta, ch);
-
-                        ch.pipeline().addLast("mc_pipeline", new PipelineFactory());
-                        ch.pipeline().addLast("handler", betaClientSession);
-
-                        releaseToBeta.getSessionRegistry().addSession(betaClientSession, session);
-                    }
-                });
-        b.connect("localhost", 25567);
     }
 
     private BetaClientSession getClientFromSession(Session session) {
@@ -129,12 +124,48 @@ public class InternalServer implements Tickable {
         return releaseToBeta.getSessionRegistry().getSessions().inverse().get(session);
     }
 
+    public void broadcastPacket(Packet packet) {
+        releaseToBeta.getSessionRegistry().getSessions().forEach((key, value) -> {
+            key.send(packet);
+        });
+    }
+
     @Override
     public void tick() {
-        for (Map.Entry<Session, BetaClientSession> entry : releaseToBeta.getSessionRegistry().getSessions().entrySet()) {
-            Session modernSession = entry.getKey();
-            BetaClientSession betaSession = entry.getValue();
+        releaseToBeta.getSessionRegistry().getSessions().forEach((modernSession, betaSession) -> {
             handleIncomingPackets(betaSession, modernSession);
+        });
+    }
+
+    public Server getServer() {
+        return server;
+    }
+
+    private void createClientSession(Session session) throws InterruptedException {
+        EventLoopGroup group = new NioEventLoopGroup();
+        try {
+            Bootstrap clientBootstrap = new Bootstrap();
+
+            clientBootstrap.group(group);
+            clientBootstrap.channel(NioSocketChannel.class);
+            clientBootstrap
+                    .option(ChannelOption.SO_KEEPALIVE, true)
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000);
+
+            clientBootstrap.remoteAddress(new InetSocketAddress("localhost", 25567));
+            clientBootstrap.handler(new ChannelInitializer<SocketChannel>() {
+
+                @Override
+                protected void initChannel(SocketChannel ch) {
+                    ch.pipeline().addLast("mc_pipeline", new PipelineFactory());
+                    ch.pipeline().addLast("client_connection_handler", new BetaClientSession(releaseToBeta, ch, session));
+                }
+            });
+
+            ChannelFuture channelFuture = clientBootstrap.connect().sync();
+            channelFuture.channel().closeFuture().sync();
+        } finally {
+            group.shutdownGracefully().sync();
         }
     }
 }

@@ -3,7 +3,11 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 import com.github.dirtpowered.betaprotocollib.packet.data.MultiBlockChangePacketData;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
 import com.github.steveice10.packetlib.Session;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChangePacketData> {
 
@@ -22,15 +26,24 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
     public void translate(MultiBlockChangePacketData packet, BetaClientSession session, Session modernSession) {
         int size = packet.getSize();
         short[] coordinateArray = packet.getCoordinateArray();
+        byte[] blockArray = packet.getTypeArray();
+        byte[] metadataArray = packet.getMetadataArray();
+
         int chunkX = packet.getX();
         int chunkZ = packet.getZ();
 
-        //Logger.info("data: {}", ReflectionToStringBuilder.toString(packet, ToStringStyle.MULTI_LINE_STYLE));
+        List<BlockChangeRecord> records = new LinkedList<>();
         for (int index = 0; index < size; ++index) {
-            int blockY = coordinateArray[index] & 255;
-            //help?
+            short coord = coordinateArray[index];
+
+            int block = blockArray[index] & 255;
+            byte metadata = metadataArray[index];
+
+            int blockY = coord & 255;
+
+            //records.add(new BlockChangeRecord(position, state));
         }
-        //BlockChangeRecord record = new BlockChangeRecord()
-        //modernSession.send(new ServerMultiBlockChangePacket());
+
+        //modernSession.send(new ServerMultiBlockChangePacket(records.toArray(new BlockChangeRecord[0])));
     }
 }

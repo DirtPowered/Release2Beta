@@ -4,11 +4,7 @@ import com.github.dirtpowered.betaprotocollib.packet.data.VehicleSpawnPacketData
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
-import com.github.steveice10.mc.protocol.data.game.entity.type.object.FallingBlockData;
-import com.github.steveice10.mc.protocol.data.game.entity.type.object.MinecartType;
-import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectData;
-import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectType;
-import com.github.steveice10.mc.protocol.data.game.entity.type.object.ProjectileData;
+import com.github.steveice10.mc.protocol.data.game.entity.type.object.*;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityVelocityPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
 import com.github.steveice10.packetlib.Session;
@@ -58,7 +54,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
             type = ObjectType.MINECART;
             data = MinecartType.POWERED;
         } else if (packet.getType() == 60) {
-            type = ObjectType.TIPPED_ARROW;
+            type = ObjectType.SNOWBALL; //to prevent glitches
             data = new ProjectileData(ownerId);
         } else if (packet.getType() == 50) {
             type = ObjectType.PRIMED_TNT;
