@@ -11,33 +11,35 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.pmw.tinylog.Logger;
 
-import java.util.UUID;
-
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
 
     private final Channel channel;
     private ReleaseToBeta releaseToBeta;
     private ProtocolState protocolState;
     private ModernPlayer player;
-    private UUID clientId;
+    private Session session;
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session) {
         this.releaseToBeta = server;
         this.channel = channel;
         this.protocolState = ProtocolState.LOGIN;
         this.player = new ModernPlayer(this);
-        this.clientId = UUID.randomUUID();
+        this.session = session;
+    }
 
-        server.getSessionRegistry().addSession(this, session);
+    public void createSession(String clientId) {
+        releaseToBeta.getSessionRegistry().addSession(clientId, new MultiSession(this, session));
+        player.setClientId(clientId);
+
     }
 
     @SuppressWarnings("unchecked")
     private void processPacket(Packet packet) {
         BetaToModern handler = releaseToBeta.getBetaToModernTranslatorRegistry().getByPacket(packet);
         if (handler != null && channel.isActive()) {
-            handler.translate(packet, this, releaseToBeta.getSessionRegistry().getSessions().inverse().get(this));
+            handler.translate(packet, this, releaseToBeta.getSessionRegistry().getSessions().get(player.getClientId()).getModernSession());
         } else {
-            Logger.warn("[client={}] missing 'BetaToModern' translator for {}", getClientId().toString().substring(0, 8),
+            Logger.warn("[client={}] missing 'BetaToModern' translator for {}", getClientId().substring(0, 8),
                     packet.getClass().getSimpleName());
         }
     }
@@ -79,8 +81,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         super.exceptionCaught(context, cause);
     }
 
-    public UUID getClientId() {
-        return clientId;
+    public String getClientId() {
+        return player.getClientId();
     }
 
     public void sendPacket(Packet packet) {

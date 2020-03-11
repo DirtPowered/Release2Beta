@@ -1,25 +1,26 @@
 package com.github.dirtpowered.releasetobeta.network.session;
 
-import com.github.steveice10.packetlib.Session;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import org.pmw.tinylog.Logger;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class SessionRegistry {
 
-    private final BiMap<Session, BetaClientSession> sessions = HashBiMap.create();
+    private Map<String, MultiSession> sessions = new LinkedHashMap<>();
 
-    void addSession(BetaClientSession client, Session session) {
-        sessions.put(session, client);
-        Logger.info("[count={}] adding new session (id: {})", sessions.size(), client.getClientId());
+    void addSession(String clientId, MultiSession multiSession) {
+        sessions.put(clientId, multiSession);
+
+        Logger.info("[count={}/id={}] adding new session", sessions.size(), clientId);
     }
 
-    public void removeSession(BetaClientSession client) {
-        sessions.inverse().remove(client);
-        Logger.info("[count={}] removing session (id: {})", sessions.size(), client.getClientId());
+    public void removeSession(String clientId) {
+        sessions.remove(clientId);
+        Logger.info("[count={}/id={}] removing session", sessions.size(), clientId);
     }
 
-    public BiMap<Session, BetaClientSession> getSessions() {
+    public Map<String, MultiSession> getSessions() {
         return sessions;
     }
 }

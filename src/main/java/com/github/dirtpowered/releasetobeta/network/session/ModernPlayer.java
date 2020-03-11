@@ -5,9 +5,6 @@ import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.message.Message;
-import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
-import com.github.steveice10.packetlib.packet.Packet;
 
 import java.util.UUID;
 
@@ -16,6 +13,7 @@ public class ModernPlayer {
     private int entityId;
     private BetaClientSession session;
     private Slot lastClickedSlot;
+    private String clientId;
 
     ModernPlayer(BetaClientSession session) {
         this.session = session;
@@ -31,7 +29,7 @@ public class ModernPlayer {
         return session;
     }
 
-    public String getUsername() {
+    String getUsername() {
         return username;
     }
 
@@ -47,23 +45,19 @@ public class ModernPlayer {
         this.entityId = entityId;
     }
 
-    void sendMessage(String message) {
-        sendPacket(new ServerChatPacket(message));
-    }
-
-    void kick(String reason) {
-        sendPacket(new ServerDisconnectPacket(reason));
-    }
-
-    void sendPacket(Packet packet) {
-        session.getMain().getServer().getServerSession(session).send(packet);
-    }
-
     public Slot getLastClickedSlot() {
         return lastClickedSlot;
     }
 
     public void setLastClickedSlot(Slot lastClickedSlot) {
         this.lastClickedSlot = lastClickedSlot;
+    }
+
+    String getClientId() {
+        return clientId;
+    }
+
+    void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }

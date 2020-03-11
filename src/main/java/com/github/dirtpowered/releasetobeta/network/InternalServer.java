@@ -3,6 +3,7 @@ package com.github.dirtpowered.releasetobeta.network;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
+import com.github.dirtpowered.releasetobeta.network.session.MultiSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.dirtpowered.releasetobeta.utils.Tickable;
 import com.github.steveice10.mc.auth.data.GameProfile;
@@ -31,6 +32,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.pmw.tinylog.Logger;
 
 import java.net.InetSocketAddress;
@@ -39,10 +41,6 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class InternalServer implements Tickable {
-
-    /*
-     * NOTE: Everything is broken here...
-     */
 
     private final Queue<AbstractMap.SimpleEntry<Session, Packet>> packetQueue = new LinkedBlockingQueue<>();
     private final VersionInfo versionInfo = new VersionInfo(MinecraftConstants.GAME_VERSION, MinecraftConstants.PROTOCOL_VERSION);
@@ -58,20 +56,29 @@ public class InternalServer implements Tickable {
     }
 
     @SuppressWarnings("unchecked")
-    private void handleIncomingPackets(BetaClientSession betaSession, Session modernSession) {
+    private void handleIncomingPackets() {
         AbstractMap.SimpleEntry<Session, Packet> entries;
+
         while ((entries = packetQueue.poll()) != null) {
             Packet packet = entries.getValue();
+            Session modernSession = entries.getKey();
 
             ModernToBeta handler = releaseToBeta.getModernToBetaTranslatorRegistry().getByPacket(packet);
             if (handler != null) {
-                if (entries.getKey().equals(modernSession)) {
-                    handler.translate(packet, modernSession, betaSession);
-                }
+                handler.translate(packet, modernSession, getSessionFromServerSession(modernSession));
             } else {
                 Logger.warn("[server] missing 'ModernToBeta' translator for {}", packet.getClass().getSimpleName());
             }
         }
+    }
+
+    /*
+     * TODO: Fix that huge mess
+     */
+    private BetaClientSession getSessionFromServerSession(Session modernSession) {
+        return releaseToBeta.getSessionRegistry().getSessions().values().stream()
+                .filter(multiSession -> multiSession.getModernSession() == modernSession).findFirst()
+                .map(MultiSession::getBetaClientSession).orElse(null);
     }
 
     private void createServer() {
@@ -85,7 +92,7 @@ public class InternalServer implements Tickable {
         server.setGlobalFlag(MinecraftConstants.SERVER_LOGIN_HANDLER_KEY, (ServerLoginHandler) session -> {
             try {
                 if (session.isConnected()) {
-                    createClientSession(session);
+                    createClientSession(RandomStringUtils.randomAlphabetic(8), session);
                 }
 
             } catch (InterruptedException e) {
@@ -106,42 +113,35 @@ public class InternalServer implements Tickable {
 
             @Override
             public void sessionRemoved(SessionRemovedEvent event) {
-                BetaClientSession session = getClientFromSession(event.getSession());
+                releaseToBeta.getSessionRegistry().getSessions().forEach((username, multiSession) -> {
+                    if (multiSession.getModernSession().equals(event.getSession())) {
+                        releaseToBeta.getSessionRegistry().removeSession(username);
 
-                releaseToBeta.getSessionRegistry().removeSession(session);
-                session.disconnect();
+                        multiSession.getBetaClientSession().disconnect();
+                    }
+                });
             }
         });
 
         server.bind();
     }
 
-    private BetaClientSession getClientFromSession(Session session) {
-        return releaseToBeta.getSessionRegistry().getSessions().get(session);
-    }
-
-    public Session getServerSession(BetaClientSession session) {
-        return releaseToBeta.getSessionRegistry().getSessions().inverse().get(session);
-    }
-
     public void broadcastPacket(Packet packet) {
-        releaseToBeta.getSessionRegistry().getSessions().forEach((key, value) -> {
-            key.send(packet);
+        releaseToBeta.getSessionRegistry().getSessions().forEach((s, multiSession) -> {
+            multiSession.getModernSession().send(packet);
         });
     }
 
     @Override
     public void tick() {
-        releaseToBeta.getSessionRegistry().getSessions().forEach((modernSession, betaSession) -> {
-            handleIncomingPackets(betaSession, modernSession);
-        });
+        handleIncomingPackets();
     }
 
     public Server getServer() {
         return server;
     }
 
-    private void createClientSession(Session session) throws InterruptedException {
+    private void createClientSession(String clientId, Session session) throws InterruptedException {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap clientBootstrap = new Bootstrap();
@@ -158,7 +158,10 @@ public class InternalServer implements Tickable {
                 @Override
                 protected void initChannel(SocketChannel ch) {
                     ch.pipeline().addLast("mc_pipeline", new PipelineFactory());
-                    ch.pipeline().addLast("client_connection_handler", new BetaClientSession(releaseToBeta, ch, session));
+                    BetaClientSession clientSession = new BetaClientSession(releaseToBeta, ch, session);
+                    clientSession.createSession(clientId);
+
+                    ch.pipeline().addLast("client_connection_handler", clientSession);
                 }
             });
 
