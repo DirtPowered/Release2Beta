@@ -8,6 +8,7 @@ import org.pmw.tinylog.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Utils {
     public static ItemStack betaItemStackToItemStack(BetaItemStack itemStack) {
@@ -46,5 +47,9 @@ public class Utils {
 
     public static void debug(Object clazz) {
         Logger.info("[DEBUG] {}", ReflectionToStringBuilder.toString(clazz, ToStringStyle.SHORT_PREFIX_STYLE));
+    }
+
+    public static UUID getOfflineUUID(String username) {
+        return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes());
     }
 }

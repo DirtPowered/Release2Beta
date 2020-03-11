@@ -1,12 +1,11 @@
 package com.github.dirtpowered.releasetobeta.network.session;
 
 import com.github.dirtpowered.releasetobeta.data.inventory.Slot;
+import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.message.Message;
-
-import java.util.UUID;
 
 public class ModernPlayer {
     private String username;
@@ -14,27 +13,31 @@ public class ModernPlayer {
     private BetaClientSession session;
     private Slot lastClickedSlot;
     private String clientId;
+    private GameProfile gameProfile;
 
     ModernPlayer(BetaClientSession session) {
         this.session = session;
     }
 
+    public GameProfile getGameProfile() {
+        return gameProfile;
+    }
+
     public PlayerListEntry getTabEntry() {
-        return new PlayerListEntry(
-                new GameProfile(UUID.randomUUID(), username),
-                GameMode.SURVIVAL, 0, Message.fromString(username));
+        return new PlayerListEntry(getGameProfile(), GameMode.SURVIVAL, 0, Message.fromString(username));
     }
 
     public BetaClientSession getSession() {
         return session;
     }
 
-    String getUsername() {
+    public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+        this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
     }
 
     public int getEntityId() {

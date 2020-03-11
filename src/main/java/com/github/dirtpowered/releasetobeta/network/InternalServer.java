@@ -1,8 +1,10 @@
 package com.github.dirtpowered.releasetobeta.network;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
+import com.github.dirtpowered.releasetobeta.network.session.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.MultiSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.dirtpowered.releasetobeta.utils.Tickable;
@@ -10,6 +12,7 @@ import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.ServerLoginHandler;
+import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.data.status.PlayerInfo;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
@@ -37,14 +40,16 @@ import org.pmw.tinylog.Logger;
 
 import java.net.InetSocketAddress;
 import java.util.AbstractMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class InternalServer implements Tickable {
 
     private final Queue<AbstractMap.SimpleEntry<Session, Packet>> packetQueue = new LinkedBlockingQueue<>();
     private final VersionInfo versionInfo = new VersionInfo(MinecraftConstants.GAME_VERSION, MinecraftConstants.PROTOCOL_VERSION);
-    private final PlayerInfo playerInfo = new PlayerInfo(0, 0, new GameProfile[0]);
     private final TextMessage motd = new TextMessage("ReleaseToBeta server");
     private Server server;
     private ReleaseToBeta releaseToBeta;
@@ -54,6 +59,10 @@ public class InternalServer implements Tickable {
         this.releaseToBeta = releaseToBeta;
 
         createServer();
+    }
+
+    private int getSessionCount() {
+        return releaseToBeta.getSessionRegistry().getSessions().size();
     }
 
     @SuppressWarnings("unchecked")
@@ -87,12 +96,54 @@ public class InternalServer implements Tickable {
                 .map(MultiSession::getBetaClientSession).orElse(null);
     }
 
+    private ModernPlayer[] getPlayers() {
+        List<ModernPlayer> players = new LinkedList<>();
+        releaseToBeta.getSessionRegistry().getSessions().forEach((s, multiSession) -> {
+            players.add(multiSession.getBetaClientSession().getPlayer());
+        });
+
+        return players.toArray(new ModernPlayer[0]);
+    }
+
+    private GameProfile[] getProfiles() {
+        List<GameProfile> profiles = new LinkedList<>();
+        releaseToBeta.getSessionRegistry().getSessions().forEach((s, multiSession) -> {
+            GameProfile gameProfile = multiSession.getBetaClientSession().getPlayer().getGameProfile();
+            if (gameProfile != null) {
+                profiles.add(gameProfile);
+            }
+        });
+
+        return profiles.toArray(new GameProfile[0]);
+    }
+
+    public PlayerListEntry[] getTabEntries() {
+        List<PlayerListEntry> tabEntries = new LinkedList<>();
+        releaseToBeta.getSessionRegistry().getSessions().forEach((s, multiSession) -> {
+            PlayerListEntry listEntry = multiSession.getBetaClientSession().getPlayer().getTabEntry();
+            if (listEntry != null) {
+                tabEntries.add(listEntry);
+            }
+        });
+
+        return tabEntries.toArray(new PlayerListEntry[0]);
+    }
+
+    public UUID getUUIDFromUsername(String username) {
+        for (ModernPlayer player : getPlayers()) {
+            if (player.getUsername().equals(username)) {
+                return player.getGameProfile().getId();
+            }
+        }
+        return null;
+    }
+
     private void createServer() {
         server = new Server("localhost", 25565, MinecraftProtocol.class, new TcpSessionFactory());
         server.setGlobalFlag(MinecraftConstants.VERIFY_USERS_KEY, false);
         server.setGlobalFlag(MinecraftConstants.SERVER_COMPRESSION_THRESHOLD, 256);
         server.setGlobalFlag(MinecraftConstants.SERVER_INFO_BUILDER_KEY, (ServerInfoBuilder) session -> {
-            return new ServerStatusInfo(versionInfo, playerInfo, motd, null);
+            return new ServerStatusInfo(versionInfo, new PlayerInfo(Constants.MAX_PLAYERS, getSessionCount(), getProfiles()), motd, null);
         });
 
         server.setGlobalFlag(MinecraftConstants.SERVER_LOGIN_HANDLER_KEY, (ServerLoginHandler) session -> {
@@ -119,9 +170,9 @@ public class InternalServer implements Tickable {
 
             @Override
             public void sessionRemoved(SessionRemovedEvent event) {
-                releaseToBeta.getSessionRegistry().getSessions().forEach((username, multiSession) -> {
+                releaseToBeta.getSessionRegistry().getSessions().forEach((clientId, multiSession) -> {
                     if (multiSession.getModernSession().equals(event.getSession())) {
-                        releaseToBeta.getSessionRegistry().removeSession(username);
+                        releaseToBeta.getSessionRegistry().removeSession(clientId);
 
                         multiSession.getBetaClientSession().disconnect();
                     }

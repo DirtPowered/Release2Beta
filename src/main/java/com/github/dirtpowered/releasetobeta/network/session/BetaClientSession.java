@@ -5,6 +5,8 @@ import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Tickable;
+import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPlayerListEntryPacket;
 import com.github.steveice10.packetlib.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,6 +20,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private ProtocolState protocolState;
     private ModernPlayer player;
     private Session session;
+    private boolean loggedIn;
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session) {
         this.releaseToBeta = server;
@@ -65,6 +68,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         Logger.info("[client] disconnected");
+        quitPlayer();
         ctx.close();
     }
 
@@ -98,5 +102,32 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public void disconnect() {
         if (channel.isActive())
             channel.close();
+    }
+
+    private boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    private void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+    private void quitPlayer() {
+        notifyTab(PlayerListEntryAction.REMOVE_PLAYER);
+    }
+
+    private void notifyTab(PlayerListEntryAction action) {
+        releaseToBeta.getServer().broadcastPacket(
+                new ServerPlayerListEntryPacket(
+                        action, releaseToBeta.getServer().getTabEntries()
+                )
+        );
+    }
+
+    public void joinPlayer() {
+        if (!isLoggedIn()) {
+            notifyTab(PlayerListEntryAction.ADD_PLAYER);
+            setLoggedIn(true);
+        }
     }
 }
