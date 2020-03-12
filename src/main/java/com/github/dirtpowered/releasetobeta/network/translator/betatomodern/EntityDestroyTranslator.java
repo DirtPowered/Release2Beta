@@ -12,6 +12,7 @@ public class EntityDestroyTranslator implements BetaToModern<EntityDestroyPacket
     public void translate(EntityDestroyPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
 
+        session.getMain().getEntityCache().removeEntity(entityId);
         modernSession.send(new ServerEntityDestroyPacket(entityId));
     }
 }

@@ -1,6 +1,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.packet.data.MobSpawnPacketData;
+import com.github.dirtpowered.releasetobeta.data.entity.DummyEntity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -27,6 +28,7 @@ public class MobSpawnTranslator implements BetaToModern<MobSpawnPacketData> {
         float pitch = packet.getPitch();
         MobType type = MagicValues.key(MobType.class, packet.getType());
 
+        session.getMain().getEntityCache().addEntity(entityId, new DummyEntity(entityId, type));
         modernSession.send(new ServerSpawnMobPacket(entityId, uuid, type, x, y, z, yaw,
                 pitch, yaw, 0, 0, 0, new EntityMetadata[0]));
     }

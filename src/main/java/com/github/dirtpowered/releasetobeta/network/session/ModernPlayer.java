@@ -6,6 +6,8 @@ import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.message.Message;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
+import com.github.steveice10.packetlib.packet.Packet;
 
 public class ModernPlayer {
     private String username;
@@ -62,5 +64,13 @@ public class ModernPlayer {
 
     void setClientId(String clientId) {
         this.clientId = clientId;
+    }
+
+    void sendPacket(Packet modernPacket) {
+        session.getMain().getSessionRegistry().getSession(clientId).getModernSession().send(modernPacket);
+    }
+
+    void kick(String reason) {
+        sendPacket(new ServerDisconnectPacket(reason));
     }
 }

@@ -23,4 +23,8 @@ public class SessionRegistry {
     public Map<String, MultiSession> getSessions() {
         return sessions;
     }
+
+    MultiSession getSession(String clientId) {
+        return sessions.get(clientId);
+    }
 }

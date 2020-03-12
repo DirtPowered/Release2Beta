@@ -40,7 +40,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private void processPacket(Packet packet) {
         BetaToModern handler = releaseToBeta.getBetaToModernTranslatorRegistry().getByPacket(packet);
         if (handler != null && channel.isActive()) {
-            handler.translate(packet, this, releaseToBeta.getSessionRegistry().getSessions().get(player.getClientId()).getModernSession());
+            handler.translate(packet, this, releaseToBeta.getSessionRegistry().getSession(player.getClientId()).getModernSession());
         } else {
             Logger.warn("[client={}] missing 'BetaToModern' translator for {}", getClientId().substring(0, 8),
                     packet.getClass().getSimpleName());
@@ -75,6 +75,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
         Logger.warn("[client] closed connection: {}", cause.getMessage());
+        player.kick("connection closed");
         context.close();
     }
 

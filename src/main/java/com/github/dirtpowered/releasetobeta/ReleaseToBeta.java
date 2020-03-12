@@ -32,6 +32,7 @@ import com.github.dirtpowered.betaprotocollib.packet.data.PreChunkPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SetSlotPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SleepPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SpawnPositionPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.ThunderboltPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.TransactionPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.UpdateHealthPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.UpdateProgressPacketData;
@@ -39,6 +40,7 @@ import com.github.dirtpowered.betaprotocollib.packet.data.UpdateSignPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.UpdateTimePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.VehicleSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.WindowItemsPacketData;
+import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.network.InternalServer;
 import com.github.dirtpowered.releasetobeta.network.session.SessionRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.AnimationTranslator;
@@ -72,6 +74,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PreC
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SetSlotTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SleepPacketTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SpawnPositionTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.ThunderboltTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.TransactionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.UpdateHealthTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.UpdateProgressTranslator;
@@ -131,6 +134,7 @@ public class ReleaseToBeta implements Runnable {
     private BetaToModernTranslatorRegistry betaToModernTranslatorRegistry;
     private ModernToBetaTranslatorRegistry modernToBetaTranslatorRegistry;
     private InternalServer server;
+    private EntityCache entityCache;
 
     ReleaseToBeta() {
         this.scheduledExecutorService = Executors.newScheduledThreadPool(32);
@@ -138,6 +142,7 @@ public class ReleaseToBeta implements Runnable {
         this.betaToModernTranslatorRegistry = new BetaToModernTranslatorRegistry();
         this.modernToBetaTranslatorRegistry = new ModernToBetaTranslatorRegistry();
         this.server = new InternalServer(this);
+        this.entityCache = new EntityCache();
 
         BetaLib.inject();
 
@@ -179,6 +184,7 @@ public class ReleaseToBeta implements Runnable {
         betaToModernTranslatorRegistry.registerTranslator(AttachEntityPacketData.class, new AttachEntityTranslator());
         betaToModernTranslatorRegistry.registerTranslator(NamedEntitySpawnPacketData.class, new NamedEntitySpawnTranslator());
         betaToModernTranslatorRegistry.registerTranslator(EntityEquipmentPacketData.class, new EntityEquipmentTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(ThunderboltPacketData.class, new ThunderboltTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());
@@ -206,6 +212,7 @@ public class ReleaseToBeta implements Runnable {
 
     void stop() {
         getSessionRegistry().getSessions().clear();
+        getEntityCache().getEntities().clear();
     }
 
     @Override
@@ -235,5 +242,9 @@ public class ReleaseToBeta implements Runnable {
 
     public InternalServer getServer() {
         return server;
+    }
+
+    public EntityCache getEntityCache() {
+        return entityCache;
     }
 }

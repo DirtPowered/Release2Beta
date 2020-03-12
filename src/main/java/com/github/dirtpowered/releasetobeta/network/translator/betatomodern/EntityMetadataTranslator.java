@@ -7,6 +7,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModer
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.MetadataType;
+import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityMetadataPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -19,6 +20,8 @@ public class EntityMetadataTranslator implements BetaToModern<EntityMetadataPack
     public void translate(EntityMetadataPacketData packet, BetaClientSession session, Session modernSession) {
         Utils.debug(packet);
         int entityId = packet.getEntityId();
+        MobType mobType = session.getMain().getEntityCache().getEntityById(entityId).getMobType();
+
         List<EntityMetadata> metadataList = new ArrayList<>();
 
         for (WatchableObject watchableObject : packet.getMetadata()) {
@@ -31,15 +34,24 @@ public class EntityMetadataTranslator implements BetaToModern<EntityMetadataPack
                 metadataList.add(new EntityMetadata(0, MetadataType.BYTE, value));
             }
 
-            //Creeper fuse:
-            // [entityId=11023,metadata=
-            // [WatchableObject [type=0, index=0, value=0],
-            // WatchableObject [type=0, index=16, value=1],
-            // WatchableObject [type=0, index=17, value=0]]]
+            if (type == MetadataType.BYTE && index == 16) {
+                //sheep color
+                if (mobType == MobType.SHEEP) {
+                    metadataList.add(new EntityMetadata(13, MetadataType.BYTE, value));
+                } else if (mobType == MobType.CREEPER) {
+                    //creeper fuse
+                    Byte b = (Byte) value;
+                    metadataList.add(new EntityMetadata(12, MetadataType.INT, b.intValue()));
+                }
+            }
 
-            //Sheep color:
-            // [entityId=11764,metadata=
-            // WatchableObject [type=0, index=16, value=15]]]
+            if (type == MetadataType.BYTE && index == 17) {
+                if (mobType == MobType.CREEPER) {
+                    //is powered
+                    boolean isPowered = ((Byte) value).intValue() == 1;
+                    metadataList.add(new EntityMetadata(13, MetadataType.BOOLEAN, isPowered));
+                }
+            }
         }
 
         modernSession.send(new ServerEntityMetadataPacket(entityId, metadataList.toArray(new EntityMetadata[0])));
