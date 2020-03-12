@@ -2,6 +2,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.data.WatchableObject;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityMetadataPacketData;
+import com.github.dirtpowered.releasetobeta.data.entity.Entity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -20,7 +21,11 @@ public class EntityMetadataTranslator implements BetaToModern<EntityMetadataPack
     public void translate(EntityMetadataPacketData packet, BetaClientSession session, Session modernSession) {
         Utils.debug(packet);
         int entityId = packet.getEntityId();
-        MobType mobType = session.getMain().getEntityCache().getEntityById(entityId).getMobType();
+        Entity e = session.getMain().getEntityCache().getEntityById(entityId);
+        MobType mobType = null;
+
+        if (e != null)
+            mobType = e.getMobType();
 
         List<EntityMetadata> metadataList = new ArrayList<>();
 
@@ -33,6 +38,9 @@ public class EntityMetadataTranslator implements BetaToModern<EntityMetadataPack
                 //sneaking
                 metadataList.add(new EntityMetadata(0, MetadataType.BYTE, value));
             }
+
+            if (mobType == null)
+                return;
 
             if (type == MetadataType.BYTE && index == 16) {
                 //sheep color
