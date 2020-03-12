@@ -16,10 +16,9 @@ public class EntityTeleportTranslator implements BetaToModern<EntityTeleportPack
         double y = Utils.toModernPos(packet.getY());
         double z = Utils.toModernPos(packet.getZ());
 
-        float yaw = packet.getYaw();
-        float pitch = packet.getPitch();
+        float yaw = Utils.toModernRotation(packet.getYaw());
+        float pitch = Utils.toModernRotation(packet.getPitch());
 
-        //Logger.info("TeleportPosition({}): X:{}, Y:{}, Z:{}", entityId, x, y, z);
         modernSession.send(new ServerEntityTeleportPacket(entityId, x, y, z, yaw, pitch, true));
     }
 }

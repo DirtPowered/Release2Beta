@@ -37,6 +37,11 @@ public class Utils {
         return pos / 32.0D;
     }
 
+    public static float toModernRotation(int rotation) {
+        //TODO: calculate
+        return rotation;
+    }
+
     public static Float toFloat(double doubleValue) {
         return (float) doubleValue;
     }

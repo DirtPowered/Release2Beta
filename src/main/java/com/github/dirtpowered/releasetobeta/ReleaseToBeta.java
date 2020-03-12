@@ -9,6 +9,7 @@ import com.github.dirtpowered.betaprotocollib.packet.data.BlockItemSwitchPacketD
 import com.github.dirtpowered.betaprotocollib.packet.data.ChatPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.CollectPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityDestroyPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.EntityEquipmentPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityMetadataPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityMoveLookPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityPositionPacketData;
@@ -48,6 +49,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.Bloc
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.ChatTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.CollectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityDestroyTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityEquipmentTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityMetadataTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityMoveLookTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.EntityPositionTranslator;
@@ -176,6 +178,7 @@ public class ReleaseToBeta implements Runnable {
         betaToModernTranslatorRegistry.registerTranslator(SleepPacketData.class, new SleepPacketTranslator());
         betaToModernTranslatorRegistry.registerTranslator(AttachEntityPacketData.class, new AttachEntityTranslator());
         betaToModernTranslatorRegistry.registerTranslator(NamedEntitySpawnPacketData.class, new NamedEntitySpawnTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(EntityEquipmentPacketData.class, new EntityEquipmentTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());
