@@ -13,11 +13,13 @@ import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.ServerLoginHandler;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
+import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
 import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.data.status.PlayerInfo;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
 import com.github.steveice10.mc.protocol.data.status.VersionInfo;
 import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoBuilder;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPlayerListEntryPacket;
 import com.github.steveice10.packetlib.Server;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.server.ServerAdapter;
@@ -40,6 +42,7 @@ import org.pmw.tinylog.Logger;
 
 import java.net.InetSocketAddress;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -54,6 +57,7 @@ public class InternalServer implements Tickable {
     private Server server;
     private ReleaseToBeta releaseToBeta;
     private NioEventLoopGroup loopGroup;
+    private List<PlayerListEntry> betaPlayers = new ArrayList<>();
 
     public InternalServer(ReleaseToBeta releaseToBeta) {
         this.releaseToBeta = releaseToBeta;
@@ -126,6 +130,7 @@ public class InternalServer implements Tickable {
             }
         });
 
+        tabEntries.addAll(betaPlayers);
         return tabEntries.toArray(new PlayerListEntry[0]);
     }
 
@@ -183,10 +188,14 @@ public class InternalServer implements Tickable {
         server.bind();
     }
 
-    public void broadcastPacket(Packet packet) {
+    private void broadcastPacket(Packet packet) {
         releaseToBeta.getSessionRegistry().getSessions().forEach((s, multiSession) -> {
             multiSession.getModernSession().send(packet);
         });
+    }
+
+    public void updateTabList(PlayerListEntryAction action) {
+        broadcastPacket(new ServerPlayerListEntryPacket(action, releaseToBeta.getServer().getTabEntries()));
     }
 
     @Override
@@ -228,5 +237,9 @@ public class InternalServer implements Tickable {
         } finally {
             group.shutdownGracefully().sync();
         }
+    }
+
+    public List<PlayerListEntry> getBetaPlayers() {
+        return betaPlayers;
     }
 }

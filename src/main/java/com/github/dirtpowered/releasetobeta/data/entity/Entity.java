@@ -6,10 +6,20 @@ public abstract class Entity {
 
     private int entityId;
     private MobType mobType;
+    private boolean betaPlayer;
 
-    Entity(int entityId, MobType type) {
+    public Entity(int entityId, MobType type) {
         this.entityId = entityId;
         this.mobType = type;
+    }
+
+    public Entity(int entityId, boolean isBetaPlayer) {
+        this.entityId = entityId;
+        this.betaPlayer = isBetaPlayer;
+    }
+
+    public boolean isBetaPlayer() {
+        return betaPlayer;
     }
 
     public MobType getMobType() {

@@ -9,7 +9,7 @@ public class SessionRegistry {
 
     private Map<String, MultiSession> sessions = new LinkedHashMap<>();
 
-    void addSession(String clientId, MultiSession multiSession) {
+    public void addSession(String clientId, MultiSession multiSession) {
         sessions.put(clientId, multiSession);
 
         Logger.info("[count={}/id={}] adding new session", sessions.size(), clientId);

@@ -8,7 +8,6 @@ import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Tickable;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
-import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPlayerListEntryPacket;
 import com.github.steveice10.packetlib.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -125,20 +124,12 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     private void quitPlayer() {
-        notifyTab(PlayerListEntryAction.REMOVE_PLAYER);
-    }
-
-    private void notifyTab(PlayerListEntryAction action) {
-        releaseToBeta.getServer().broadcastPacket(
-                new ServerPlayerListEntryPacket(
-                        action, releaseToBeta.getServer().getTabEntries()
-                )
-        );
+        releaseToBeta.getServer().updateTabList(PlayerListEntryAction.REMOVE_PLAYER);
     }
 
     public void joinPlayer() {
         if (!isLoggedIn()) {
-            notifyTab(PlayerListEntryAction.ADD_PLAYER);
+            releaseToBeta.getServer().updateTabList(PlayerListEntryAction.ADD_PLAYER);
             setLoggedIn(true);
         }
     }

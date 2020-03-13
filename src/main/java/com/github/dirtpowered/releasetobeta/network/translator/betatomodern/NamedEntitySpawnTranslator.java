@@ -1,12 +1,15 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.packet.data.NamedEntitySpawnPacketData;
+import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
+import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnPlayerPacket;
 import com.github.steveice10.packetlib.Session;
+import org.pmw.tinylog.Logger;
 
 import java.util.UUID;
 
@@ -17,7 +20,21 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
         Utils.debug(packet);
 
         int entityId = packet.getEntityId();
-        UUID uuid = session.getMain().getServer().getUUIDFromUsername(packet.getName());
+        String username = packet.getName();
+
+        UUID uuid = session.getMain().getServer().getUUIDFromUsername(username);
+
+        if (uuid == null) {
+            //spawn players using beta client too
+            BetaPlayer betaPlayer = new BetaPlayer(username, entityId);
+            uuid = betaPlayer.getUUID();
+
+            session.getMain().getServer().getBetaPlayers().add(betaPlayer.getTabEntry());
+            session.getMain().getServer().updateTabList(PlayerListEntryAction.ADD_PLAYER);
+
+            session.getMain().getEntityCache().addEntity(entityId, betaPlayer);
+            Logger.info("spawning beta player: {}/eid={}", username, entityId);
+        }
 
         double x = Utils.toModernPos(packet.getX());
         double y = Utils.toModernPos(packet.getY());
