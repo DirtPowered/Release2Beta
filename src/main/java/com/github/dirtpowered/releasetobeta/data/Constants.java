@@ -4,4 +4,5 @@ public class Constants {
     public final static double PLAYER_STANCE = 1.6200000047683716D;
     public final static int MAX_FURNACE_PROGRESS = 200;
     public final static int MAX_PLAYERS = 20;
+    public final static int MAX_CHUNK_SIZE = 32768;
 }
