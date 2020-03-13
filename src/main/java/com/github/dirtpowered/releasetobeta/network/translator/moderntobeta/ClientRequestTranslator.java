@@ -13,8 +13,9 @@ public class ClientRequestTranslator implements ModernToBeta<ClientRequestPacket
     public void translate(ClientRequestPacket packet, Session modernSession, BetaClientSession betaSession) {
         ClientRequest request = packet.getRequest();
 
-        if (request == ClientRequest.RESPAWN) {
-            betaSession.sendPacket(new RespawnPacketData((byte) 0));
-        }
+        if (request != ClientRequest.RESPAWN)
+            return;
+
+        betaSession.sendPacket(new RespawnPacketData((byte) betaSession.getPlayer().getDimension()));
     }
 }

@@ -1,6 +1,8 @@
 package com.github.dirtpowered.releasetobeta.network.session;
 
 import com.github.dirtpowered.betaprotocollib.model.Packet;
+import com.github.dirtpowered.betaprotocollib.packet.data.KeepAlivePacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.StatisticsPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -13,6 +15,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.pmw.tinylog.Logger;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
 
     private final Channel channel;
@@ -21,6 +26,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private ModernPlayer player;
     private Session session;
     private boolean loggedIn;
+    private List<Class<? extends Packet>> packetsToSkip;
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session) {
         this.releaseToBeta = server;
@@ -28,6 +34,11 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         this.protocolState = ProtocolState.LOGIN;
         this.player = new ModernPlayer(this);
         this.session = session;
+
+        packetsToSkip = Arrays.asList(
+                StatisticsPacketData.class,
+                KeepAlivePacketData.class
+        );
     }
 
     public void createSession(String clientId) {
@@ -41,7 +52,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         BetaToModern handler = releaseToBeta.getBetaToModernTranslatorRegistry().getByPacket(packet);
         if (handler != null && channel.isActive()) {
             handler.translate(packet, this, releaseToBeta.getSessionRegistry().getSession(player.getClientId()).getModernSession());
-        } else {
+        } else if (!packetsToSkip.contains(packet.getClass())) {
             Logger.warn("[client={}] missing 'BetaToModern' translator for {}", getClientId().substring(0, 8),
                     packet.getClass().getSimpleName());
         }

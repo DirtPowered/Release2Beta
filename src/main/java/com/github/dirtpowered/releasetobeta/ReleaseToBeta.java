@@ -29,6 +29,7 @@ import com.github.dirtpowered.betaprotocollib.packet.data.PickupSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.PlayNoteblockPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.PlayerLookMovePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.PreChunkPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.RespawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SetSlotPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SleepPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SpawnPositionPacketData;
@@ -71,6 +72,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.Pick
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PlayNoteblockTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PlayerLookMoveTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PreChunkTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.RespawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SetSlotTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SleepPacketTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SpawnPositionTranslator;
@@ -185,6 +187,7 @@ public class ReleaseToBeta implements Runnable {
         betaToModernTranslatorRegistry.registerTranslator(NamedEntitySpawnPacketData.class, new NamedEntitySpawnTranslator());
         betaToModernTranslatorRegistry.registerTranslator(EntityEquipmentPacketData.class, new EntityEquipmentTranslator());
         betaToModernTranslatorRegistry.registerTranslator(ThunderboltPacketData.class, new ThunderboltTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(RespawnPacketData.class, new RespawnTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());

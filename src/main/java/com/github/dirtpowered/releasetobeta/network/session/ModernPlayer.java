@@ -16,9 +16,18 @@ public class ModernPlayer {
     private Slot lastClickedSlot;
     private String clientId;
     private GameProfile gameProfile;
+    private int dimension;
 
     ModernPlayer(BetaClientSession session) {
         this.session = session;
+    }
+
+    public int getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
     }
 
     public GameProfile getGameProfile() {
