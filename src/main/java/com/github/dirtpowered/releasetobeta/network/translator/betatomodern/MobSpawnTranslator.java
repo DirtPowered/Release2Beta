@@ -36,6 +36,6 @@ public class MobSpawnTranslator implements BetaToModern<MobSpawnPacketData> {
                 pitch, yaw, 0, 0, 0, new EntityMetadata[0]));
 
         if (type == MobType.SKELETON)
-            modernSession.send(new ServerEntityEquipmentPacket(entityId, EquipmentSlot.MAIN_HAND, new ItemStack(261,1, 0)));
+            modernSession.send(new ServerEntityEquipmentPacket(entityId, EquipmentSlot.MAIN_HAND, new ItemStack(261, 1, 0)));
     }
 }
