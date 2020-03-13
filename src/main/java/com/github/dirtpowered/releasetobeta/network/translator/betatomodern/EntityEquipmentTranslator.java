@@ -7,6 +7,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModer
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.EquipmentSlot;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityEquipmentPacket;
 import com.github.steveice10.packetlib.Session;
 
 public class EntityEquipmentTranslator implements BetaToModern<EntityEquipmentPacketData> {
@@ -15,7 +16,11 @@ public class EntityEquipmentTranslator implements BetaToModern<EntityEquipmentPa
     public void translate(EntityEquipmentPacketData packet, BetaClientSession session, Session modernSession) {
         Utils.debug(packet);
         int entityId = packet.getEntityId();
-        ItemStack itemStack = Utils.betaItemStackToItemStack(new BetaItemStack(packet.getItemId(), -1, packet.getItemData()));
+        int itemId = packet.getItemId();
+
+        if (itemId == -1) itemId = 0;
+        ItemStack itemStack = new ItemStack(itemId, 1, packet.getItemData());
+
         int slot = packet.getSlot();
         EquipmentSlot equipmentSlot;
 
@@ -43,7 +48,6 @@ public class EntityEquipmentTranslator implements BetaToModern<EntityEquipmentPa
         if (equipmentSlot == null)
             return;
 
-        //TODO: This packet is too large somehow. MCProtocolLib bug?
-        //modernSession.send(new ServerEntityEquipmentPacket(entityId, equipmentSlot, itemStack));
+        modernSession.send(new ServerEntityEquipmentPacket(entityId, equipmentSlot, itemStack));
     }
 }
