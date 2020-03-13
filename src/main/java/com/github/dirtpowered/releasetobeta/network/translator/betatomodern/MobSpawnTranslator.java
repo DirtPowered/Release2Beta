@@ -6,8 +6,11 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.MagicValues;
+import com.github.steveice10.mc.protocol.data.game.entity.EquipmentSlot;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityEquipmentPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnMobPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -31,5 +34,8 @@ public class MobSpawnTranslator implements BetaToModern<MobSpawnPacketData> {
         session.getMain().getEntityCache().addEntity(entityId, new DummyEntity(entityId, type));
         modernSession.send(new ServerSpawnMobPacket(entityId, uuid, type, x, y, z, yaw,
                 pitch, yaw, 0, 0, 0, new EntityMetadata[0]));
+
+        if (type == MobType.SKELETON)
+            modernSession.send(new ServerEntityEquipmentPacket(entityId, EquipmentSlot.MAIN_HAND, new ItemStack(261,1, 0)));
     }
 }
