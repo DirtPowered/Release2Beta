@@ -1,15 +1,13 @@
 package com.github.dirtpowered.releasetobeta.data.entity;
 
+import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class EntityCache {
 
     private Map<Integer, Entity> entities = new HashMap<>();
-
-    public EntityCache() {
-
-    }
 
     public void addEntity(int entityId, Entity entity) {
         entities.put(entityId, entity);

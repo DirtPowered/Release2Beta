@@ -2,7 +2,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.data.WatchableObject;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityMetadataPacketData;
-import com.github.dirtpowered.releasetobeta.data.entity.Entity;
+import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;

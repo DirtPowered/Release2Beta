@@ -1,6 +1,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityTeleportPacketData;
+import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -18,6 +19,11 @@ public class EntityTeleportTranslator implements BetaToModern<EntityTeleportPack
 
         float yaw = Utils.toModernYaw(packet.getYaw());
         float pitch = Utils.toModernPitch(packet.getPitch());
+
+        Entity e = session.getMain().getEntityCache().getEntityById(entityId);
+        if (e != null) {
+            e.setLocation(x, y, z);
+        }
 
         modernSession.send(new ServerEntityTeleportPacket(entityId, x, y, z, yaw, pitch, true));
     }

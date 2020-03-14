@@ -29,6 +29,7 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
             uuid = betaPlayer.getUUID();
 
             session.getMain().getServer().addBetaTabEntry(betaPlayer);
+            betaPlayer.onSpawn(modernSession);
 
             session.getMain().getEntityCache().addEntity(entityId, betaPlayer);
             Logger.info("spawning beta player: {}/eid={}", username, entityId);

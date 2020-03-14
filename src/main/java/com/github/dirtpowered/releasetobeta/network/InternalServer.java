@@ -2,6 +2,7 @@ package com.github.dirtpowered.releasetobeta.network;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Constants;
+import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -62,9 +63,11 @@ public class InternalServer implements Tickable {
     private NioEventLoopGroup loopGroup;
     private Map<UUID, PlayerListEntry> betaPlayers = new HashMap<>();
     private int tickLimiter = 0;
+    private EntityRegistry entityRegistry;
 
     public InternalServer(ReleaseToBeta releaseToBeta) {
         this.releaseToBeta = releaseToBeta;
+        this.entityRegistry = new EntityRegistry();
 
         createServer();
     }
@@ -257,6 +260,10 @@ public class InternalServer implements Tickable {
 
     public Server getServer() {
         return server;
+    }
+
+    public EntityRegistry getEntityRegistry() {
+        return entityRegistry;
     }
 
     private void createClientSession(String clientId, Session session) throws InterruptedException {
