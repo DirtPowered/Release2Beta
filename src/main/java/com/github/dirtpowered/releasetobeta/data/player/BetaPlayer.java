@@ -1,5 +1,6 @@
 package com.github.dirtpowered.releasetobeta.data.player;
 
+import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.entity.Entity;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.auth.data.GameProfile;
@@ -22,7 +23,7 @@ public class BetaPlayer extends Entity {
     }
 
     public PlayerListEntry getTabEntry() {
-        return new PlayerListEntry(gameProfile, GameMode.SURVIVAL, 0, Message.fromString(username));
+        return new PlayerListEntry(gameProfile, GameMode.SURVIVAL, 0, Message.fromString(Constants.BETA_PLAYER_PREFIX + username));
     }
 
     public UUID getUUID() {
