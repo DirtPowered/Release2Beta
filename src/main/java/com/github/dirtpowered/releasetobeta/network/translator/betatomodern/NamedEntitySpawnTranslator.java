@@ -38,8 +38,8 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
         double y = Utils.toModernPos(packet.getY());
         double z = Utils.toModernPos(packet.getZ());
 
-        float yaw = Utils.toModernRotation(packet.getRotation());
-        float pitch = Utils.toModernRotation(packet.getPitch());
+        float yaw = Utils.toModernYaw(packet.getRotation());
+        float pitch = Utils.toModernPitch(packet.getPitch());
 
         modernSession.send(new ServerSpawnPlayerPacket(entityId, uuid, x, y, z, yaw, pitch, new EntityMetadata[0]));
     }

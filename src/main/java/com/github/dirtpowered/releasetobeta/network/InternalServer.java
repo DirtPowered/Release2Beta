@@ -247,10 +247,9 @@ public class InternalServer implements Tickable {
 
     @Override
     public void tick() {
-        tickLimiter = (tickLimiter + 1) % 100; //5 sec
+        tickLimiter = (tickLimiter + 1) % 100 * 2; //10 sec
         if (tickLimiter == 0) {
-            //TODO: Do something here
-            Logger.warn("Beta sessions count: {}", betaPlayers.size());
+            Logger.info("Beta sessions count: {}", betaPlayers.size());
         }
 
         handleIncomingPackets();

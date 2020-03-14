@@ -37,9 +37,13 @@ public class Utils {
         return pos / 32.0D;
     }
 
-    public static float toModernRotation(int rotation) {
-        //TODO: calculate
-        return rotation;
+    public static float toModernPitch(int pitch) {
+        /* -90 is looking straight up, and 90 is looking straight down. */
+        return ((pitch % 360) * 360) / 256F;
+    }
+
+    public static float toModernYaw(int yaw) {
+        return (float) yaw; //TODO: calculate
     }
 
     public static Float toFloat(double doubleValue) {
