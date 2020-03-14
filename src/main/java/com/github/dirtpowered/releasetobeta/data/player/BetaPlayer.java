@@ -28,4 +28,8 @@ public class BetaPlayer extends Entity {
     public UUID getUUID() {
         return gameProfile.getId();
     }
+
+    public GameProfile getGameProfile() {
+        return gameProfile;
+    }
 }

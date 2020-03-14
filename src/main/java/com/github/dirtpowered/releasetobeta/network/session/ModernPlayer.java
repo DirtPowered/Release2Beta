@@ -75,7 +75,7 @@ public class ModernPlayer {
         this.clientId = clientId;
     }
 
-    void sendPacket(Packet modernPacket) {
+    public void sendPacket(Packet modernPacket) {
         session.getMain().getSessionRegistry().getSession(clientId).getModernSession().send(modernPacket);
     }
 

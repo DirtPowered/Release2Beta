@@ -5,7 +5,6 @@ import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
-import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnPlayerPacket;
 import com.github.steveice10.packetlib.Session;
@@ -29,8 +28,7 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
             BetaPlayer betaPlayer = new BetaPlayer(username, entityId);
             uuid = betaPlayer.getUUID();
 
-            session.getMain().getServer().getBetaPlayers().add(betaPlayer.getTabEntry());
-            session.getMain().getServer().updateTabList(PlayerListEntryAction.ADD_PLAYER);
+            session.getMain().getServer().addBetaTabEntry(betaPlayer);
 
             session.getMain().getEntityCache().addEntity(entityId, betaPlayer);
             Logger.info("spawning beta player: {}/eid={}", username, entityId);

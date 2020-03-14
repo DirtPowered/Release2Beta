@@ -5,7 +5,6 @@ import com.github.dirtpowered.releasetobeta.data.entity.Entity;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityDestroyPacket;
 import com.github.steveice10.packetlib.Session;
 import org.pmw.tinylog.Logger;
@@ -19,8 +18,7 @@ public class EntityDestroyTranslator implements BetaToModern<EntityDestroyPacket
 
         if (e != null) {
             if (e instanceof BetaPlayer) {
-                session.getMain().getServer().getBetaPlayers().remove(((BetaPlayer) e).getTabEntry());
-                session.getMain().getServer().updateTabList(PlayerListEntryAction.REMOVE_PLAYER);
+                session.getMain().getServer().removeBetaTabEntry((BetaPlayer) e);
 
                 Logger.info("removing beta player: {}/eid={}",
                         ((BetaPlayer) e).getTabEntry().getDisplayName().getText(), entityId);

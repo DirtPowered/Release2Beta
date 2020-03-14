@@ -2,6 +2,7 @@ package com.github.dirtpowered.releasetobeta.network;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Constants;
+import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.session.ModernPlayer;
@@ -42,9 +43,11 @@ import org.pmw.tinylog.Logger;
 
 import java.net.InetSocketAddress;
 import java.util.AbstractMap;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -57,7 +60,8 @@ public class InternalServer implements Tickable {
     private Server server;
     private ReleaseToBeta releaseToBeta;
     private NioEventLoopGroup loopGroup;
-    private List<PlayerListEntry> betaPlayers = new ArrayList<>();
+    private Map<UUID, PlayerListEntry> betaPlayers = new HashMap<>();
+    private int tickLimiter = 0;
 
     public InternalServer(ReleaseToBeta releaseToBeta) {
         this.releaseToBeta = releaseToBeta;
@@ -121,7 +125,7 @@ public class InternalServer implements Tickable {
         return profiles.toArray(new GameProfile[0]);
     }
 
-    public PlayerListEntry[] getTabEntries() {
+    private PlayerListEntry[] getTabEntries() {
         List<PlayerListEntry> tabEntries = new LinkedList<>();
         releaseToBeta.getSessionRegistry().getSessions().forEach((s, multiSession) -> {
             PlayerListEntry listEntry = multiSession.getBetaClientSession().getPlayer().getTabEntry();
@@ -130,7 +134,7 @@ public class InternalServer implements Tickable {
             }
         });
 
-        tabEntries.addAll(betaPlayers);
+        tabEntries.addAll(betaPlayers.values());
         return tabEntries.toArray(new PlayerListEntry[0]);
     }
 
@@ -194,12 +198,61 @@ public class InternalServer implements Tickable {
         });
     }
 
-    public void updateTabList(PlayerListEntryAction action) {
-        broadcastPacket(new ServerPlayerListEntryPacket(action, releaseToBeta.getServer().getTabEntries()));
+    public void removeTabEntry(ModernPlayer player) {
+        ServerPlayerListEntryPacket entryPacket =
+                new ServerPlayerListEntryPacket(PlayerListEntryAction.REMOVE_PLAYER, new PlayerListEntry[]{
+                        new PlayerListEntry(player.getGameProfile())
+                });
+
+        Arrays.stream(getPlayers()).forEach(p -> {
+            p.sendPacket(entryPacket);
+        });
+    }
+
+    public void addTabEntry(ModernPlayer player) {
+        ServerPlayerListEntryPacket entryPacket =
+                new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, new PlayerListEntry[]{
+                        player.getTabEntry()
+                });
+
+        Arrays.stream(getPlayers()).forEach(p -> {
+            p.sendPacket(entryPacket);
+        });
+
+        player.sendPacket(new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, getTabEntries()));
+    }
+
+    public void removeBetaTabEntry(BetaPlayer player) {
+        betaPlayers.remove(player.getUUID());
+
+        ServerPlayerListEntryPacket entryPacket =
+                new ServerPlayerListEntryPacket(PlayerListEntryAction.REMOVE_PLAYER, new PlayerListEntry[]{
+                        new PlayerListEntry(player.getGameProfile())
+                });
+
+        Arrays.stream(getPlayers()).forEach(p -> {
+            p.sendPacket(entryPacket);
+        });
+    }
+
+    public void addBetaTabEntry(BetaPlayer player) {
+        betaPlayers.put(player.getUUID(), player.getTabEntry());
+
+        for (ModernPlayer modernPlayer : getPlayers()) {
+            //refresh all
+            removeTabEntry(modernPlayer);
+            addTabEntry(modernPlayer);
+        }
     }
 
     @Override
     public void tick() {
+        tickLimiter = (tickLimiter + 1) % 100; //5 sec
+        if (tickLimiter == 0) {
+            //TODO: Do something here
+            Logger.warn("Beta sessions count: {}", betaPlayers.size());
+        }
+
         handleIncomingPackets();
     }
 
@@ -237,9 +290,5 @@ public class InternalServer implements Tickable {
         } finally {
             group.shutdownGracefully().sync();
         }
-    }
-
-    public List<PlayerListEntry> getBetaPlayers() {
-        return betaPlayers;
     }
 }
