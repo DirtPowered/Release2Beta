@@ -7,7 +7,11 @@ import com.github.dirtpowered.releasetobeta.data.entity.mob.EntitySheep;
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntitySquid;
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntityWolf;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityCreeper;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityGhast;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityPigZombie;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntitySkeleton;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntitySlime;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntitySpider;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityZombie;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
@@ -24,9 +28,16 @@ public class EntityRegistry {
     }
 
     private void registerEntities() {
+        //monsters
         register(MobType.SKELETON, EntitySkeleton.class);
         register(MobType.ZOMBIE, EntityZombie.class);
         register(MobType.SPIDER, EntitySpider.class);
+        register(MobType.ZOMBIE_PIGMAN, EntityPigZombie.class);
+        register(MobType.GHAST, EntityGhast.class);
+        register(MobType.CREEPER, EntityCreeper.class);
+        register(MobType.SLIME, EntitySlime.class);
+
+        //mobs
         register(MobType.PIG, EntityPig.class);
         register(MobType.COW, EntityCow.class);
         register(MobType.SHEEP, EntitySheep.class);

@@ -3,6 +3,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 import com.github.dirtpowered.betaprotocollib.data.WatchableObject;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityMetadataPacketData;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityCreeper;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -49,7 +50,24 @@ public class EntityMetadataTranslator implements BetaToModern<EntityMetadataPack
                 } else if (mobType == MobType.CREEPER) {
                     //creeper fuse
                     Byte b = (Byte) value;
+                    if (e instanceof EntityCreeper)
+                        ((EntityCreeper) e).onPrime(modernSession);
+
                     metadataList.add(new EntityMetadata(12, MetadataType.INT, b.intValue()));
+                } else if (mobType == MobType.WOLF) {
+                    metadataList.add(new EntityMetadata(13, MetadataType.BYTE, value));
+                } else if (mobType == MobType.PIG) {
+                    boolean hasSaddle = ((Byte) value).intValue() == 1;
+
+                    metadataList.add(new EntityMetadata(13, MetadataType.BOOLEAN, hasSaddle));
+                } else if (mobType == MobType.SLIME) {
+                    Byte b = (Byte) value;
+
+                    metadataList.add(new EntityMetadata(12, MetadataType.INT, b.intValue()));
+                } else if (mobType == MobType.GHAST) {
+                    boolean isAggressive = ((Byte) value).intValue() == 1;
+
+                    metadataList.add(new EntityMetadata(12, MetadataType.BOOLEAN, isAggressive));
                 }
             }
 
