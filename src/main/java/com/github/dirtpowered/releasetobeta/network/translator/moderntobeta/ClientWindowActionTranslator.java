@@ -31,10 +31,8 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
             boolean shiftPressed = windowAction == WindowAction.SHIFT_CLICK_ITEM;
 
             if (item == null) {
-                if (player.getLastClickedSlot() != null) {
-                    betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) actionId, player.getLastClickedSlot().getItemStack(), shiftPressed));
-                    player.setLastClickedSlot(null);
-                }
+                BetaItemStack lastItem = Utils.itemStackToBetaItemStack(player.getInventory().getItem(slot));
+                betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) actionId, lastItem, shiftPressed));
                 return;
             }
 

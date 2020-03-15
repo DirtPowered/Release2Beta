@@ -9,6 +9,8 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkD
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerUnloadChunkPacket;
 import com.github.steveice10.packetlib.Session;
 
+import java.util.Arrays;
+
 public class PreChunkTranslator implements BetaToModern<PreChunkPacketData> {
 
     @Override
@@ -17,7 +19,10 @@ public class PreChunkTranslator implements BetaToModern<PreChunkPacketData> {
         int z = packet.getZ();
 
         if (packet.isFull()) {
-            Column column = new Column(x, z, new Chunk[16], new byte[256], null);
+            byte[] biomes = new byte[256];
+            Arrays.fill(biomes, (byte) 22); //jungle biome
+
+            Column column = new Column(x, z, new Chunk[16], biomes, null); //TODO: Send chests, furnaces
             modernSession.send(new ServerChunkDataPacket(column));
         } else {
             //unload

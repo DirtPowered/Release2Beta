@@ -1,5 +1,6 @@
 package com.github.dirtpowered.releasetobeta.network.session;
 
+import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.data.inventory.Slot;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.auth.data.GameProfile;
@@ -18,9 +19,11 @@ public class ModernPlayer {
     private GameProfile gameProfile;
     private int dimension;
     private boolean sneaking;
+    private PlayerInventory inventory;
 
     ModernPlayer(BetaClientSession session) {
         this.session = session;
+        this.inventory = new PlayerInventory();
     }
 
     public int getDimension() {
@@ -90,5 +93,9 @@ public class ModernPlayer {
 
     public void setSneaking(boolean sneaking) {
         this.sneaking = sneaking;
+    }
+
+    public PlayerInventory getInventory() {
+        return inventory;
     }
 }

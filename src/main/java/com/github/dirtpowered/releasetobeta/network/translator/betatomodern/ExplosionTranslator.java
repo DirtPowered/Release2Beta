@@ -1,7 +1,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.packet.data.ExplosionPacketData;
-import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -23,10 +23,10 @@ public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
         float explosionSize = packet.getExplosionSize();
 
         List<ExplodedBlockRecord> records = new ArrayList<>();
-        for (Location destroyedBlockPosition : packet.getDestroyedBlockPositions()) {
-            int posX = (int) destroyedBlockPosition.getX();
-            int posY = (int) destroyedBlockPosition.getY();
-            int posZ = (int) destroyedBlockPosition.getZ();
+        for (BlockLocation destroyedBlockPosition : packet.getDestroyedBlockPositions()) {
+            int posX = destroyedBlockPosition.getX();
+            int posY = destroyedBlockPosition.getY();
+            int posZ = destroyedBlockPosition.getZ();
 
             records.add(new ExplodedBlockRecord(posX, posY, posZ));
         }

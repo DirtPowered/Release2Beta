@@ -58,7 +58,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
             type = ObjectType.MINECART;
             data = MinecartType.POWERED;
         } else if (packet.getType() == 60) {
-            type = ObjectType.SNOWBALL; //to prevent glitches
+            type = ObjectType.TIPPED_ARROW; //Might be buggy
             data = new ProjectileData(ownerId);
         } else if (packet.getType() == 50) {
             type = ObjectType.PRIMED_TNT;
