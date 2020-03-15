@@ -42,7 +42,6 @@ import com.github.dirtpowered.betaprotocollib.packet.data.UpdateSignPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.UpdateTimePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.VehicleSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.WindowItemsPacketData;
-import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.network.InternalServer;
 import com.github.dirtpowered.releasetobeta.network.session.SessionRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.AnimationTranslator;
@@ -138,7 +137,6 @@ public class ReleaseToBeta implements Runnable {
     private BetaToModernTranslatorRegistry betaToModernTranslatorRegistry;
     private ModernToBetaTranslatorRegistry modernToBetaTranslatorRegistry;
     private InternalServer server;
-    private EntityCache entityCache;
 
     ReleaseToBeta() {
         this.scheduledExecutorService = Executors.newScheduledThreadPool(32);
@@ -146,7 +144,6 @@ public class ReleaseToBeta implements Runnable {
         this.betaToModernTranslatorRegistry = new BetaToModernTranslatorRegistry();
         this.modernToBetaTranslatorRegistry = new ModernToBetaTranslatorRegistry();
         this.server = new InternalServer(this);
-        this.entityCache = new EntityCache();
 
         BetaLib.inject();
 
@@ -218,7 +215,6 @@ public class ReleaseToBeta implements Runnable {
 
     void stop() {
         getSessionRegistry().getSessions().clear();
-        getEntityCache().getEntities().clear();
     }
 
     @Override
@@ -248,9 +244,5 @@ public class ReleaseToBeta implements Runnable {
 
     public InternalServer getServer() {
         return server;
-    }
-
-    public EntityCache getEntityCache() {
-        return entityCache;
     }
 }

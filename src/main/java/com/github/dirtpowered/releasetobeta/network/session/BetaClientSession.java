@@ -5,6 +5,7 @@ import com.github.dirtpowered.betaprotocollib.packet.data.KeepAlivePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.StatisticsPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
+import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Tickable;
 import com.github.steveice10.packetlib.Session;
@@ -25,6 +26,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private Session session;
     private boolean loggedIn;
     private List<Class<? extends Packet>> packetsToSkip;
+    private EntityCache entityCache;
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session) {
         this.releaseToBeta = server;
@@ -32,6 +34,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         this.protocolState = ProtocolState.LOGIN;
         this.player = new ModernPlayer(this);
         this.session = session;
+        this.entityCache = new EntityCache();
 
         packetsToSkip = Arrays.asList(
                 StatisticsPacketData.class,
@@ -114,6 +117,10 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             channel.close();
     }
 
+    public EntityCache getEntityCache() {
+        return entityCache;
+    }
+
     private boolean isLoggedIn() {
         return loggedIn;
     }
@@ -124,6 +131,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     private void quitPlayer() {
         releaseToBeta.getServer().removeTabEntry(player);
+        getEntityCache().getEntities().clear();
     }
 
     public void joinPlayer() {

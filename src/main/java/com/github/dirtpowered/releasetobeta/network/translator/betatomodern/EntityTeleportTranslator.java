@@ -20,7 +20,7 @@ public class EntityTeleportTranslator implements BetaToModern<EntityTeleportPack
         float yaw = Utils.toModernYaw(packet.getYaw());
         float pitch = Utils.toModernPitch(packet.getPitch());
 
-        Entity e = session.getMain().getEntityCache().getEntityById(entityId);
+        Entity e = session.getEntityCache().getEntityById(entityId);
         if (e != null) {
             e.setLocation(x, y, z);
         }

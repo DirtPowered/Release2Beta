@@ -36,7 +36,7 @@ public class MobSpawnTranslator implements BetaToModern<MobSpawnPacketData> {
             Constructor<? extends Entity> cons = c.getDeclaredConstructor(int.class);
 
             Entity object = cons.newInstance(entityId);
-            session.getMain().getEntityCache().addEntity(entityId, object);
+            session.getEntityCache().addEntity(entityId, object);
 
             modernSession.send(new ServerSpawnMobPacket(entityId, uuid, type, x, y, z, yaw, pitch, yaw, 0, 0, 0, new EntityMetadata[0]));
 

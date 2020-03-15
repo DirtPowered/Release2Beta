@@ -8,6 +8,7 @@ import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
 import com.github.steveice10.packetlib.packet.Packet;
 
 public class ModernPlayer {
@@ -97,5 +98,10 @@ public class ModernPlayer {
 
     public PlayerInventory getInventory() {
         return inventory;
+    }
+
+    //TODO: Send when client used not existing inventory action
+    public void updateInventory() {
+        sendPacket(new ServerWindowItemsPacket(0, inventory.getItems()));
     }
 }

@@ -8,7 +8,6 @@ import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnPlayerPacket;
 import com.github.steveice10.packetlib.Session;
-import org.pmw.tinylog.Logger;
 
 import java.util.UUID;
 
@@ -31,8 +30,7 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
             session.getMain().getServer().addBetaTabEntry(betaPlayer);
             betaPlayer.onSpawn(modernSession);
 
-            session.getMain().getEntityCache().addEntity(entityId, betaPlayer);
-            Logger.info("spawning beta player: {}/eid={}", username, entityId);
+            session.getEntityCache().addEntity(entityId, betaPlayer);
         }
 
         double x = Utils.toModernPos(packet.getX());

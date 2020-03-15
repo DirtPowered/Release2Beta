@@ -21,7 +21,7 @@ public class EntityMetadataTranslator implements BetaToModern<EntityMetadataPack
     public void translate(EntityMetadataPacketData packet, BetaClientSession session, Session modernSession) {
         Utils.debug(packet);
         int entityId = packet.getEntityId();
-        Entity e = session.getMain().getEntityCache().getEntityById(entityId);
+        Entity e = session.getEntityCache().getEntityById(entityId);
         MobType mobType = null;
 
         if (e != null)

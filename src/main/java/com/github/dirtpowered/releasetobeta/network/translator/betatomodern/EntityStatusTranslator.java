@@ -29,7 +29,7 @@ public class EntityStatusTranslator implements BetaToModern<EntityStatusPacketDa
         switch (status) {
             case 2:
                 entityStatus = EntityStatus.LIVING_HURT;
-                onDamage(entityId, session.getMain().getEntityCache(), modernSession);
+                onDamage(entityId, session.getEntityCache(), modernSession);
                 break;
             case 3:
                 entityStatus = EntityStatus.LIVING_DEATH;
