@@ -6,8 +6,12 @@ import com.github.dirtpowered.betaprotocollib.packet.data.StatisticsPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
+import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Tickable;
+import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
+import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPlayerListEntryPacket;
 import com.github.steveice10.packetlib.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,7 +19,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.pmw.tinylog.Logger;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
 
@@ -26,6 +33,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private Session session;
     private boolean loggedIn;
     private List<Class<? extends Packet>> packetsToSkip;
+    private Map<UUID, PlayerListEntry> betaPlayers = new HashMap<>();
     private EntityCache entityCache;
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session) {
@@ -58,6 +66,29 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
                     packet.getClass().getSimpleName());
         }
     }
+
+    public void removeBetaTabEntry(BetaPlayer player) {
+        betaPlayers.remove(player.getUUID());
+
+        ServerPlayerListEntryPacket entryPacket =
+                new ServerPlayerListEntryPacket(PlayerListEntryAction.REMOVE_PLAYER, new PlayerListEntry[]{
+                        new PlayerListEntry(player.getGameProfile())
+                });
+
+        getPlayer().sendPacket(entryPacket);
+    }
+
+    public void addBetaTabEntry(BetaPlayer player) {
+        betaPlayers.put(player.getUUID(), player.getTabEntry());
+
+        ServerPlayerListEntryPacket entryPacket =
+                new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, new PlayerListEntry[]{
+                        player.getTabEntry()
+                });
+
+        getPlayer().sendPacket(entryPacket);
+    }
+
 
     public ProtocolState getProtocolState() {
         return protocolState;
@@ -131,6 +162,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     private void quitPlayer() {
         releaseToBeta.getServer().removeTabEntry(player);
+        betaPlayers.clear();
         getEntityCache().getEntities().clear();
     }
 

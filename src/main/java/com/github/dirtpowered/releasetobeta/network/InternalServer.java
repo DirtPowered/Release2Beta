@@ -3,7 +3,6 @@ package com.github.dirtpowered.releasetobeta.network;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
-import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.session.ModernPlayer;
@@ -45,10 +44,8 @@ import org.pmw.tinylog.Logger;
 import java.net.InetSocketAddress;
 import java.util.AbstractMap;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -61,7 +58,6 @@ public class InternalServer implements Tickable {
     private Server server;
     private ReleaseToBeta releaseToBeta;
     private NioEventLoopGroup loopGroup;
-    private Map<UUID, PlayerListEntry> betaPlayers = new HashMap<>();
     private int tickLimiter = 0;
     private EntityRegistry entityRegistry;
 
@@ -137,7 +133,6 @@ public class InternalServer implements Tickable {
             }
         });
 
-        tabEntries.addAll(betaPlayers.values());
         return tabEntries.toArray(new PlayerListEntry[0]);
     }
 
@@ -225,36 +220,8 @@ public class InternalServer implements Tickable {
         player.sendPacket(new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, getTabEntries()));
     }
 
-    public void removeBetaTabEntry(BetaPlayer player) {
-        betaPlayers.remove(player.getUUID());
-
-        ServerPlayerListEntryPacket entryPacket =
-                new ServerPlayerListEntryPacket(PlayerListEntryAction.REMOVE_PLAYER, new PlayerListEntry[]{
-                        new PlayerListEntry(player.getGameProfile())
-                });
-
-        Arrays.stream(getPlayers()).forEach(p -> {
-            p.sendPacket(entryPacket);
-        });
-    }
-
-    public void addBetaTabEntry(BetaPlayer player) {
-        betaPlayers.put(player.getUUID(), player.getTabEntry());
-
-        for (ModernPlayer modernPlayer : getPlayers()) {
-            //refresh all
-            removeTabEntry(modernPlayer);
-            addTabEntry(modernPlayer);
-        }
-    }
-
     @Override
     public void tick() {
-        tickLimiter = (tickLimiter + 1) % 100 * 2; //10 sec
-        if (tickLimiter == 0) {
-            Logger.info("Beta sessions count: {}", betaPlayers.size());
-        }
-
         handleIncomingPackets();
     }
 

@@ -20,7 +20,7 @@ public class EntityDestroyTranslator implements BetaToModern<EntityDestroyPacket
                 Mob mob = (Mob) e;
                 mob.onDeath(modernSession);
             } else if (e instanceof BetaPlayer) {
-                session.getMain().getServer().removeBetaTabEntry((BetaPlayer) e);
+                session.removeBetaTabEntry((BetaPlayer) e);
             }
         }
 

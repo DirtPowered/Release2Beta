@@ -12,8 +12,6 @@ import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
 import com.github.steveice10.packetlib.Session;
 
-import java.util.Arrays;
-
 public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     @Override
@@ -39,41 +37,52 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
     }
 
     private Chunk translateChunk(byte[] chunk, int height) {
-        byte[] metadata = getMetadata(chunk);
-        byte[] blockLight = getLight(chunk, metadata.length);
+        byte[] types = getTypes(chunk);
+        byte[] metadata = getMetadata(chunk, types.length);
+        byte[] blockLight = getBlockLight(chunk);
+        byte[] skyLight = getSkyLight(chunk);
 
         BlockStorage storage = new BlockStorage();
-        NibbleArray3d nibbleLight = new NibbleArray3d(4096);
+        NibbleArray3d nibbleBlockLight = new NibbleArray3d(4096);
+        NibbleArray3d nibbleSkyLight = new NibbleArray3d(4096);
 
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-
                     int typeIndex = (Math.min(16, x) * 16 + Math.min(16, z)) * 128 + Math.min(128, y + height);
-                    int blockId = chunk[typeIndex];
+                    int blockId = types[typeIndex];
                     int blockData = metadata[typeIndex / 0x2];
                     //TODO: spawn tile entities too (chests, furnaces)
-                    storage.set(x, y, z, new BlockState(blockId, blockData));
-                    nibbleLight.set(x, y, z, blockLight[typeIndex]);
+                    storage.set(x, y, z, new BlockState(blockId, blockData == 16 ? 0 : blockData));
+
+                    nibbleBlockLight.set(x, y, z, blockLight[typeIndex / 0x2]);
+                    nibbleSkyLight.set(x, y, z, skyLight[typeIndex / 0x2]);
                 }
             }
         }
 
-        return new Chunk(storage, nibbleLight, new NibbleArray3d(4096));
+        return new Chunk(storage, nibbleBlockLight, nibbleSkyLight);
     }
 
-    private byte[] getLight(byte[] data, int metadataLength) {
-        //TODO: Block Light
-        byte[] blockLight = new byte[Constants.MAX_CHUNK_SIZE];
+    private byte[] getTypes(byte[] data) {
+        byte[] types = new byte[Constants.MAX_CHUNK_SIZE];
+        System.arraycopy(data, 0, types, 0, types.length);
 
-        Arrays.fill(blockLight, (byte) 0x08);
-        return blockLight;
+        return types;
     }
 
-    private byte[] getMetadata(byte[] data) {
+    private byte[] getMetadata(byte[] data, int typesLength) {
         byte[] metadata = new byte[Constants.MAX_CHUNK_SIZE];
-        System.arraycopy(data, Constants.MAX_CHUNK_SIZE, metadata, 0, metadata.length);
+        System.arraycopy(data, typesLength, metadata, 0, metadata.length);
 
         return metadata;
+    }
+
+    private byte[] getBlockLight(byte[] data) {
+        return new byte[Constants.MAX_CHUNK_SIZE];
+    }
+
+    private byte[] getSkyLight(byte[] data) {
+        return new byte[Constants.MAX_CHUNK_SIZE];
     }
 }
