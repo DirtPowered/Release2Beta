@@ -11,6 +11,5 @@ public class ClientTeleportConfirmTranslator implements ModernToBeta<ClientTelep
     @Override
     public void translate(ClientTeleportConfirmPacket packet, Session modernSession, BetaClientSession betaSession) {
         Utils.debug(packet);
-        //TODO: send ClientPlayerPositionRotationPacket when stuck in invisible/not mapped block
     }
 }

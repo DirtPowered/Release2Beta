@@ -17,6 +17,7 @@ public class ModernPlayer {
     private String clientId;
     private GameProfile gameProfile;
     private int dimension;
+    private boolean sneaking;
 
     ModernPlayer(BetaClientSession session) {
         this.session = session;
@@ -81,5 +82,13 @@ public class ModernPlayer {
 
     void kick(String reason) {
         sendPacket(new ServerDisconnectPacket(reason));
+    }
+
+    public boolean isSneaking() {
+        return sneaking;
+    }
+
+    public void setSneaking(boolean sneaking) {
+        this.sneaking = sneaking;
     }
 }
