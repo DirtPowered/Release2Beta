@@ -24,7 +24,7 @@ public class SessionRegistry {
         return sessions;
     }
 
-    MultiSession getSession(String clientId) {
+    public MultiSession getSession(String clientId) {
         return sessions.get(clientId);
     }
 }

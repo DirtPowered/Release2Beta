@@ -3,7 +3,6 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 import com.github.dirtpowered.betaprotocollib.packet.data.PlayNoteblockPacketData;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.MagicValues;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.NoteBlockValue;
@@ -18,8 +17,6 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
 
     @Override
     public void translate(PlayNoteblockPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
-
         int x = packet.getX();
         int y = packet.getY();
         int z = packet.getZ();

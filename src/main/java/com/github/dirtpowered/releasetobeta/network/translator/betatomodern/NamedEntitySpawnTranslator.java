@@ -15,8 +15,6 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
 
     @Override
     public void translate(NamedEntitySpawnPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
-
         int entityId = packet.getEntityId();
         String username = packet.getName();
 

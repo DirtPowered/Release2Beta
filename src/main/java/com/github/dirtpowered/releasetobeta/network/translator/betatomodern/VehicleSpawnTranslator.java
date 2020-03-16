@@ -12,18 +12,13 @@ import com.github.steveice10.mc.protocol.data.game.entity.type.object.Projectile
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityVelocityPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
 import com.github.steveice10.packetlib.Session;
-import org.pmw.tinylog.Logger;
 
 import java.util.UUID;
 
 public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketData> {
 
-    //Modern velocity:
-    //motX=1.738875,motY=0.693875,motZ=0.2
-
     @Override
     public void translate(VehicleSpawnPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
         int ownerId = session.getPlayer().getEntityId();
         int entityId = packet.getEntityId();
         int hasVelocity = packet.getVelocity();
@@ -44,8 +39,6 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
             vecX = packet.getVelocityX() / 8000.0D;
             vecY = packet.getVelocityY() / 8000.0D;
             vecZ = packet.getVelocityZ() / 8000.0D;
-
-            Logger.info("velocity: X: {} Y:{} Z:{}", vecX, vecY, vecZ);
         }
 
         if (packet.getType() == 10) {

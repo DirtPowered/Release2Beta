@@ -12,7 +12,6 @@ public class ThunderboltTranslator implements BetaToModern<ThunderboltPacketData
 
     @Override
     public void translate(ThunderboltPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
         int entityId = packet.getEntityId();
         double x = Utils.toModernPos(packet.getX());
         double y = Utils.toModernPos(packet.getY());

@@ -19,8 +19,6 @@ public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData
 
     @Override
     public void translate(PickupSpawnPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
-
         int entityId = packet.getEntityId();
         UUID uuid = UUID.randomUUID();
 

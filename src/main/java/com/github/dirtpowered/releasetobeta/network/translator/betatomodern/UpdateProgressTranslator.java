@@ -17,7 +17,7 @@ public class UpdateProgressTranslator implements BetaToModern<UpdateProgressPack
         int value = packet.getProgressBarValue();
 
         //TODO: Calculate values
-        // - We need to get fuel burn time somehow
+        // - We need to fromCache fuel burn time somehow
         modernSession.send(new ServerWindowPropertyPacket(windowId, property, value));
     }
 }

@@ -1,7 +1,7 @@
-package com.github.dirtpowered.releasetobeta.network.session;
+package com.github.dirtpowered.releasetobeta.data.player;
 
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
-import com.github.dirtpowered.releasetobeta.data.inventory.Slot;
+import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
@@ -15,14 +15,13 @@ public class ModernPlayer {
     private String username;
     private int entityId;
     private BetaClientSession session;
-    private Slot lastClickedSlot;
     private String clientId;
     private GameProfile gameProfile;
     private int dimension;
     private boolean sneaking;
     private PlayerInventory inventory;
 
-    ModernPlayer(BetaClientSession session) {
+    public ModernPlayer(BetaClientSession session) {
         this.session = session;
         this.inventory = new PlayerInventory();
     }
@@ -53,7 +52,12 @@ public class ModernPlayer {
 
     public void setUsername(String username) {
         this.username = username;
-        this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
+        if (session.getMain().getConfiguration().isSkinFixEnabled()) {
+            this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
+            //TODO: fetch uuid/skin from mojang api
+        } else {
+            this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
+        }
     }
 
     public int getEntityId() {
@@ -64,19 +68,11 @@ public class ModernPlayer {
         this.entityId = entityId;
     }
 
-    public Slot getLastClickedSlot() {
-        return lastClickedSlot;
-    }
-
-    public void setLastClickedSlot(Slot lastClickedSlot) {
-        this.lastClickedSlot = lastClickedSlot;
-    }
-
-    String getClientId() {
+    public String getClientId() {
         return clientId;
     }
 
-    void setClientId(String clientId) {
+    public void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
@@ -84,7 +80,7 @@ public class ModernPlayer {
         session.getMain().getSessionRegistry().getSession(clientId).getModernSession().send(modernPacket);
     }
 
-    void kick(String reason) {
+    public void kick(String reason) {
         sendPacket(new ServerDisconnectPacket(reason));
     }
 

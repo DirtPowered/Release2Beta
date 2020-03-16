@@ -3,7 +3,6 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityEquipmentPacketData;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.EquipmentSlot;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityEquipmentPacket;
@@ -13,7 +12,6 @@ public class EntityEquipmentTranslator implements BetaToModern<EntityEquipmentPa
 
     @Override
     public void translate(EntityEquipmentPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
         int entityId = packet.getEntityId();
         int itemId = packet.getItemId();
 

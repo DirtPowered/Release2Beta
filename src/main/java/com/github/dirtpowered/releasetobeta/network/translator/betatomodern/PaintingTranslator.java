@@ -3,7 +3,6 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 import com.github.dirtpowered.betaprotocollib.packet.data.PaintingPacketData;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.MagicValues;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.entity.type.PaintingType;
@@ -17,7 +16,6 @@ public class PaintingTranslator implements BetaToModern<PaintingPacketData> {
 
     @Override
     public void translate(PaintingPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
         int entityId = packet.getEntityId();
         UUID uuid = UUID.randomUUID();
         PaintingType paintingType = MagicValues.key(PaintingType.class, packet.getTitle());

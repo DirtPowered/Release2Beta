@@ -44,6 +44,7 @@ import com.github.dirtpowered.betaprotocollib.packet.data.UpdateSignPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.UpdateTimePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.VehicleSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.WindowItemsPacketData;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.network.InternalServer;
 import com.github.dirtpowered.releasetobeta.network.session.SessionRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.AnimationTranslator;
@@ -141,12 +142,14 @@ public class ReleaseToBeta implements Runnable {
     private BetaToModernTranslatorRegistry betaToModernTranslatorRegistry;
     private ModernToBetaTranslatorRegistry modernToBetaTranslatorRegistry;
     private InternalServer server;
+    private R2BConfiguration configuration;
 
     ReleaseToBeta() {
         this.scheduledExecutorService = Executors.newScheduledThreadPool(32);
         this.sessionRegistry = new SessionRegistry();
         this.betaToModernTranslatorRegistry = new BetaToModernTranslatorRegistry();
         this.modernToBetaTranslatorRegistry = new ModernToBetaTranslatorRegistry();
+        this.configuration = new R2BConfiguration();
         this.server = new InternalServer(this);
 
         BetaLib.inject();
@@ -250,5 +253,9 @@ public class ReleaseToBeta implements Runnable {
 
     public InternalServer getServer() {
         return server;
+    }
+
+    public R2BConfiguration getConfiguration() {
+        return configuration;
     }
 }

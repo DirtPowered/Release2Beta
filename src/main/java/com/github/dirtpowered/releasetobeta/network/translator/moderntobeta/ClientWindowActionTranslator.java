@@ -2,9 +2,8 @@ package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta;
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.betaprotocollib.packet.data.WindowClickPacketData;
-import com.github.dirtpowered.releasetobeta.data.inventory.Slot;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
-import com.github.dirtpowered.releasetobeta.network.session.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
@@ -37,8 +36,6 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
             }
 
             BetaItemStack itemStack = Utils.itemStackToBetaItemStack(item);
-            player.setLastClickedSlot(new Slot(slot, itemStack));
-
             betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) actionId, itemStack, shiftPressed));
         });
     }

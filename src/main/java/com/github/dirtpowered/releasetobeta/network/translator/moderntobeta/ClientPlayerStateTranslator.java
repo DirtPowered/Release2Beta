@@ -1,8 +1,8 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta;
 
 import com.github.dirtpowered.betaprotocollib.packet.data.EntityActionPacketData;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
-import com.github.dirtpowered.releasetobeta.network.session.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerState;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerStatePacket;

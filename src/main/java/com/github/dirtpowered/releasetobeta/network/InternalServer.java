@@ -1,11 +1,10 @@
 package com.github.dirtpowered.releasetobeta.network;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
-import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
-import com.github.dirtpowered.releasetobeta.network.session.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.MultiSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.dirtpowered.releasetobeta.utils.Tickable;
@@ -15,7 +14,7 @@ import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.ServerLoginHandler;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
-import com.github.steveice10.mc.protocol.data.message.TextMessage;
+import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.data.status.PlayerInfo;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
 import com.github.steveice10.mc.protocol.data.status.VersionInfo;
@@ -53,7 +52,6 @@ public class InternalServer implements Tickable {
 
     private final Queue<AbstractMap.SimpleEntry<Session, Packet>> packetQueue = new LinkedBlockingQueue<>();
     private final VersionInfo versionInfo = new VersionInfo(MinecraftConstants.GAME_VERSION, MinecraftConstants.PROTOCOL_VERSION);
-    private final TextMessage motd = new TextMessage("ReleaseToBeta server");
     private Server server;
     private ReleaseToBeta releaseToBeta;
     private NioEventLoopGroup loopGroup;
@@ -145,10 +143,14 @@ public class InternalServer implements Tickable {
 
     private void createServer() {
         server = new Server("localhost", 25565, MinecraftProtocol.class, new TcpSessionFactory());
+        int maxPlayers = releaseToBeta.getConfiguration().getMaxPlayers();
+        Message motd = releaseToBeta.getConfiguration().getMotd();
+
         server.setGlobalFlag(MinecraftConstants.VERIFY_USERS_KEY, false);
         server.setGlobalFlag(MinecraftConstants.SERVER_COMPRESSION_THRESHOLD, 256);
         server.setGlobalFlag(MinecraftConstants.SERVER_INFO_BUILDER_KEY, (ServerInfoBuilder) session -> {
-            return new ServerStatusInfo(versionInfo, new PlayerInfo(Constants.MAX_PLAYERS, getSessionCount(), getProfiles()), motd, null);
+            return new ServerStatusInfo(versionInfo,
+                    new PlayerInfo(maxPlayers, getSessionCount(), getProfiles()), motd, null);
         });
 
         server.setGlobalFlag(MinecraftConstants.SERVER_LOGIN_HANDLER_KEY, (ServerLoginHandler) session -> {
@@ -188,7 +190,7 @@ public class InternalServer implements Tickable {
         server.bind();
     }
 
-    private void broadcastPacket(Packet packet) {
+    public void broadcastPacket(Packet packet) {
         releaseToBeta.getSessionRegistry().getSessions().forEach((s, multiSession) -> {
             multiSession.getModernSession().send(packet);
         });

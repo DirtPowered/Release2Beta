@@ -16,7 +16,7 @@ public class PlayerInventory {
     }
 
     public ItemStack[] getItems() {
-        return inventoryItems;
+        return inventoryItems.clone();
     }
 
     public void setItems(ItemStack[] items) {
