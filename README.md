@@ -28,3 +28,6 @@ Application that allows connecting to beta (1.7.3) servers using 1.12.2(or later
 
 ## What can't be done
 - [x] Detecting all beta players at join
+
+## Screenshots
+![ss](https://i.imgur.com/X3evGtw.png)
