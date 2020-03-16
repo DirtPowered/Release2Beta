@@ -22,10 +22,12 @@ import com.github.dirtpowered.betaprotocollib.packet.data.HandshakePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.KickDisconnectPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.LoginPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.MapChunkPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.MapDataPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.MobSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.MultiBlockChangePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.NamedEntitySpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.OpenWindowPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.PaintingPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.PickupSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.PlayNoteblockPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.PlayerLookMovePacketData;
@@ -65,10 +67,12 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.Hand
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.KickDisconnectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.LoginTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.MapChunkTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.MapDataTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.MobSpawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.MultiBlockChangeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.NamedEntitySpawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.OpenWindowTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PaintingTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PickupSpawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PlayNoteblockTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PlayerLookMoveTranslator;
@@ -188,6 +192,8 @@ public class ReleaseToBeta implements Runnable {
         betaToModernTranslatorRegistry.registerTranslator(ThunderboltPacketData.class, new ThunderboltTranslator());
         betaToModernTranslatorRegistry.registerTranslator(RespawnPacketData.class, new RespawnTranslator());
         betaToModernTranslatorRegistry.registerTranslator(CloseWindowPacketData.class, new CloseWindowTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(MapDataPacketData.class, new MapDataTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(PaintingPacketData.class, new PaintingTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());

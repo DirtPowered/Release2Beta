@@ -34,7 +34,6 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -58,7 +57,6 @@ public class InternalServer implements Tickable {
     private Server server;
     private ReleaseToBeta releaseToBeta;
     private NioEventLoopGroup loopGroup;
-    private int tickLimiter = 0;
     private EntityRegistry entityRegistry;
 
     public InternalServer(ReleaseToBeta releaseToBeta) {
@@ -234,7 +232,6 @@ public class InternalServer implements Tickable {
     }
 
     private void createClientSession(String clientId, Session session) throws InterruptedException {
-        EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap clientBootstrap = new Bootstrap();
 
@@ -261,7 +258,7 @@ public class InternalServer implements Tickable {
             ChannelFuture channelFuture = clientBootstrap.connect().sync();
             channelFuture.channel().closeFuture().sync();
         } finally {
-            group.shutdownGracefully().sync();
+            loopGroup.shutdownGracefully().sync();
         }
     }
 }
