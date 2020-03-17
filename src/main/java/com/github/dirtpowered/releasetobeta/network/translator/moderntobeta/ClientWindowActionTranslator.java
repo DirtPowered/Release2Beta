@@ -8,6 +8,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBet
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.window.ClickItemParam;
+import com.github.steveice10.mc.protocol.data.game.window.SpreadItemParam;
 import com.github.steveice10.mc.protocol.data.game.window.WindowAction;
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientWindowActionPacket;
 import com.github.steveice10.packetlib.Session;
@@ -28,6 +29,14 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
             ItemStack item = packet.getClickedItem();
             WindowAction windowAction = packet.getAction();
             boolean shiftPressed = windowAction == WindowAction.SHIFT_CLICK_ITEM;
+
+            //block non-existent inventory actions
+            if (windowAction == WindowAction.FILL_STACK || windowAction == WindowAction.SPREAD_ITEM
+                    && packet.getParam() == SpreadItemParam.RIGHT_MOUSE_END_DRAG) {
+
+                player.updateInventory();
+                return;
+            }
 
             if (item == null) {
                 BetaItemStack lastItem = Utils.itemStackToBetaItemStack(player.getInventory().getItem(slot));
