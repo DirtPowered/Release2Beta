@@ -31,7 +31,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private Session session;
     private boolean loggedIn;
     private List<Class<? extends Packet>> packetsToSkip;
-    //private Map<UUID, PlayerListEntry> betaPlayers = new HashMap<>();
     private EntityCache entityCache;
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session) {
@@ -66,8 +65,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public void removeBetaTabEntry(BetaPlayer player) {
-        //betaPlayers.remove(player.getUUID());
-
         ServerPlayerListEntryPacket entryPacket =
                 new ServerPlayerListEntryPacket(PlayerListEntryAction.REMOVE_PLAYER, new PlayerListEntry[]{
                         new PlayerListEntry(player.getGameProfile())
@@ -77,8 +74,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public void addBetaTabEntry(BetaPlayer player) {
-        //betaPlayers.put(player.getUUID(), player.getTabEntry());
-
         ServerPlayerListEntryPacket entryPacket =
                 new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, new PlayerListEntry[]{
                         player.getTabEntry()
@@ -102,22 +97,26 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) {
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Logger.info("[client] connected");
+
+        super.channelActive(ctx);
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Logger.info("[client] disconnected");
         quitPlayer();
-        ctx.close();
+
+        super.channelInactive(ctx);
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
         Logger.warn("[client] closed connection: {}", cause.getMessage());
         player.kick("connection closed");
-        context.close();
+
+        super.exceptionCaught(context, cause);
     }
 
     public String getClientId() {
@@ -160,7 +159,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     private void quitPlayer() {
         releaseToBeta.getServer().removeTabEntry(player);
-        //betaPlayers.clear();
         getEntityCache().getEntities().clear();
     }
 

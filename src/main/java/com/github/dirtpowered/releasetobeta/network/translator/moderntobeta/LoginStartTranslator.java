@@ -7,6 +7,7 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.packet.login.client.LoginStartPacket;
 import com.github.steveice10.packetlib.Session;
+import org.pmw.tinylog.Logger;
 
 public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
 
@@ -14,13 +15,20 @@ public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
     public void translate(LoginStartPacket packet, Session modernSession, BetaClientSession betaSession) {
         String username = packet.getUsername();
 
-        if (betaSession.getProtocolState() != ProtocolState.LOGIN)
-            return;
+        try {
+            //TODO: send packets when server is ready
+            Thread.sleep(100L);
 
-        betaSession.sendPacket(new HandshakePacketData(username));
-        betaSession.sendPacket(new LoginPacketData(14, username, 0, 0));
+            if (betaSession.getProtocolState() != ProtocolState.LOGIN)
+                return;
 
-        betaSession.getPlayer().setUsername(username);
-        betaSession.joinPlayer();
+            betaSession.sendPacket(new HandshakePacketData(username));
+            betaSession.sendPacket(new LoginPacketData(14, username, 0, 0));
+
+            betaSession.getPlayer().setUsername(username);
+            betaSession.joinPlayer();
+        } catch (InterruptedException e) {
+            Logger.error("Error: {} ", e.getMessage());
+        }
     }
 }

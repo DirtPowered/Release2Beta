@@ -10,7 +10,6 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadat
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnMobPacket;
 import com.github.steveice10.packetlib.Session;
-import org.pmw.tinylog.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +39,7 @@ public class MobSpawnTranslator implements BetaToModern<MobSpawnPacketData> {
 
             modernSession.send(new ServerSpawnMobPacket(entityId, uuid, type, x, y, z, yaw, pitch, yaw, 0, 0, 0, new EntityMetadata[0]));
 
-            Logger.info("spawning {} [entityId={}]", c.getSimpleName(), entityId);
+            //Logger.info("spawning {} [entityId={}]", c.getSimpleName(), entityId);
             object.onSpawn(modernSession);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();

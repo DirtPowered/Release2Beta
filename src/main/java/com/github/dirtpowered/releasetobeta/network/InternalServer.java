@@ -38,6 +38,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.pmw.tinylog.Logger;
 
 import java.net.InetSocketAddress;
@@ -81,7 +83,8 @@ public class InternalServer implements Tickable {
             if (handler != null) {
                 BetaClientSession clientSession = getSessionFromServerSession(modernSession);
                 if (clientSession == null) {
-                    Logger.warn("[server] not all packets were sent");
+                    Logger.warn("[server] not all packets were processed ({}:{})", packet.getClass().getSimpleName(),
+                            ReflectionToStringBuilder.toString(packet, ToStringStyle.JSON_STYLE));
                     return;
                 }
                 handler.translate(packet, modernSession, clientSession);
@@ -143,7 +146,7 @@ public class InternalServer implements Tickable {
     }
 
     private void createServer() {
-        server = new Server("localhost", 25565, MinecraftProtocol.class, new TcpSessionFactory());
+        server = new Server(R2BConfiguration.bindAddress, R2BConfiguration.bindPort, MinecraftProtocol.class, new TcpSessionFactory());
         server.setGlobalFlag(MinecraftConstants.VERIFY_USERS_KEY, false);
         server.setGlobalFlag(MinecraftConstants.SERVER_COMPRESSION_THRESHOLD, 256);
         server.setGlobalFlag(MinecraftConstants.SERVER_INFO_BUILDER_KEY, (ServerInfoBuilder) session -> {
@@ -240,9 +243,10 @@ public class InternalServer implements Tickable {
             clientBootstrap.channel(NioSocketChannel.class);
             clientBootstrap
                     .option(ChannelOption.SO_KEEPALIVE, true)
+                    .option(ChannelOption.TCP_NODELAY, true)
                     .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000);
 
-            clientBootstrap.remoteAddress(new InetSocketAddress("localhost", 25567));
+            clientBootstrap.remoteAddress(new InetSocketAddress(R2BConfiguration.remoteAddress, R2BConfiguration.remotePort));
             clientBootstrap.handler(new ChannelInitializer<SocketChannel>() {
 
                 @Override

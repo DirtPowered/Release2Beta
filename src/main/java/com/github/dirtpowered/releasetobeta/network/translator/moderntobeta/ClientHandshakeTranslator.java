@@ -10,7 +10,6 @@ public class ClientHandshakeTranslator implements ModernToBeta<HandshakePacket> 
 
     @Override
     public void translate(HandshakePacket packet, Session modernSession, BetaClientSession betaSession) {
-        Logger.info("[{}] Received handshake with {} intent",
-                betaSession.getClientId().substring(0, 8), packet.getIntent());
+        Logger.info("[{}] sending handshake with {} intent", betaSession.getClientId(), packet.getIntent());
     }
 }
