@@ -1,6 +1,7 @@
 package com.github.dirtpowered.releasetobeta.network;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
@@ -14,7 +15,7 @@ import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.ServerLoginHandler;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
-import com.github.steveice10.mc.protocol.data.message.Message;
+import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.data.status.PlayerInfo;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
 import com.github.steveice10.mc.protocol.data.status.VersionInfo;
@@ -143,14 +144,11 @@ public class InternalServer implements Tickable {
 
     private void createServer() {
         server = new Server("localhost", 25565, MinecraftProtocol.class, new TcpSessionFactory());
-        int maxPlayers = releaseToBeta.getConfiguration().getMaxPlayers();
-        Message motd = releaseToBeta.getConfiguration().getMotd();
-
         server.setGlobalFlag(MinecraftConstants.VERIFY_USERS_KEY, false);
         server.setGlobalFlag(MinecraftConstants.SERVER_COMPRESSION_THRESHOLD, 256);
         server.setGlobalFlag(MinecraftConstants.SERVER_INFO_BUILDER_KEY, (ServerInfoBuilder) session -> {
             return new ServerStatusInfo(versionInfo,
-                    new PlayerInfo(maxPlayers, getSessionCount(), getProfiles()), motd, null);
+                    new PlayerInfo(R2BConfiguration.maxPlayers, getSessionCount(), getProfiles()), new TextMessage(R2BConfiguration.motd), null);
         });
 
         server.setGlobalFlag(MinecraftConstants.SERVER_LOGIN_HANDLER_KEY, (ServerLoginHandler) session -> {

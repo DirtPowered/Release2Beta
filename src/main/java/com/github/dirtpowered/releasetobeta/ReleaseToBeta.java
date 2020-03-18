@@ -107,6 +107,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.Clie
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientPlayerUseItemTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientRequestTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientTeleportConfirmTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientUpdateSignTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientWindowActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.LoginStartTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.BetaToModernTranslatorRegistry;
@@ -129,6 +130,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientClose
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientConfirmTransactionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientWindowActionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientTeleportConfirmPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientUpdateSignPacket;
 import com.github.steveice10.mc.protocol.packet.login.client.LoginStartPacket;
 
 import java.util.concurrent.Executors;
@@ -142,15 +144,14 @@ public class ReleaseToBeta implements Runnable {
     private BetaToModernTranslatorRegistry betaToModernTranslatorRegistry;
     private ModernToBetaTranslatorRegistry modernToBetaTranslatorRegistry;
     private InternalServer server;
-    private R2BConfiguration configuration;
 
     ReleaseToBeta() {
         this.scheduledExecutorService = Executors.newScheduledThreadPool(32);
         this.sessionRegistry = new SessionRegistry();
         this.betaToModernTranslatorRegistry = new BetaToModernTranslatorRegistry();
         this.modernToBetaTranslatorRegistry = new ModernToBetaTranslatorRegistry();
-        this.configuration = new R2BConfiguration();
         this.server = new InternalServer(this);
+        new R2BConfiguration(); //load config
 
         BetaLib.inject();
 
@@ -217,6 +218,7 @@ public class ReleaseToBeta implements Runnable {
         modernToBetaTranslatorRegistry.registerTranslator(ClientTeleportConfirmPacket.class, new ClientTeleportConfirmTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientWindowActionPacket.class, new ClientWindowActionTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientConfirmTransactionPacket.class, new ClientConfirmTransactionTranslator());
+        modernToBetaTranslatorRegistry.registerTranslator(ClientUpdateSignPacket.class, new ClientUpdateSignTranslator());
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Main Thread"));
         executor.scheduleAtFixedRate(this, 0L, 50L, TimeUnit.MILLISECONDS);
@@ -253,9 +255,5 @@ public class ReleaseToBeta implements Runnable {
 
     public InternalServer getServer() {
         return server;
-    }
-
-    public R2BConfiguration getConfiguration() {
-        return configuration;
     }
 }

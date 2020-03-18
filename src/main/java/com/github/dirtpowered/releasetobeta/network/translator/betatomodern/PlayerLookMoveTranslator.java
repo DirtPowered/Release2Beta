@@ -1,6 +1,8 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.packet.data.PlayerLookMovePacketData;
+import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerPositionRotationPacket;
@@ -10,6 +12,8 @@ public class PlayerLookMoveTranslator implements BetaToModern<PlayerLookMovePack
 
     @Override
     public void translate(PlayerLookMovePacketData packet, BetaClientSession session, Session modernSession) {
+        ModernPlayer player = session.getPlayer();
+
         double x = packet.getX();
         double y = packet.getY();
         double z = packet.getZ();
@@ -17,6 +21,7 @@ public class PlayerLookMoveTranslator implements BetaToModern<PlayerLookMovePack
         float yaw = packet.getYaw();
         float pitch = packet.getPitch();
 
+        player.setLocation(new Location(x, y, z, yaw, pitch)); //server-side location
         modernSession.send(new ServerPlayerPositionRotationPacket(x, y, z, yaw, pitch, 0));
     }
 }

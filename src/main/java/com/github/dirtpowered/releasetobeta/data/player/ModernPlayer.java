@@ -1,17 +1,23 @@
 package com.github.dirtpowered.releasetobeta.data.player;
 
+import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.entity.model.PlayerAction;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerOpenTileEntityEditorPacket;
 import com.github.steveice10.packetlib.packet.Packet;
 
-public class ModernPlayer {
+public class ModernPlayer implements PlayerAction {
     private String username;
     private int entityId;
     private BetaClientSession session;
@@ -20,6 +26,7 @@ public class ModernPlayer {
     private int dimension;
     private boolean sneaking;
     private PlayerInventory inventory;
+    private Location location;
 
     public ModernPlayer(BetaClientSession session) {
         this.session = session;
@@ -52,7 +59,7 @@ public class ModernPlayer {
 
     public void setUsername(String username) {
         this.username = username;
-        if (session.getMain().getConfiguration().isSkinFixEnabled()) {
+        if (R2BConfiguration.skinFixEnabled) {
             this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
             //TODO: fetch uuid/skin from mojang api
         } else {
@@ -96,8 +103,24 @@ public class ModernPlayer {
         return inventory;
     }
 
-    //TODO: Send when client used not existing inventory action
     public void updateInventory() {
         sendPacket(new ServerWindowItemsPacket(0, inventory.getItems()));
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    @Override
+    public void onBlockPlace(Position pos, ItemStack itemstack) {
+        int itemId = itemstack.getId();
+
+        if (itemId == 323) {
+            sendPacket(new ServerOpenTileEntityEditorPacket(pos));
+        }
     }
 }

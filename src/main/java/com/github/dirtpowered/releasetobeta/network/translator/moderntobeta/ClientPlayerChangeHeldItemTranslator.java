@@ -11,6 +11,7 @@ public class ClientPlayerChangeHeldItemTranslator implements ModernToBeta<Client
     @Override
     public void translate(ClientPlayerChangeHeldItemPacket packet, Session modernSession, BetaClientSession betaSession) {
         int slot = packet.getSlot();
+        betaSession.getPlayer().getInventory().setCurrentSlot(slot);
 
         betaSession.sendPacket(new BlockItemSwitchPacketData(slot));
     }

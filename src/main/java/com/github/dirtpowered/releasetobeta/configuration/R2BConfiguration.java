@@ -1,33 +1,16 @@
 package com.github.dirtpowered.releasetobeta.configuration;
 
-import com.github.steveice10.mc.protocol.data.message.ChatColor;
-import com.github.steveice10.mc.protocol.data.message.Message;
-import com.github.steveice10.mc.protocol.data.message.MessageStyle;
-import com.github.steveice10.mc.protocol.data.message.TextMessage;
-
 public class R2BConfiguration {
 
-    private String motd;
-    private int maxPlayers;
-    private boolean skinFixEnabled;
+    public static String motd = "Release2Beta server";
+    public static int maxPlayers = 20;
+    public static boolean skinFixEnabled = true;
 
     public R2BConfiguration() {
-        //TODO: load config
-        this.motd = "Release2Beta server";
-        this.maxPlayers = 20;
-        this.skinFixEnabled = true;
-    }
+        /*Toml toml = new Toml().read(new File("Release2Beta.toml"));
 
-    public int getMaxPlayers() {
-        return maxPlayers;
-    }
-
-    public Message getMotd() {
-        return TextMessage.fromString(motd)
-                .setStyle(new MessageStyle().setColor(ChatColor.RESET));
-    }
-
-    public boolean isSkinFixEnabled() {
-        return skinFixEnabled;
+        motd = toml.getString("motd");
+        maxPlayers = toml.getLong("max-players").intValue();
+        skinFixEnabled = toml.getBoolean("skin-fix");*/
     }
 }

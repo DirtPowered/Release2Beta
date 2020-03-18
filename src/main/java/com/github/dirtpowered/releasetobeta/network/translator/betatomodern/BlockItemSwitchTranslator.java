@@ -11,6 +11,7 @@ public class BlockItemSwitchTranslator implements BetaToModern<BlockItemSwitchPa
     @Override
     public void translate(BlockItemSwitchPacketData packet, BetaClientSession session, Session modernSession) {
         int slot = packet.getSlot();
+        session.getPlayer().getInventory().setCurrentSlot(slot);
 
         modernSession.send(new ServerPlayerChangeHeldItemPacket(slot));
     }
