@@ -17,8 +17,6 @@ public class PacketDecoder extends ReplayingDecoder<Packet> {
     @Override
     protected void decode(ChannelHandlerContext context, ByteBuf buffer, List<Object> list) throws IOException, IllegalAccessException, InstantiationException {
         final int packetId = buffer.readUnsignedByte();
-        if (packetId == 0x7F)
-            return;
 
         if (!BetaLib.getRegistry().hasId(packetId)) {
             Logger.warn("Packet {} is not registered", packetId);

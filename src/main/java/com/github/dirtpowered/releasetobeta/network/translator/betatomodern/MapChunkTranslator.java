@@ -12,6 +12,8 @@ import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
 import com.github.steveice10.packetlib.Session;
 
+import java.util.Arrays;
+
 public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     @Override
@@ -54,7 +56,6 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     int blockData = metadata[typeIndex / 0x2];
                     //TODO: spawn tile entities too (chests, furnaces)
                     storage.set(x, y, z, new BlockState(blockId, blockData == 16 ? 0 : blockData));
-
                     nibbleBlockLight.set(x, y, z, blockLight[typeIndex / 0x2]);
                     nibbleSkyLight.set(x, y, z, skyLight[typeIndex / 0x2]);
                 }
@@ -79,7 +80,9 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
     }
 
     private byte[] getBlockLight(byte[] data) {
-        return new byte[Constants.MAX_CHUNK_SIZE];
+        byte[] blockLight = new byte[Constants.MAX_CHUNK_SIZE];
+        Arrays.fill(blockLight, (byte)0x0A); //temp fix for black chunks
+        return blockLight;
     }
 
     private byte[] getSkyLight(byte[] data) {

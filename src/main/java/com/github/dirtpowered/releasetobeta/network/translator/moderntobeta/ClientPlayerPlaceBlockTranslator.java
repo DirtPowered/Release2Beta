@@ -7,8 +7,10 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.data.MagicValues;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
+import com.github.steveice10.mc.protocol.data.game.entity.type.object.HangingDirection;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPlaceBlockPacket;
 import com.github.steveice10.packetlib.Session;
+import org.pmw.tinylog.Logger;
 
 public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlayerPlaceBlockPacket> {
 
@@ -21,8 +23,18 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
         int z = pos.getZ();
 
         int face = MagicValues.value(Integer.class, packet.getFace());
-
-        player.onBlockPlace(pos, player.getInventory().getItemInHand());
         betaSession.sendPacket(new BlockPlacePacketData(x, y, z, face, new BetaItemStack()));
+
+        if (face == 2) {
+            z -= 1;
+        } else if (face == 3) {
+            z += 1;
+        } else if (face == 4) {
+            x -= 1;
+        } else if (face == 5) {
+            x += 1;
+        }
+
+        player.onBlockPlace(new Position(x, y, z), player.getInventory().getItemInHand());
     }
 }

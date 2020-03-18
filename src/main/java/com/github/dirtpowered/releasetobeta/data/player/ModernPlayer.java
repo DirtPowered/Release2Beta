@@ -59,7 +59,7 @@ public class ModernPlayer implements PlayerAction {
 
     public void setUsername(String username) {
         this.username = username;
-        if (R2BConfiguration.skinFixEnabled) {
+        if (R2BConfiguration.skinFix) {
             this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
             //TODO: fetch uuid/skin from mojang api
         } else {

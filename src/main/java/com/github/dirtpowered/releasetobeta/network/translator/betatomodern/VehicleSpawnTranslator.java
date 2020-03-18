@@ -1,6 +1,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.packet.data.VehicleSpawnPacketData;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -51,7 +52,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
             type = ObjectType.MINECART;
             data = MinecartType.POWERED;
         } else if (packet.getType() == 60) {
-            type = ObjectType.TIPPED_ARROW; //Might be buggy
+            type = R2BConfiguration.arrowFix ? ObjectType.SNOWBALL : ObjectType.TIPPED_ARROW;
             data = new ProjectileData(ownerId);
         } else if (packet.getType() == 50) {
             type = ObjectType.PRIMED_TNT;

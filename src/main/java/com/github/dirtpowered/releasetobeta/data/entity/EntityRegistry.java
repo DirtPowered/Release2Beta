@@ -36,6 +36,7 @@ public class EntityRegistry {
         register(MobType.GHAST, EntityGhast.class);
         register(MobType.CREEPER, EntityCreeper.class);
         register(MobType.SLIME, EntitySlime.class);
+        register(MobType.GIANT_ZOMBIE, EntityZombie.class);
 
         //mobs
         register(MobType.PIG, EntityPig.class);
