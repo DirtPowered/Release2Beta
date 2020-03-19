@@ -4,10 +4,13 @@ import com.github.dirtpowered.betaprotocollib.packet.data.MapChunkPacketData;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.chunk.BlockStorage;
 import com.github.steveice10.mc.protocol.data.game.chunk.Chunk;
 import com.github.steveice10.mc.protocol.data.game.chunk.Column;
 import com.github.steveice10.mc.protocol.data.game.chunk.NibbleArray3d;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
 import com.github.steveice10.packetlib.Session;
@@ -29,7 +32,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         Chunk[] chunks = new Chunk[16];
         for (int i = 0; i < 8; i++) { //8 chunks (max y = 128)
             try {
-                chunks[i] = translateChunk(data, (i * 16));
+                chunks[i] = translateChunk(chunkX, chunkZ, session, data, (i * 16));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -38,7 +41,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, chunks, null)));
     }
 
-    private Chunk translateChunk(byte[] chunk, int height) {
+    private Chunk translateChunk(int chunkX, int chunkZ, BetaClientSession session, byte[] chunk, int height) {
         byte[] types = getTypes(chunk);
         byte[] metadata = getMetadata(chunk, types.length);
         byte[] blockLight = getBlockLight(chunk);
@@ -55,6 +58,10 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     int blockId = types[typeIndex];
                     int blockData = metadata[typeIndex / 0x2];
                     //TODO: spawn tile entities too (chests, furnaces)
+                    if (Utils.isTileEntity(blockId)) {
+                        session.queueTileEntity(new BlockChangeRecord(
+                                new Position(chunkX * 16 + x, y + height, chunkZ * 16 + z), new BlockState(blockId, 2 /* TODO: get correct face */)));
+                    }
                     storage.set(x, y, z, new BlockState(blockId, blockData == 16 ? 0 : blockData));
                     nibbleBlockLight.set(x, y, z, blockLight[typeIndex / 0x2]);
                     nibbleSkyLight.set(x, y, z, skyLight[typeIndex / 0x2]);
@@ -81,7 +88,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     private byte[] getBlockLight(byte[] data) {
         byte[] blockLight = new byte[Constants.MAX_CHUNK_SIZE];
-        Arrays.fill(blockLight, (byte)0x0A); //temp fix for black chunks
+        Arrays.fill(blockLight, (byte) 0x0A); //temp fix for black chunks
         return blockLight;
     }
 

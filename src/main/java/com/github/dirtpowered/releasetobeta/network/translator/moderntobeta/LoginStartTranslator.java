@@ -17,7 +17,7 @@ public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
 
         try {
             //TODO: send packets when server is ready
-            Thread.sleep(100L);
+            Thread.sleep(300L);
 
             if (betaSession.getProtocolState() != ProtocolState.LOGIN)
                 return;

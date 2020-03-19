@@ -10,6 +10,7 @@ public class R2BConfiguration {
     public static int remotePort = 25567;
     public static String bindAddress = "localhost";
     public static int bindPort = 25565;
+    public static boolean disableSprinting = false;
 
     public R2BConfiguration() {
         /*Toml toml = new Toml().read(new File("Release2Beta.toml"));

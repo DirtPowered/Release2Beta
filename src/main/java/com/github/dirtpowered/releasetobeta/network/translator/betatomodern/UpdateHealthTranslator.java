@@ -1,6 +1,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.packet.data.UpdateHealthPacketData;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerHealthPacket;
@@ -12,6 +13,6 @@ public class UpdateHealthTranslator implements BetaToModern<UpdateHealthPacketDa
     public void translate(UpdateHealthPacketData packet, BetaClientSession session, Session modernSession) {
         float health = packet.getHealth();
 
-        modernSession.send(new ServerPlayerHealthPacket(health, 20, 0));
+        modernSession.send(new ServerPlayerHealthPacket(health, R2BConfiguration.disableSprinting ? 0 : 20, 0));
     }
 }

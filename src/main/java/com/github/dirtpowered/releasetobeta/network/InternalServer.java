@@ -44,7 +44,6 @@ import org.pmw.tinylog.Logger;
 
 import java.net.InetSocketAddress;
 import java.util.AbstractMap;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -180,9 +179,8 @@ public class InternalServer implements Tickable {
             public void sessionRemoved(SessionRemovedEvent event) {
                 releaseToBeta.getSessionRegistry().getSessions().forEach((clientId, multiSession) -> {
                     if (multiSession.getModernSession().equals(event.getSession())) {
-                        releaseToBeta.getSessionRegistry().removeSession(clientId);
-
                         multiSession.getBetaClientSession().disconnect();
+                        releaseToBeta.getSessionRegistry().removeSession(clientId);
                     }
                 });
             }
@@ -191,9 +189,10 @@ public class InternalServer implements Tickable {
         server.bind();
     }
 
-    public void broadcastPacket(Packet packet) {
+    private void broadcastPacket(Packet packet) {
         releaseToBeta.getSessionRegistry().getSessions().forEach((s, multiSession) -> {
-            multiSession.getModernSession().send(packet);
+            if (multiSession.getModernSession().isConnected())
+                multiSession.getModernSession().send(packet);
         });
     }
 
@@ -203,9 +202,7 @@ public class InternalServer implements Tickable {
                         new PlayerListEntry(player.getGameProfile())
                 });
 
-        Arrays.stream(getPlayers()).forEach(p -> {
-            p.sendPacket(entryPacket);
-        });
+        broadcastPacket(entryPacket);
     }
 
     public void addTabEntry(ModernPlayer player) {
@@ -214,10 +211,7 @@ public class InternalServer implements Tickable {
                         player.getTabEntry()
                 });
 
-        Arrays.stream(getPlayers()).forEach(p -> {
-            p.sendPacket(entryPacket);
-        });
-
+        broadcastPacket(entryPacket);
         player.sendPacket(new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, getTabEntries()));
     }
 
