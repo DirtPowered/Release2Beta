@@ -15,7 +15,7 @@ Application that allows connecting to beta (1.7.3) servers using 1.12.2(or later
 - [x] Player animations
 - [x] Projectiles / Falling blocks
 - [ ] Switching worlds 
-- [ ] Signs
+- [x] Signs
 - [ ] Minecart / Pig / Boat riding
 
 ## Bugs
