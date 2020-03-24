@@ -28,7 +28,7 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
         for (int index = 0; index < size; ++index) {
             short coord = coordinateArray[index];
 
-            int block = blockArray[index] & 255;
+            int block = session.remapBlock(blockArray[index] & 255);
             byte metadata = metadataArray[index];
 
             int blockX = (chunkX << 4) + (coord >> 12 & 15);

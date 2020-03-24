@@ -18,7 +18,7 @@ public class WindowItemsTranslator implements BetaToModern<WindowItemsPacketData
         BetaItemStack[] items = packet.getItemStacks();
         ModernPlayer player = session.getPlayer();
 
-        ItemStack[] itemStacks = Utils.convertItemStacks(items);
+        ItemStack[] itemStacks = Utils.convertItemStacks(session, items);
 
         player.getInventory().setItems(itemStacks);
         modernSession.send(new ServerWindowItemsPacket(windowId, itemStacks));

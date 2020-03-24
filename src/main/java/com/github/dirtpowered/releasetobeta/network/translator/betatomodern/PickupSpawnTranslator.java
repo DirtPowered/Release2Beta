@@ -30,6 +30,7 @@ public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData
         float pitch = packet.getPitch();
 
         BetaItemStack itemStack = packet.getItemStack();
+        itemStack.setBlockId(session.remapBlock(itemStack.getBlockId()));
 
         EntityMetadata[] metadata = Arrays.asList(
                 new EntityMetadata(6, MetadataType.ITEM, Utils.betaItemStackToItemStack(itemStack)),

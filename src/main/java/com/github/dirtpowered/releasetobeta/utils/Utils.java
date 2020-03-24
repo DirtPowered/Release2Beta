@@ -1,6 +1,7 @@
 package com.github.dirtpowered.releasetobeta.utils;
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
+import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -19,12 +20,12 @@ public class Utils {
         return new BetaItemStack(itemStack.getId(), itemStack.getAmount(), itemStack.getData());
     }
 
-    public static ItemStack[] convertItemStacks(BetaItemStack[] itemStacks) {
+    public static ItemStack[] convertItemStacks(BetaClientSession session, BetaItemStack[] itemStacks) {
         List<ItemStack> list = new ArrayList<>();
         for (BetaItemStack item : itemStacks) {
             ItemStack itemStack;
             if (item != null)
-                itemStack = new ItemStack(item.getBlockId(), item.getAmount(), item.getData());
+                itemStack = new ItemStack(session.remapBlock(item.getBlockId()), item.getAmount(), item.getData());
             else
                 itemStack = new ItemStack(0);
 

@@ -55,9 +55,9 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
                     int typeIndex = (Math.min(16, x) * 16 + Math.min(16, z)) * 128 + Math.min(128, y + height);
-                    int blockId = types[typeIndex];
+                    int blockId = session.remapBlock(types[typeIndex]);
                     int blockData = metadata[typeIndex / 0x2];
-                    //TODO: spawn tile entities too (chests, furnaces)
+
                     if (Utils.isTileEntity(blockId)) {
                         session.queueBlockChange(new BlockChangeRecord(
                                 new Position(chunkX * 16 + x, y + height, chunkZ * 16 + z), new BlockState(blockId, 2 /* TODO: get correct face */)));

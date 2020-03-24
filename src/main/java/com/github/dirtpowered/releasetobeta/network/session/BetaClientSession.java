@@ -6,15 +6,14 @@ import com.github.dirtpowered.betaprotocollib.packet.data.StatisticsPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
+import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Tickable;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
-import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
-import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPlayerListEntryPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockChangePacket;
 import com.github.steveice10.packetlib.Session;
@@ -219,7 +218,12 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         blockChangeQueue.add(blockChangeRecord);
     }
 
-    public void sendBlockUpdate(Position pos, int id, int data) {
-        queueBlockChange(new BlockChangeRecord(pos, new BlockState(id, data)));
+    public int remapBlock(int blockId) {
+        BlockMap b = releaseToBeta.getBlockMap();
+        if (b.exist(blockId)) {
+            return b.getFromId(blockId);
+        }
+
+        return blockId;
     }
 }

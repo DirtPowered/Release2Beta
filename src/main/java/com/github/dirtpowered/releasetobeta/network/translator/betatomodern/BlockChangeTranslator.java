@@ -16,7 +16,7 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
         int x = packet.getXPosition();
         int y = packet.getYPosition();
         int z = packet.getZPosition();
-        int blockId = packet.getType();
+        int blockId = session.remapBlock(packet.getType());
         int blockData = packet.getMetadata();
 
         modernSession.send(new ServerBlockChangePacket(new BlockChangeRecord(new Position(x, y, z), new BlockState(blockId, blockData))));
