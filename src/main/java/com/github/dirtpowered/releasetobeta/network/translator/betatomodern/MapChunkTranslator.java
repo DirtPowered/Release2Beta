@@ -15,8 +15,6 @@ import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
 import com.github.steveice10.packetlib.Session;
 
-import java.util.Arrays;
-
 public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     @Override
@@ -43,9 +41,9 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     private Chunk translateChunk(int chunkX, int chunkZ, BetaClientSession session, byte[] chunk, int height) {
         byte[] types = getTypes(chunk);
-        byte[] metadata = getMetadata(chunk, types.length);
-        byte[] blockLight = getBlockLight(chunk);
-        byte[] skyLight = getSkyLight(chunk);
+        byte[] metadata = getMetadata(chunk);
+        byte[] light = getBlockLight(chunk);
+        byte[] lightSky = getSkyLight(chunk);
 
         BlockStorage storage = new BlockStorage();
         NibbleArray3d nibbleBlockLight = new NibbleArray3d(4096);
@@ -55,16 +53,22 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
                     int typeIndex = (Math.min(16, x) * 16 + Math.min(16, z)) * 128 + Math.min(128, y + height);
+
                     int blockId = session.remapBlock(types[typeIndex]);
-                    int blockData = metadata[typeIndex / 0x2];
+                    int blockData = metadata[typeIndex / 2];
+                    int blockLight = light[typeIndex /2];
+                    int skyLight = lightSky[typeIndex / 2];
 
                     if (Utils.isTileEntity(blockId)) {
                         session.queueBlockChange(new BlockChangeRecord(
-                                new Position(chunkX * 16 + x, y + height, chunkZ * 16 + z), new BlockState(blockId, 2 /* TODO: get correct face */)));
+                                new Position(chunkX * 16 + x, y + height, chunkZ * 16 + z),
+                                new BlockState(blockId, 2 /* TODO: get correct face */))
+                        );
                     }
-                    storage.set(x, y, z, new BlockState(blockId, blockData == 16 ? 0 : blockData));
-                    nibbleBlockLight.set(x, y, z, blockLight[typeIndex / 0x2]);
-                    nibbleSkyLight.set(x, y, z, skyLight[typeIndex / 0x2]);
+
+                    storage.set(x, y, z, new BlockState(blockId, blockData));
+                    nibbleBlockLight.set(x, y, z, blockLight);
+                    nibbleSkyLight.set(x, y, z, skyLight);
                 }
             }
         }
@@ -79,20 +83,24 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         return types;
     }
 
-    private byte[] getMetadata(byte[] data, int typesLength) {
-        byte[] metadata = new byte[Constants.MAX_CHUNK_SIZE];
-        System.arraycopy(data, typesLength, metadata, 0, metadata.length);
+    private byte[] getMetadata(byte[] data) {
+        byte[] metadata = new byte[16384];
+        System.arraycopy(data, 32768, metadata, 0, metadata.length);
 
         return metadata;
     }
 
     private byte[] getBlockLight(byte[] data) {
-        byte[] blockLight = new byte[Constants.MAX_CHUNK_SIZE];
-        Arrays.fill(blockLight, (byte) 0x0A); //temp fix for black chunks
+        byte[] blockLight = new byte[16384];
+        System.arraycopy(data, 49152, blockLight, 0, blockLight.length);
+
         return blockLight;
     }
 
     private byte[] getSkyLight(byte[] data) {
-        return new byte[Constants.MAX_CHUNK_SIZE];
+        byte[] skyLight = new byte[16384];
+        //System.arraycopy(data, 65536, skyLight, 0, skyLight.length);
+
+        return skyLight;
     }
 }
