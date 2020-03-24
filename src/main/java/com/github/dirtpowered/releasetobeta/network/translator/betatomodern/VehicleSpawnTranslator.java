@@ -72,6 +72,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
             type = ObjectType.FALLING_BLOCK;
             data = new FallingBlockData(12, 0);
         } else if (packet.getType() == 71) {
+            type = ObjectType.FALLING_BLOCK;
             data = new FallingBlockData(13, 0);
         }
 
