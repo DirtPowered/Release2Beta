@@ -12,7 +12,9 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModer
 import com.github.dirtpowered.releasetobeta.utils.Tickable;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPlayerListEntryPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockChangePacket;
 import com.github.steveice10.packetlib.Session;
@@ -37,7 +39,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private boolean loggedIn;
     private List<Class<? extends Packet>> packetsToSkip;
     private EntityCache entityCache;
-    private Deque<BlockChangeRecord> tileEntityQueue = new LinkedList<>();
+    private Deque<BlockChangeRecord> blockChangeQueue = new LinkedList<>();
     private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
 
     private int tickLimiter = 0;
@@ -186,7 +188,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         releaseToBeta.getSessionRegistry().removeSession(player.getClientId());
 
         initialPacketsQueue.clear();
-        tileEntityQueue.clear();
+        blockChangeQueue.clear();
 
         entityCache.getEntities().clear();
     }
@@ -199,13 +201,13 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     private void poolTileEntityQueue() {
-        if (tileEntityQueue.isEmpty())
+        if (blockChangeQueue.isEmpty())
             return;
 
-        int allowance = Math.min(1, tileEntityQueue.size());
+        int allowance = Math.min(1, blockChangeQueue.size());
 
         for (int i = 0; i < allowance; i++) {
-            BlockChangeRecord block = tileEntityQueue.remove();
+            BlockChangeRecord block = blockChangeQueue.remove();
             if (block == null)
                 return;
 
@@ -213,7 +215,11 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         }
     }
 
-    public void queueTileEntity(BlockChangeRecord blockChangeRecord) {
-        tileEntityQueue.add(blockChangeRecord);
+    public void queueBlockChange(BlockChangeRecord blockChangeRecord) {
+        blockChangeQueue.add(blockChangeRecord);
+    }
+
+    public void sendBlockUpdate(Position pos, int id, int data) {
+        queueBlockChange(new BlockChangeRecord(pos, new BlockState(id, data)));
     }
 }

@@ -35,6 +35,7 @@ import com.github.dirtpowered.betaprotocollib.packet.data.PreChunkPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.RespawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SetSlotPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SleepPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.data.SoundEffectPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.SpawnPositionPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.ThunderboltPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.TransactionPacketData;
@@ -45,6 +46,7 @@ import com.github.dirtpowered.betaprotocollib.packet.data.UpdateTimePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.VehicleSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.WindowItemsPacketData;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.mapping.SoundEffectMap;
 import com.github.dirtpowered.releasetobeta.network.InternalServer;
 import com.github.dirtpowered.releasetobeta.network.session.SessionRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.AnimationTranslator;
@@ -81,6 +83,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.PreC
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.RespawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SetSlotTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SleepPacketTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SoundEffectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.SpawnPositionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.ThunderboltTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.TransactionTranslator;
@@ -143,6 +146,7 @@ public class ReleaseToBeta implements Runnable {
     private SessionRegistry sessionRegistry;
     private BetaToModernTranslatorRegistry betaToModernTranslatorRegistry;
     private ModernToBetaTranslatorRegistry modernToBetaTranslatorRegistry;
+    private SoundEffectMap soundEffectMap;
     private InternalServer server;
 
     ReleaseToBeta() {
@@ -150,6 +154,7 @@ public class ReleaseToBeta implements Runnable {
         this.sessionRegistry = new SessionRegistry();
         this.betaToModernTranslatorRegistry = new BetaToModernTranslatorRegistry();
         this.modernToBetaTranslatorRegistry = new ModernToBetaTranslatorRegistry();
+        this.soundEffectMap = new SoundEffectMap();
         this.server = new InternalServer(this);
         new R2BConfiguration(); //load config
 
@@ -198,6 +203,7 @@ public class ReleaseToBeta implements Runnable {
         betaToModernTranslatorRegistry.registerTranslator(CloseWindowPacketData.class, new CloseWindowTranslator());
         betaToModernTranslatorRegistry.registerTranslator(MapDataPacketData.class, new MapDataTranslator());
         betaToModernTranslatorRegistry.registerTranslator(PaintingPacketData.class, new PaintingTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(SoundEffectPacketData.class, new SoundEffectTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());
@@ -251,6 +257,10 @@ public class ReleaseToBeta implements Runnable {
 
     public ModernToBetaTranslatorRegistry getModernToBetaTranslatorRegistry() {
         return modernToBetaTranslatorRegistry;
+    }
+
+    public SoundEffectMap getSoundEffectMap() {
+        return soundEffectMap;
     }
 
     public InternalServer getServer() {

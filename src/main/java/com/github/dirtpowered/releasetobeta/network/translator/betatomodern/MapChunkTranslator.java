@@ -59,7 +59,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     int blockData = metadata[typeIndex / 0x2];
                     //TODO: spawn tile entities too (chests, furnaces)
                     if (Utils.isTileEntity(blockId)) {
-                        session.queueTileEntity(new BlockChangeRecord(
+                        session.queueBlockChange(new BlockChangeRecord(
                                 new Position(chunkX * 16 + x, y + height, chunkZ * 16 + z), new BlockState(blockId, 2 /* TODO: get correct face */)));
                     }
                     storage.set(x, y, z, new BlockState(blockId, blockData == 16 ? 0 : blockData));
