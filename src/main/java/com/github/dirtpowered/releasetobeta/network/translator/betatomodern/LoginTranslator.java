@@ -1,6 +1,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.packet.data.LoginPacketData;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -26,12 +27,14 @@ public class LoginTranslator implements BetaToModern<LoginPacketData> {
                 GameMode.SURVIVAL,
                 dimension,
                 Difficulty.EASY,
-                20,
+                R2BConfiguration.maxPlayers,
                 WorldType.DEFAULT,
                 false
         ));
 
         player.setEntityId(entityId);
         player.setDimension(dimension);
+
+        session.joinPlayer();
     }
 }

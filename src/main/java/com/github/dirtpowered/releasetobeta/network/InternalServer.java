@@ -137,10 +137,15 @@ public class InternalServer implements Tickable {
 
     public UUID getUUIDFromUsername(String username) {
         for (ModernPlayer player : getPlayers()) {
-            if (player.getUsername().equals(username)) {
-                return player.getGameProfile().getId();
+            if (player.getUsername() != null) {
+                if (player.getUsername().equals(username)) {
+                    return player.getGameProfile().getId();
+                }
+            } else {
+                player.getSession().disconnect();
             }
         }
+
         return null;
     }
 
@@ -180,7 +185,6 @@ public class InternalServer implements Tickable {
                 releaseToBeta.getSessionRegistry().getSessions().forEach((clientId, multiSession) -> {
                     if (multiSession.getModernSession().equals(event.getSession())) {
                         multiSession.getBetaClientSession().disconnect();
-                        releaseToBeta.getSessionRegistry().removeSession(clientId);
                     }
                 });
             }
@@ -197,6 +201,8 @@ public class InternalServer implements Tickable {
     }
 
     public void removeTabEntry(ModernPlayer player) {
+        Logger.info("removing '{}' from tablist", player.getUsername());
+
         ServerPlayerListEntryPacket entryPacket =
                 new ServerPlayerListEntryPacket(PlayerListEntryAction.REMOVE_PLAYER, new PlayerListEntry[]{
                         new PlayerListEntry(player.getGameProfile())
@@ -206,13 +212,14 @@ public class InternalServer implements Tickable {
     }
 
     public void addTabEntry(ModernPlayer player) {
+        player.sendPacket(new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, getTabEntries()));
+
         ServerPlayerListEntryPacket entryPacket =
                 new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, new PlayerListEntry[]{
                         player.getTabEntry()
                 });
 
         broadcastPacket(entryPacket);
-        player.sendPacket(new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, getTabEntries()));
     }
 
     @Override
@@ -238,7 +245,7 @@ public class InternalServer implements Tickable {
             clientBootstrap
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000);
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
 
             clientBootstrap.remoteAddress(new InetSocketAddress(R2BConfiguration.remoteAddress, R2BConfiguration.remotePort));
             clientBootstrap.handler(new ChannelInitializer<SocketChannel>() {

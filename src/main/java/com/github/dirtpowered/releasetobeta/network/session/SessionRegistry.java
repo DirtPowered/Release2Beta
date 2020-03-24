@@ -2,12 +2,12 @@ package com.github.dirtpowered.releasetobeta.network.session;
 
 import org.pmw.tinylog.Logger;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionRegistry {
 
-    private Map<String, MultiSession> sessions = new LinkedHashMap<>();
+    private Map<String, MultiSession> sessions = new ConcurrentHashMap<>();
 
     public void addSession(String clientId, MultiSession multiSession) {
         sessions.put(clientId, multiSession);

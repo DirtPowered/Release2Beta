@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
 
@@ -37,6 +38,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private List<Class<? extends Packet>> packetsToSkip;
     private EntityCache entityCache;
     private Deque<BlockChangeRecord> tileEntityQueue = new LinkedList<>();
+    private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
+
     private int tickLimiter = 0;
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session) {
@@ -119,7 +122,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
         Logger.warn("[client] closed connection: {}", cause.getMessage());
-        player.kick("connection closed");
 
         super.exceptionCaught(context, cause);
     }
@@ -131,6 +133,10 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public void sendPacket(Packet packet) {
         if (channel.isActive())
             channel.writeAndFlush(packet);
+        else {
+            Logger.warn("channel is not ready, queueing packet '{}'", packet.getPacketClass().getSimpleName());
+            initialPacketsQueue.add(packet);
+        }
     }
 
     public ModernPlayer getPlayer() {
@@ -141,6 +147,14 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public void tick() {
         tickLimiter = (tickLimiter + 1) % 2;
         if (tickLimiter == 0) {
+            if (channel.isActive() && !initialPacketsQueue.isEmpty()) {
+                Packet p = initialPacketsQueue.poll();
+                Logger.info("sending queued packet: {}", p.getPacketClass().getSimpleName());
+
+                channel.writeAndFlush(p);
+                return;
+            }
+
             //sending block change packets immediately may cause problems, so delay it
             poolTileEntityQueue();
         }
@@ -169,7 +183,12 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     private void quitPlayer() {
         releaseToBeta.getServer().removeTabEntry(player);
-        getEntityCache().getEntities().clear();
+        releaseToBeta.getSessionRegistry().removeSession(player.getClientId());
+
+        initialPacketsQueue.clear();
+        tileEntityQueue.clear();
+
+        entityCache.getEntities().clear();
     }
 
     public void joinPlayer() {
