@@ -40,16 +40,17 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private EntityCache entityCache;
     private Deque<BlockChangeRecord> blockChangeQueue = new LinkedList<>();
     private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
-
+    private String clientId;
     private int tickLimiter = 0;
 
-    public BetaClientSession(ReleaseToBeta server, Channel channel, Session session) {
+    public BetaClientSession(ReleaseToBeta server, Channel channel, Session session, String clientId) {
         this.releaseToBeta = server;
         this.channel = channel;
         this.protocolState = ProtocolState.LOGIN;
         this.player = new ModernPlayer(this);
         this.session = session;
         this.entityCache = new EntityCache();
+        this.clientId = clientId;
 
         packetsToSkip = Arrays.asList(
                 StatisticsPacketData.class,
@@ -57,7 +58,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         );
     }
 
-    public void createSession(String clientId) {
+    private void createSession(String clientId) {
         releaseToBeta.getSessionRegistry().addSession(clientId, new MultiSession(this, session));
         player.setClientId(clientId);
 
@@ -108,6 +109,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Logger.info("[client] connected");
+        createSession(clientId);
 
         super.channelActive(ctx);
     }
@@ -128,7 +130,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public String getClientId() {
-        return player.getClientId();
+        return clientId;
     }
 
     public void sendPacket(Packet packet) {

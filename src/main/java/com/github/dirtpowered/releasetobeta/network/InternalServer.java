@@ -259,8 +259,7 @@ public class InternalServer implements Tickable {
                 @Override
                 protected void initChannel(SocketChannel ch) {
                     ch.pipeline().addLast("mc_pipeline", new PipelineFactory());
-                    BetaClientSession clientSession = new BetaClientSession(releaseToBeta, ch, session);
-                    clientSession.createSession(clientId);
+                    BetaClientSession clientSession = new BetaClientSession(releaseToBeta, ch, session, clientId);
 
                     ch.pipeline().addLast("client_connection_handler", clientSession);
                 }
@@ -268,6 +267,8 @@ public class InternalServer implements Tickable {
 
             ChannelFuture channelFuture = clientBootstrap.connect().sync();
             channelFuture.channel().closeFuture().sync();
+        } catch (Exception e) {
+            session.disconnect(e.getMessage());
         } finally {
             loopGroup.shutdownGracefully().sync();
         }
