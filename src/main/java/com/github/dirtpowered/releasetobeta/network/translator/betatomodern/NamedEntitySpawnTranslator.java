@@ -18,26 +18,31 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
         int entityId = packet.getEntityId();
         String username = packet.getName();
 
-        UUID uuid = session.getMain().getServer().getUUIDFromUsername(username);
-
-        if (uuid == null) {
-            //spawn players using beta client too
-            BetaPlayer betaPlayer = new BetaPlayer(username, entityId);
-            uuid = betaPlayer.getUUID();
-
-            session.addBetaTabEntry(betaPlayer);
-            betaPlayer.onSpawn(modernSession);
-
-            session.getEntityCache().addEntity(entityId, betaPlayer);
-        }
-
         double x = Utils.toModernPos(packet.getX());
         double y = Utils.toModernPos(packet.getY());
         double z = Utils.toModernPos(packet.getZ());
 
         float yaw = Utils.toModernYaw(packet.getRotation());
         float pitch = Utils.toModernPitch(packet.getPitch());
+        UUID uuid = session.getMain().getServer().getUUIDFromUsername(username);
 
-        modernSession.send(new ServerSpawnPlayerPacket(entityId, uuid, x, y, z, yaw, pitch, new EntityMetadata[0]));
+        if (uuid == null) {
+            //spawn players using beta client too
+            new BetaPlayer(session, username, entityId, completePlayer -> {
+                session.addBetaTabEntry(completePlayer);
+                completePlayer.onSpawn(modernSession);
+
+                session.getEntityCache().addEntity(entityId, completePlayer);
+                spawn(modernSession, entityId, completePlayer.getUUID(), x, y, z, yaw, pitch);
+            });
+
+            return;
+        }
+
+        spawn(modernSession, entityId, uuid, x, y, z, yaw, pitch);
+    }
+
+    private void spawn(Session session, int entityId, UUID uuid, double x, double y, double z, float yaw, float pitch) {
+        session.send(new ServerSpawnPlayerPacket(entityId, uuid, x, y, z, yaw, pitch, new EntityMetadata[0]));
     }
 }

@@ -204,6 +204,9 @@ public class InternalServer implements Tickable {
     }
 
     public void removeTabEntry(ModernPlayer player) {
+        if (player.getGameProfile() == null)
+            return;
+
         Logger.info("removing '{}' from tablist", player.getUsername());
 
         ServerPlayerListEntryPacket entryPacket =
