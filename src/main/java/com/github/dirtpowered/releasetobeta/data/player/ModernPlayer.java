@@ -1,9 +1,11 @@
 package com.github.dirtpowered.releasetobeta.data.player;
 
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.model.PlayerAction;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
+import com.github.dirtpowered.releasetobeta.utils.Callback;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
@@ -26,6 +28,7 @@ public class ModernPlayer implements PlayerAction {
     private boolean sneaking;
     private PlayerInventory inventory;
     private Location location;
+    private boolean inVehicle;
 
     public ModernPlayer(BetaClientSession session) {
         this.session = session;
@@ -56,9 +59,18 @@ public class ModernPlayer implements PlayerAction {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void fillProfile(String username, Callback<ModernPlayer> result) {
         this.username = username;
-        this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
+
+        if (R2BConfiguration.skinFix) {
+            session.getMain().getServer().getProfileCache().getSkin(username).whenComplete((profile, throwable) -> {
+                this.gameProfile = profile;
+                result.onComplete(this);
+            });
+        } else {
+            this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
+            result.onComplete(this);
+        }
     }
 
     public int getEntityId() {
@@ -116,5 +128,13 @@ public class ModernPlayer implements PlayerAction {
         if (itemId == 323) {
             sendPacket(new ServerOpenTileEntityEditorPacket(pos));
         }
+    }
+
+    public boolean isInVehicle() {
+        return inVehicle;
+    }
+
+    public void setInVehicle(boolean inVehicle) {
+        this.inVehicle = inVehicle;
     }
 }

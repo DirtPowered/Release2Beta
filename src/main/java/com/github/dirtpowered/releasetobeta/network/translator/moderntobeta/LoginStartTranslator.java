@@ -16,8 +16,9 @@ public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
         if (betaSession.getProtocolState() != ProtocolState.LOGIN)
             return;
 
-        betaSession.sendPacket(new HandshakePacketData(username));
-        betaSession.sendPacket(new LoginPacketData(14, username, 0, 0));
-        betaSession.getPlayer().setUsername(username);
+        betaSession.getPlayer().fillProfile(username, result -> {
+            betaSession.sendPacket(new HandshakePacketData(username));
+            betaSession.sendPacket(new LoginPacketData(14, username, 0, 0));
+        });
     }
 }

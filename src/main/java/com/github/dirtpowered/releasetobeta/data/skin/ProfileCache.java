@@ -37,13 +37,13 @@ public class ProfileCache {
                     SESSION_SERVICE.fillProfileProperties(profile);
                     gameProfile[0] = profile;
                 } catch (ProfileException e) {
-                    Logger.error("Error: {}", e.getMessage());
+                    Logger.error("[{}] Error: {}", profile.getName(), e.getMessage());
                 }
             }
 
             @Override
             public void onProfileLookupFailed(GameProfile profile, Exception e) {
-                Logger.error("Error: {}", e.getMessage());
+                Logger.error("[{}] Error: {}", profile.getName(), e.getMessage());
             }
         });
 
