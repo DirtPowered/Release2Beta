@@ -21,7 +21,9 @@ public class PlayerLookMoveTranslator implements BetaToModern<PlayerLookMovePack
         float yaw = packet.getYaw();
         float pitch = packet.getPitch();
 
+        double stance = y - packet.getStance();
+
         player.setLocation(new Location(x, y, z, yaw, pitch)); //server-side location
-        modernSession.send(new ServerPlayerPositionRotationPacket(x, y, z, yaw, pitch, 0));
+        modernSession.send(new ServerPlayerPositionRotationPacket(x, y - stance, z, yaw, pitch, 0));
     }
 }
