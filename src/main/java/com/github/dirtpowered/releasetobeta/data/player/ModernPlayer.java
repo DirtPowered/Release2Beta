@@ -1,7 +1,6 @@
 package com.github.dirtpowered.releasetobeta.data.player;
 
 import com.github.dirtpowered.betaprotocollib.utils.Location;
-import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.model.PlayerAction;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -59,12 +58,7 @@ public class ModernPlayer implements PlayerAction {
 
     public void setUsername(String username) {
         this.username = username;
-        if (R2BConfiguration.skinFix) {
-            this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
-            //TODO: fetch uuid/skin from mojang api
-        } else {
-            this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
-        }
+        this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
     }
 
     public int getEntityId() {

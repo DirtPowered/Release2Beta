@@ -15,6 +15,8 @@ import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
 import com.github.steveice10.packetlib.Session;
 
+import java.util.Arrays;
+
 public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     @Override
@@ -56,7 +58,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
                     int blockId = session.remapBlock(types[typeIndex]);
                     int blockData = metadata[typeIndex / 2];
-                    int blockLight = light[typeIndex /2];
+                    int blockLight = light[typeIndex / 2];
                     int skyLight = lightSky[typeIndex / 2];
 
                     if (Utils.isTileEntity(blockId)) {
@@ -100,6 +102,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
     private byte[] getSkyLight(byte[] data) {
         byte[] skyLight = new byte[16384];
         //System.arraycopy(data, 65536, skyLight, 0, skyLight.length);
+        Arrays.fill(skyLight, (byte) 0x0F);
 
         return skyLight;
     }

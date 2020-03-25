@@ -148,7 +148,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public void tick() {
         tickLimiter = (tickLimiter + 1) % 2;
         if (tickLimiter == 0) {
-            if (channel.isActive() && !initialPacketsQueue.isEmpty()) {
+            if (channel.isActive() && player.getGameProfile() != null && !initialPacketsQueue.isEmpty()) {
                 Packet p = initialPacketsQueue.poll();
                 Logger.info("sending queued packet: {}", p.getPacketClass().getSimpleName());
 

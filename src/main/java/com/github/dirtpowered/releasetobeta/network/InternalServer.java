@@ -4,6 +4,7 @@ import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
+import com.github.dirtpowered.releasetobeta.data.skin.ProfileCache;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.session.MultiSession;
@@ -58,10 +59,12 @@ public class InternalServer implements Tickable {
     private ReleaseToBeta releaseToBeta;
     private NioEventLoopGroup loopGroup;
     private EntityRegistry entityRegistry;
+    private ProfileCache profileCache;
 
     public InternalServer(ReleaseToBeta releaseToBeta) {
         this.releaseToBeta = releaseToBeta;
         this.entityRegistry = new EntityRegistry();
+        this.profileCache = new ProfileCache();
 
         createServer();
     }
@@ -265,5 +268,9 @@ public class InternalServer implements Tickable {
         } finally {
             loopGroup.shutdownGracefully().sync();
         }
+    }
+
+    public ProfileCache getProfileCache() {
+        return profileCache;
     }
 }
