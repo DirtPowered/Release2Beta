@@ -260,7 +260,10 @@ public class InternalServer implements Tickable {
                 protected void initChannel(SocketChannel ch) {
                     ch.pipeline().addLast("mc_pipeline", new PipelineFactory());
                     BetaClientSession clientSession = new BetaClientSession(releaseToBeta, ch, session, clientId);
-
+                    /*
+                     * Session must be created before r2b connects to beta server
+                     */
+                    clientSession.createSession();
                     ch.pipeline().addLast("client_connection_handler", clientSession);
                 }
             });
@@ -269,6 +272,8 @@ public class InternalServer implements Tickable {
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
             session.disconnect(e.getMessage());
+            //remove session if connection was not successful
+            releaseToBeta.getSessionRegistry().removeSession(getSessionFromServerSession(session).getClientId());
         } finally {
             loopGroup.shutdownGracefully().sync();
         }

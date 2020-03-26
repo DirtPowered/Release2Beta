@@ -58,7 +58,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         );
     }
 
-    private void createSession(String clientId) {
+    public void createSession() {
         releaseToBeta.getSessionRegistry().addSession(clientId, new MultiSession(this, session));
         player.setClientId(clientId);
 
@@ -109,7 +109,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Logger.info("[client] connected");
-        createSession(clientId);
 
         super.channelActive(ctx);
     }
