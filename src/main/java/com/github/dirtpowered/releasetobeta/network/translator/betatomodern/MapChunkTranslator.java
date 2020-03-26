@@ -2,6 +2,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.packet.data.MapChunkPacketData;
 import com.github.dirtpowered.releasetobeta.data.Constants;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -15,16 +16,17 @@ import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
 import com.github.steveice10.packetlib.Session;
 
-import java.util.Arrays;
-
 public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     @Override
     public void translate(MapChunkPacketData packet, BetaClientSession session, Session modernSession) {
+        ModernPlayer player = session.getPlayer();
+
         int chunkX = packet.getX() / 16;
+        int chunkY = packet.getY();
         int chunkZ = packet.getZ() / 16;
-        int height = packet.getY();
-        if (height > 0)
+
+        if (chunkY > 0)
             return; //skip that weird chunks
 
         byte[] data = packet.getChunk();
@@ -32,7 +34,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         Chunk[] chunks = new Chunk[16];
         for (int i = 0; i < 8; i++) { //8 chunks (max y = 128)
             try {
-                chunks[i] = translateChunk(chunkX, chunkZ, session, data, (i * 16));
+                chunks[i] = translateChunk(chunkX, chunkZ, session, data, (i * 16), player.getDimension() == 0);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -41,7 +43,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, chunks, null)));
     }
 
-    private Chunk translateChunk(int chunkX, int chunkZ, BetaClientSession session, byte[] chunk, int height) {
+    private Chunk translateChunk(int chunkX, int chunkZ, BetaClientSession session, byte[] chunk, int height, boolean withSkylight) {
         byte[] types = getTypes(chunk);
         byte[] metadata = getMetadata(chunk);
         byte[] light = getBlockLight(chunk);
@@ -75,7 +77,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
             }
         }
 
-        return new Chunk(storage, nibbleBlockLight, nibbleSkyLight);
+        return new Chunk(storage, nibbleBlockLight, withSkylight ? nibbleSkyLight : null);
     }
 
     private byte[] getTypes(byte[] data) {
@@ -101,8 +103,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     private byte[] getSkyLight(byte[] data) {
         byte[] skyLight = new byte[16384];
-        //System.arraycopy(data, 65536, skyLight, 0, skyLight.length);
-        Arrays.fill(skyLight, (byte) 0x0F);
+        System.arraycopy(data, 65536, skyLight, 0, skyLight.length);
 
         return skyLight;
     }
