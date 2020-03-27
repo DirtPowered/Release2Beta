@@ -5,7 +5,7 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
 import com.github.steveice10.packetlib.Session;
-import io.netty.util.internal.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.pmw.tinylog.Logger;
 
 public class KickDisconnectTranslator implements BetaToModern<KickDisconnectPacketData> {
@@ -16,6 +16,6 @@ public class KickDisconnectTranslator implements BetaToModern<KickDisconnectPack
         String reason = packet.getDisconnectReason();
 
         Logger.warn("[{}] disconnected: {}", username == null ? session.getClientId() : username, reason);
-        modernSession.send(new ServerDisconnectPacket(reason == null ? StringUtil.EMPTY_STRING : reason));
+        modernSession.send(new ServerDisconnectPacket(reason == null ? StringUtils.EMPTY : reason));
     }
 }

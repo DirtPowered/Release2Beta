@@ -2,16 +2,14 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.packet.data.MapChunkPacketData;
 import com.github.dirtpowered.releasetobeta.data.Constants;
+import com.github.dirtpowered.releasetobeta.data.entity.TileEntity;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.chunk.BlockStorage;
 import com.github.steveice10.mc.protocol.data.game.chunk.Chunk;
 import com.github.steveice10.mc.protocol.data.game.chunk.Column;
 import com.github.steveice10.mc.protocol.data.game.chunk.NibbleArray3d;
-import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
-import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
 import com.github.steveice10.packetlib.Session;
@@ -63,11 +61,9 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     int blockLight = light[typeIndex / 2];
                     int skyLight = lightSky[typeIndex / 2];
 
-                    if (Utils.isTileEntity(blockId)) {
-                        session.queueBlockChange(new BlockChangeRecord(
-                                new Position(chunkX * 16 + x, y + height, chunkZ * 16 + z),
-                                new BlockState(blockId, 2 /* TODO: get correct face */))
-                        );
+                    if (TileEntity.isTileEntity(blockId)) {
+                        session.queueBlockChange(chunkX * 16 + x, y + height, chunkZ * 16 + z, blockId, blockData);
+                        break;
                     }
 
                     storage.set(x, y, z, new BlockState(blockId, blockData));

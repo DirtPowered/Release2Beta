@@ -51,10 +51,6 @@ public class Utils {
         return (float) doubleValue;
     }
 
-    public static boolean isTileEntity(int blockId) {
-        return blockId == 54; //TODO: add more
-    }
-
     public static void debug(Object clazz) {
         Logger.info("[DEBUG] {}", ReflectionToStringBuilder.toString(clazz, ToStringStyle.SHORT_PREFIX_STYLE));
     }
