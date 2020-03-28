@@ -9,6 +9,7 @@ import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.TileEntity;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
+import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -225,43 +226,11 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public void queueBlockChange(int x, int y, int z, int blockId, int data) {
         Position position = new Position(x, y, z);
 
-        switch (TileEntity.getFromId(blockId)) {
-            case CHEST:
-                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, 2)));
-                break;
-            case FURNACE:
-                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, 0)));
-                break;
-            case MOB_SPAWNER:
-                /*CompoundTag spawner = new CompoundTag(StringUtils.EMPTY);
-                spawner.put(new ShortTag("SpawnRange", (short) 0));
-
-                spawner.put(new ShortTag("MaxNearbyEntities", (short) 0));
-                spawner.put(new ShortTag("RequiredPlayerRange", (short) 0));
-                spawner.put(new ShortTag("SpawnCount", (short) 4));
-                spawner.put(new ShortTag("MaxSpawnDelay", (short) 800));
-                spawner.put(new ShortTag("Delay", (short) 0));
-
-                spawner.put(new IntTag("x", x));
-                spawner.put(new IntTag("y", y));
-                spawner.put(new IntTag("z", z));
-
-                spawner.put(new StringTag("id", "minecraft:mob_spawner"));
-
-                spawner.put(new ShortTag("SpawnRange", (short) 0));
-                spawner.put(new ShortTag("MinSpawnDelay", (short) 200));
-                CompoundTag spawnData = new CompoundTag("SpawnData");
-
-                spawner.put(new StringTag("id", "minecraft:creeper"));
-                spawner.put(spawnData);
-
-                ServerUpdateTileEntityPacket packet = new ServerUpdateTileEntityPacket(position, UpdatedTileType.MOB_SPAWNER, spawner);
-                session.send(packet);*/
-
-                /* I did something wrong above, cuz it's not working. */
-                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
-                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, 0)));
-                break;
+        if (TileEntity.getFromId(blockId) == TileEntity.MOB_SPAWNER) {
+            blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
+            blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, data)));
+        } else if (TileEntity.getFromId(blockId) == TileEntity.CHEST) {
+            blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, 2)));
         }
     }
 
@@ -272,5 +241,14 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         }
 
         return blockId;
+    }
+
+    public int remapMetadata(int blockId, int rawData) {
+        MetadataMap m = releaseToBeta.getMetadataMap();
+        if (m.exist(blockId)) {
+            return m.getFromId(blockId);
+        }
+
+        return rawData;
     }
 }

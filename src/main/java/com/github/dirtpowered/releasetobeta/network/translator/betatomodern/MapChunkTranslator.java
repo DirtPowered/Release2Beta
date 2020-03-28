@@ -53,7 +53,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     int yh = y + height;
 
                     int blockId = session.remapBlock(chunk.getTypeAt(x, yh, z));
-                    int blockData = chunk.getMetadataAt(x, yh, z);
+                    int blockData = session.remapMetadata(blockId, chunk.getMetadataAt(x, yh, z));
                     int blockLight = chunk.getBlockLightAt(x, yh, z);
                     int skyLight = chunk.getSkyLightAt(x, yh, z);
 

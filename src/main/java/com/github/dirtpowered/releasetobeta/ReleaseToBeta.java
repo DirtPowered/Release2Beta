@@ -47,6 +47,7 @@ import com.github.dirtpowered.betaprotocollib.packet.data.VehicleSpawnPacketData
 import com.github.dirtpowered.betaprotocollib.packet.data.WindowItemsPacketData;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
+import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.SoundEffectMap;
 import com.github.dirtpowered.releasetobeta.network.InternalServer;
 import com.github.dirtpowered.releasetobeta.network.session.SessionRegistry;
@@ -149,6 +150,7 @@ public class ReleaseToBeta implements Runnable {
     private ModernToBetaTranslatorRegistry modernToBetaTranslatorRegistry;
     private SoundEffectMap soundEffectMap;
     private BlockMap blockMap;
+    private MetadataMap metadataMap;
     private InternalServer server;
 
     ReleaseToBeta() {
@@ -158,6 +160,7 @@ public class ReleaseToBeta implements Runnable {
         this.modernToBetaTranslatorRegistry = new ModernToBetaTranslatorRegistry();
         this.soundEffectMap = new SoundEffectMap();
         this.blockMap = new BlockMap();
+        this.metadataMap = new MetadataMap();
         this.server = new InternalServer(this);
         new R2BConfiguration(); //load config
 
@@ -268,6 +271,10 @@ public class ReleaseToBeta implements Runnable {
 
     public BlockMap getBlockMap() {
         return blockMap;
+    }
+
+    public MetadataMap getMetadataMap() {
+        return metadataMap;
     }
 
     public InternalServer getServer() {
