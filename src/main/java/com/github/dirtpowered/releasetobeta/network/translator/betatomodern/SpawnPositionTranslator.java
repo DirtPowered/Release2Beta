@@ -16,5 +16,6 @@ public class SpawnPositionTranslator implements BetaToModern<SpawnPositionPacket
         int z = packet.getZ();
 
         modernSession.send(new ServerSpawnPositionPacket(new Position(x, y, z)));
+        session.joinPlayer();
     }
 }

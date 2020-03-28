@@ -14,6 +14,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerResourcePackSendPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerOpenTileEntityEditorPacket;
 import com.github.steveice10.packetlib.packet.Packet;
@@ -91,6 +92,12 @@ public class ModernPlayer implements PlayerAction {
 
     public void sendPacket(Packet modernPacket) {
         session.getMain().getSessionRegistry().getSession(clientId).getModernSession().send(modernPacket);
+    }
+
+    public void sendResourcePack() {
+        sendPacket(new ServerResourcePackSendPacket(
+                R2BConfiguration.resourcePack, R2BConfiguration.resourcePackHash.toLowerCase()
+        ));
     }
 
     public void kick(String reason) {

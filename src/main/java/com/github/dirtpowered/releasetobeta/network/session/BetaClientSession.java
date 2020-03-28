@@ -4,6 +4,7 @@ import com.github.dirtpowered.betaprotocollib.model.Packet;
 import com.github.dirtpowered.betaprotocollib.packet.data.KeepAlivePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.data.StatisticsPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.TileEntity;
@@ -199,6 +200,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public void joinPlayer() {
         if (!isLoggedIn()) {
             releaseToBeta.getServer().addTabEntry(player);
+            if (!R2BConfiguration.resourcePack.isEmpty()) {
+                player.sendResourcePack();
+            }
             setLoggedIn();
         }
     }

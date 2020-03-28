@@ -55,6 +55,10 @@ public class Utils {
         Logger.info("[DEBUG] {}", ReflectionToStringBuilder.toString(clazz, ToStringStyle.SHORT_PREFIX_STYLE));
     }
 
+    public static int fromChunkPos(int chunkPos) {
+        return chunkPos * 16;
+    }
+
     public static UUID getOfflineUUID(String username) {
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes());
     }
