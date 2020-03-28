@@ -1,6 +1,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern;
 
 import com.github.dirtpowered.betaprotocollib.packet.data.RespawnPacketData;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
@@ -13,7 +14,10 @@ public class RespawnTranslator implements BetaToModern<RespawnPacketData> {
 
     @Override
     public void translate(RespawnPacketData packet, BetaClientSession session, Session modernSession) {
+        ModernPlayer player = session.getPlayer();
+
         int dimension = packet.getDimension();
+        player.setDimension(dimension);
 
         modernSession.send(new ServerRespawnPacket(dimension, Difficulty.EASY, GameMode.SURVIVAL, WorldType.DEFAULT));
     }

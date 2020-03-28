@@ -48,7 +48,7 @@ public class BetaChunk {
         return skylight.getNibble(x, y, z);
     }
 
-    public void fillData(byte[] data) {
+    public void fillData(byte[] data, boolean withSkyLight) {
         int metadataOffset = types.length;
         int blockLightOffset = types.length + metadata.getData().length;
         int skyLightOffset = data.length - blocklight.getData().length;
@@ -56,6 +56,9 @@ public class BetaChunk {
         System.arraycopy(data, 0, types, 0, types.length);
         System.arraycopy(data, metadataOffset, metadata.getData(), 0, metadata.getData().length);
         System.arraycopy(data, blockLightOffset, blocklight.getData(), 0, blocklight.getData().length);
-        System.arraycopy(data, skyLightOffset, skylight.getData(), 0, skylight.getData().length);
+
+        if (withSkyLight) {
+            System.arraycopy(data, skyLightOffset, skylight.getData(), 0, skylight.getData().length);
+        }
     }
 }

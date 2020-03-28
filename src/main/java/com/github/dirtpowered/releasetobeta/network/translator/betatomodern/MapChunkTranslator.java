@@ -19,6 +19,8 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     @Override
     public void translate(MapChunkPacketData packet, BetaClientSession session, Session modernSession) {
+        boolean skylight = session.getPlayer().getDimension() == 0;
+
         int chunkX = packet.getX() / 16;
         int chunkY = packet.getY();
         int chunkZ = packet.getZ() / 16;
@@ -28,10 +30,10 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
         BetaChunk chunk = new BetaChunk(chunkX, chunkZ);
         try {
-            chunk.fillData(packet.getChunk());
+            chunk.fillData(packet.getChunk(), skylight);
             Chunk[] chunks = new Chunk[16];
             for (int i = 0; i < 8; i++) { //8 chunks (max y = 128)
-                chunks[i] = translateChunk(session, chunk, i * 16);
+                chunks[i] = translateChunk(session, chunk, i * 16, skylight);
             }
 
             modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, chunks, null)));
@@ -40,7 +42,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         }
     }
 
-    private Chunk translateChunk(BetaClientSession session, BetaChunk chunk, int height) {
+    private Chunk translateChunk(BetaClientSession session, BetaChunk chunk, int height, boolean skylight) {
         BlockStorage storage = new BlockStorage();
         NibbleArray3d nibbleBlockLight = new NibbleArray3d(4096);
         NibbleArray3d nibbleSkyLight = new NibbleArray3d(4096);
@@ -69,6 +71,6 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
             }
         }
 
-        return new Chunk(storage, nibbleBlockLight, nibbleSkyLight);
+        return new Chunk(storage, nibbleBlockLight, skylight ? nibbleSkyLight : null);
     }
 }
