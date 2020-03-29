@@ -2,6 +2,9 @@ package com.github.dirtpowered.releasetobeta.network;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.command.CommandRegistry;
+import com.github.dirtpowered.releasetobeta.data.command.R2BCommand;
+import com.github.dirtpowered.releasetobeta.data.command.model.Command;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.data.skin.ProfileCache;
@@ -60,11 +63,14 @@ public class InternalServer implements Tickable {
     private NioEventLoopGroup loopGroup;
     private EntityRegistry entityRegistry;
     private ProfileCache profileCache;
+    private CommandRegistry commandRegistry;
 
     public InternalServer(ReleaseToBeta releaseToBeta) {
         this.releaseToBeta = releaseToBeta;
         this.entityRegistry = new EntityRegistry();
         this.profileCache = new ProfileCache();
+        this.commandRegistry = new CommandRegistry();
+        registerInternalCommands();
 
         createServer();
     }
@@ -105,7 +111,7 @@ public class InternalServer implements Tickable {
                 .map(MultiSession::getBetaClientSession).orElse(null);
     }
 
-    private ModernPlayer[] getPlayers() {
+    public ModernPlayer[] getPlayers() {
         List<ModernPlayer> players = new LinkedList<>();
         releaseToBeta.getSessionRegistry().getSessions().forEach((s, multiSession) -> {
             players.add(multiSession.getBetaClientSession().getPlayer());
@@ -228,6 +234,20 @@ public class InternalServer implements Tickable {
         broadcastPacket(entryPacket);
     }
 
+    public boolean executeInternalCommand(ModernPlayer player, String message) {
+        message = message.substring(1);
+        String[] args = message.trim().split("\\s+");
+
+        Command command;
+        if (commandRegistry.getCommands().containsKey(args[0])) {
+            command = commandRegistry.getCommands().get(args[0]);
+            command.execute(player, args);
+            return true;
+        }
+
+        return false;
+    }
+
     @Override
     public void tick() {
         handleIncomingPackets();
@@ -281,5 +301,13 @@ public class InternalServer implements Tickable {
 
     public ProfileCache getProfileCache() {
         return profileCache;
+    }
+
+    public String[] getCommands() {
+        return commandRegistry.getCommands().keySet().toArray(new String[0]);
+    }
+
+    private void registerInternalCommands() {
+        commandRegistry.register("releasetobeta", new R2BCommand());
     }
 }

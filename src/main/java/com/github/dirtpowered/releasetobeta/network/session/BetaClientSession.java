@@ -27,6 +27,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.pmw.tinylog.Logger;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -45,6 +46,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private EntityCache entityCache;
     private Deque<BlockChangeRecord> blockChangeQueue = new LinkedList<>();
     private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
+    private List<BetaPlayer> playersInRange = new ArrayList<>();
+
     private String clientId;
     private int tickLimiter = 0;
 
@@ -81,6 +84,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public void removeBetaTabEntry(BetaPlayer player) {
+        playersInRange.remove(player);
         ServerPlayerListEntryPacket entryPacket =
                 new ServerPlayerListEntryPacket(PlayerListEntryAction.REMOVE_PLAYER, new PlayerListEntry[]{
                         new PlayerListEntry(player.getGameProfile())
@@ -90,6 +94,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public void addBetaTabEntry(BetaPlayer player) {
+        playersInRange.add(player);
         ServerPlayerListEntryPacket entryPacket =
                 new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, new PlayerListEntry[]{
                         player.getTabEntry()
@@ -196,6 +201,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         blockChangeQueue.clear();
 
         entityCache.getEntities().clear();
+        playersInRange.clear();
     }
 
     public void joinPlayer() {
@@ -250,5 +256,19 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         }
 
         return rawData;
+    }
+
+    public String[] combinedPlayerList() {
+        List<String> combinedPlayers = new ArrayList<>();
+        //Players joined from R2B
+        for (ModernPlayer modernPlayer : getMain().getServer().getPlayers()) {
+            combinedPlayers.add(modernPlayer.getUsername());
+        }
+        //Players using beta client
+        for (BetaPlayer betaPlayer : playersInRange) {
+            combinedPlayers.add(betaPlayer.getUsername());
+        }
+
+        return combinedPlayers.toArray(new String[0]);
     }
 }

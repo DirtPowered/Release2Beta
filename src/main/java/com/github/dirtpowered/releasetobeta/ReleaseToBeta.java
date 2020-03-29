@@ -95,6 +95,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.Upda
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.UpdateTimeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.VehicleSpawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.WindowItemsTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.internal.ClientTabCompleteTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientChatTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientCloseWindowTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientConfirmTransactionTranslator;
@@ -121,6 +122,7 @@ import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientKeepAlivePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientRequestPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.ClientTabCompletePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerActionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerChangeHeldItemPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerInteractEntityPacket;
@@ -232,6 +234,10 @@ public class ReleaseToBeta implements Runnable {
         modernToBetaTranslatorRegistry.registerTranslator(ClientConfirmTransactionPacket.class, new ClientConfirmTransactionTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientUpdateSignPacket.class, new ClientUpdateSignTranslator());
 
+        //internal translators
+        if (R2BConfiguration.tabComplete) {
+            modernToBetaTranslatorRegistry.registerTranslator(ClientTabCompletePacket.class, new ClientTabCompleteTranslator());
+        }
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Main Thread"));
         executor.scheduleAtFixedRate(this, 0L, 50L, TimeUnit.MILLISECONDS);
     }

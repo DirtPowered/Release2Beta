@@ -13,6 +13,8 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.message.Message;
+import com.github.steveice10.mc.protocol.data.message.TextMessage;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerResourcePackSendPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
@@ -143,5 +145,9 @@ public class ModernPlayer implements PlayerAction {
 
     public void setInVehicle(boolean inVehicle) {
         this.inVehicle = inVehicle;
+    }
+
+    public void sendMessage(String message) {
+        sendPacket(new ServerChatPacket(TextMessage.fromString(message)));
     }
 }
