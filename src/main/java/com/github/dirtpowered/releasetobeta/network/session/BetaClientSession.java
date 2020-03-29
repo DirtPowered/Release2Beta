@@ -47,9 +47,11 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private Deque<BlockChangeRecord> blockChangeQueue = new LinkedList<>();
     private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
     private List<BetaPlayer> playersInRange = new ArrayList<>();
+    private boolean resourcepack;
 
     private String clientId;
     private int tickLimiter = 0;
+    private int i;
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session, String clientId) {
         this.releaseToBeta = server;
@@ -167,9 +169,16 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
                 return;
             }
 
+            //wait 3 seconds to make sure client is ready to receive resourcepack packet
+            if (i > 20 * 3 && !resourcepack && !R2BConfiguration.resourcePack.isEmpty()) {
+                player.sendResourcePack();
+                resourcepack = true;
+            }
             //sending block change packets immediately may cause problems, so delay it
             poolTileEntityQueue();
         }
+
+        i++;
     }
 
     public ReleaseToBeta getMain() {
@@ -207,9 +216,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public void joinPlayer() {
         if (!isLoggedIn()) {
             releaseToBeta.getServer().addTabEntry(player);
-            if (!R2BConfiguration.resourcePack.isEmpty()) {
-                player.sendResourcePack();
-            }
             setLoggedIn();
         }
     }

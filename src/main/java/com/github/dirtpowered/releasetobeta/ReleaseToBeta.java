@@ -95,6 +95,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.Upda
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.UpdateTimeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.VehicleSpawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.WindowItemsTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.internal.ClientResourcePackStatusTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.internal.ClientTabCompleteTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientChatTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.ClientCloseWindowTranslator;
@@ -122,6 +123,7 @@ import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientKeepAlivePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientRequestPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.ClientResourcePackStatusPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientTabCompletePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerActionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerChangeHeldItemPacket;
@@ -238,6 +240,9 @@ public class ReleaseToBeta implements Runnable {
         if (R2BConfiguration.tabComplete) {
             modernToBetaTranslatorRegistry.registerTranslator(ClientTabCompletePacket.class, new ClientTabCompleteTranslator());
         }
+
+        modernToBetaTranslatorRegistry.registerTranslator(ClientResourcePackStatusPacket.class, new ClientResourcePackStatusTranslator());
+
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Main Thread"));
         executor.scheduleAtFixedRate(this, 0L, 50L, TimeUnit.MILLISECONDS);
     }
