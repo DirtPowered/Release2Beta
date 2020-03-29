@@ -10,7 +10,10 @@ import com.github.steveice10.mc.protocol.data.game.chunk.BlockStorage;
 import com.github.steveice10.mc.protocol.data.game.chunk.Chunk;
 import com.github.steveice10.mc.protocol.data.game.chunk.Column;
 import com.github.steveice10.mc.protocol.data.game.chunk.NibbleArray3d;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
+import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockChangePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
 import com.github.steveice10.packetlib.Session;
 import org.pmw.tinylog.Logger;
@@ -21,24 +24,50 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
     public void translate(MapChunkPacketData packet, BetaClientSession session, Session modernSession) {
         boolean skylight = session.getPlayer().getDimension() == 0;
 
-        int chunkX = packet.getX() / 16;
-        int chunkY = packet.getY();
-        int chunkZ = packet.getZ() / 16;
+        byte[] data = packet.getChunk();
 
-        if (chunkY > 0)
-            return; //skip that weird chunks
+        int x = packet.getX();
+        int y = packet.getY();
+        int z = packet.getZ();
 
-        BetaChunk chunk = new BetaChunk(chunkX, chunkZ);
+        int xSize = packet.getXSize();
+        int ySize = packet.getYSize();
+        int zSize = packet.getZSize();
+
+        int chunkX = x / 16;
+        int chunkZ = z / 16;
+
         try {
-            chunk.fillData(packet.getChunk(), skylight);
-            Chunk[] chunks = new Chunk[16];
-            for (int i = 0; i < 8; i++) { //8 chunks (max y = 128)
-                chunks[i] = translateChunk(session, chunk, i * 16, skylight);
-            }
+            if (y == 0) { //full chunks
+                BetaChunk chunk = new BetaChunk(chunkX, chunkZ);
 
-            modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, chunks, null)));
+                chunk.fillData(data, skylight);
+                Chunk[] chunks = new Chunk[16];
+                for (int i = 0; i < 8; i++) { //8 chunks (max y = 128)
+                    chunks[i] = translateChunk(session, chunk, i * 16, skylight);
+                }
+
+                modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, chunks, null)));
+            } else { //chunk structures (trees, block updates)
+                /*
+                 * In modern minecraft there's no way to send chunk like this, so we'll use BlockChange packet
+                 * It still needs some work (metadata is missing and indexes are wrong sometimes)
+                 * */
+                for (int x1 = 0; x1 < xSize; x1++) {
+                    for (int z1 = 0; z1 < zSize; z1++) {
+                        for (int y1 = 0; y1 < ySize; y1++) {
+                            int index = (x1 * xSize + z1) * ySize + y1;
+                            int blockId = packet.getChunk()[index];
+
+                            modernSession.send(new ServerBlockChangePacket(
+                                    new BlockChangeRecord(new Position(x + x1, y + y1, z + z1), new BlockState(blockId, 0)))
+                            );
+                        }
+                    }
+                }
+            }
         } catch (ArrayIndexOutOfBoundsException e) {
-            Logger.warn("Chunk at [x={} z={}] was skipped", Utils.fromChunkPos(chunk.getX()), Utils.fromChunkPos(chunk.getZ()));
+            Logger.warn("Chunk at [x={} z={}] was skipped", Utils.fromChunkPos(chunkX), Utils.fromChunkPos(chunkZ));
         }
     }
 

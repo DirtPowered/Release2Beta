@@ -44,7 +44,7 @@ public class Utils {
     }
 
     public static float toModernYaw(int yaw) {
-        return (float) yaw; //TODO: calculate
+        return ((yaw % 360) * 360) / 256F;
     }
 
     public static Float toFloat(double doubleValue) {

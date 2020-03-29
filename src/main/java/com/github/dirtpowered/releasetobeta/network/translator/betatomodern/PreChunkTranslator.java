@@ -20,7 +20,7 @@ public class PreChunkTranslator implements BetaToModern<PreChunkPacketData> {
 
         if (packet.isFull()) {
             byte[] biomes = new byte[256];
-            Arrays.fill(biomes, (byte) 22); //jungle biome
+            Arrays.fill(biomes, (byte) 129); //mutated_plains (most close to the beta default one)
 
             Column column = new Column(x, z, new Chunk[16], biomes, null); //TODO: Send chests, furnaces
             modernSession.send(new ServerChunkDataPacket(column));
