@@ -34,9 +34,10 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
 
             //block non-existent inventory actions
             if (windowAction == WindowAction.FILL_STACK || windowAction == WindowAction.SPREAD_ITEM
-                    && param == SpreadItemParam.RIGHT_MOUSE_END_DRAG) {
+                    && param == SpreadItemParam.RIGHT_MOUSE_END_DRAG || slot == 45) {
 
                 player.updateInventory();
+                //TODO: send packet with last slot index
                 return;
             }
 
