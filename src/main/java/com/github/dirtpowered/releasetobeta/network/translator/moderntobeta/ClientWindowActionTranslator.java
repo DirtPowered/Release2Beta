@@ -37,9 +37,12 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
                     && param == SpreadItemParam.RIGHT_MOUSE_END_DRAG || slot == 45) {
 
                 player.updateInventory();
-                //TODO: send packet with last slot index
+                int lastSlot = player.getInventory().getLastSlot();
+                betaSession.sendPacket(new WindowClickPacketData(windowId, lastSlot, mouseClick, (short) actionId, null, false));
                 return;
             }
+
+            player.getInventory().setLastSlot(slot);
 
             if (slot == -999 && param
                     != SpreadItemParam.LEFT_MOUSE_ADD_SLOT && param

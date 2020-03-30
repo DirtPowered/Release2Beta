@@ -5,6 +5,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 public class PlayerInventory {
     private ItemStack[] inventoryItems = new ItemStack[90];
     private int currentSlot;
+    private int lastSlot;
 
     public ItemStack getItem(int i) {
         ItemStack[] inv = this.inventoryItems;
@@ -27,8 +28,16 @@ public class PlayerInventory {
         }
     }
 
-    public void setCurrentSlot(int currentSlot) {
+    public void setCurrentHotbarSlot(int currentSlot) {
         this.currentSlot = 36 + currentSlot;
+    }
+
+    public void setLastSlot(int lastSlot) {
+        this.lastSlot = lastSlot;
+    }
+
+    public int getLastSlot() {
+        return lastSlot;
     }
 
     public ItemStack getItemInHand() {
