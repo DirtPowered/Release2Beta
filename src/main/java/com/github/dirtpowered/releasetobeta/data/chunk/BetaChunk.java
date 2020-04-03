@@ -29,7 +29,7 @@ public class BetaChunk {
     }
 
     private int getIndex(int x, int y, int z) {
-        return (x * 16 + z) * 128 + y;
+        return x << 11 | z << 7 | y;
     }
 
     public int getTypeAt(int x, int y, int z) {
