@@ -4,6 +4,7 @@ import com.github.dirtpowered.betaprotocollib.packet.data.EntityMoveLookPacketDa
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityHeadLookPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityPositionRotationPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -20,5 +21,6 @@ public class EntityMoveLookTranslator implements BetaToModern<EntityMoveLookPack
         float pitch = Utils.toModernPitch(packet.getPitch());
 
         modernSession.send(new ServerEntityPositionRotationPacket(entityId, x, y, z, yaw, pitch, true));
+        modernSession.send(new ServerEntityHeadLookPacket(entityId, yaw));
     }
 }
