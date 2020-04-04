@@ -9,6 +9,7 @@ import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.data.skin.ProfileCache;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
+import com.github.dirtpowered.releasetobeta.network.legacy._TcpSessionFactory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.session.MultiSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
@@ -33,7 +34,6 @@ import com.github.steveice10.packetlib.event.server.SessionRemovedEvent;
 import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
-import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -159,7 +159,7 @@ public class InternalServer implements Tickable {
     }
 
     private void createServer() {
-        server = new Server(R2BConfiguration.bindAddress, R2BConfiguration.bindPort, MinecraftProtocol.class, new TcpSessionFactory());
+        server = new Server(R2BConfiguration.bindAddress, R2BConfiguration.bindPort, MinecraftProtocol.class, new _TcpSessionFactory());
         server.setGlobalFlag(MinecraftConstants.VERIFY_USERS_KEY, false);
         server.setGlobalFlag(MinecraftConstants.SERVER_COMPRESSION_THRESHOLD, 256);
         server.setGlobalFlag(MinecraftConstants.SERVER_INFO_BUILDER_KEY, (ServerInfoBuilder) session -> {
@@ -270,8 +270,7 @@ public class InternalServer implements Tickable {
             clientBootstrap.channel(NioSocketChannel.class);
             clientBootstrap
                     .option(ChannelOption.SO_KEEPALIVE, true)
-                    .option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+                    .option(ChannelOption.TCP_NODELAY, true);
 
             clientBootstrap.remoteAddress(new InetSocketAddress(R2BConfiguration.remoteAddress, R2BConfiguration.remotePort));
             clientBootstrap.handler(new ChannelInitializer<SocketChannel>() {

@@ -32,12 +32,12 @@ public class PlayerInventory {
         this.currentSlot = 36 + currentSlot;
     }
 
-    public void setLastSlot(int lastSlot) {
-        this.lastSlot = lastSlot;
-    }
-
     public int getLastSlot() {
         return lastSlot;
+    }
+
+    public void setLastSlot(int lastSlot) {
+        this.lastSlot = lastSlot;
     }
 
     public ItemStack getItemInHand() {

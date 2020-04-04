@@ -37,8 +37,11 @@ public class EntityMetadataTranslator implements BetaToModern<EntityMetadataPack
             Object value = watchableObject.getValue();
 
             if (type == MetadataType.BYTE && index == 0) {
-                //sneaking
-                metadataList.add(new EntityMetadata(0, MetadataType.BYTE, value));
+                if (((Byte) value).intValue() == 0x04) { //entity mount
+                    //TODO: Figure out which packet is responsible for this action (ServerEntitySetPassengers?)
+                } else {
+                    metadataList.add(new EntityMetadata(0, MetadataType.BYTE, value));
+                }
             }
 
             if (!(e instanceof BetaPlayer)) {
