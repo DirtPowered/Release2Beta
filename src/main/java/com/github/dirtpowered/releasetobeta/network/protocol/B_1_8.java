@@ -2,7 +2,6 @@ package com.github.dirtpowered.releasetobeta.network.protocol;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.AnimationPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.AttachEntityPacketData;
-import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BedAndWeatherPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockChangePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockItemSwitchPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.ChatPacketData;
@@ -41,12 +40,15 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateSig
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateTimePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.VehicleSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.WindowItemsPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.BedAndWeatherPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.ExperienceOrbPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.ExperienceUpdatePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.LoginPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.PlayerListItemPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.RespawnPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.UpdateHealthPacketData;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.AnimationTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.AttachEntityTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.BedAndWeatherTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.BlockChangeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.BlockItemSwitchTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.ChatTranslator;
@@ -85,7 +87,11 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.UpdateTimeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.VehicleSpawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.WindowItemsTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.BedAndWeatherTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.ExperienceOrbTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.ExperienceUpdateTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.LoginTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.PlayerListItemTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.RespawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.UpdateHealthTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientChatTranslator;
@@ -100,13 +106,13 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerPositionRotationTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerPositionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerRotationTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerStateTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerSwingArmTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerUseItemTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientRequestTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientTeleportConfirmTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientUpdateSignTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientWindowActionTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientPlayerStateTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientRequestTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.LoginStartTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.BetaToModernTranslatorRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.ModernToBetaTranslatorRegistry;
@@ -138,7 +144,14 @@ public class B_1_8 {
         betaToModernTranslatorRegistry.registerTranslator(UpdateHealthPacketData.class, new UpdateHealthTranslator());
         betaToModernTranslatorRegistry.registerTranslator(LoginPacketData.class, new LoginTranslator());
         betaToModernTranslatorRegistry.registerTranslator(RespawnPacketData.class, new RespawnTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(BedAndWeatherPacketData.class, new BedAndWeatherTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(ExperienceOrbPacketData.class, new ExperienceOrbTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(ExperienceUpdatePacketData.class, new ExperienceUpdateTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(PlayerListItemPacketData.class, new PlayerListItemTranslator());
 
+        modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerStatePacket.class, new ClientPlayerStateTranslator());
+
+        //1.7.3
         betaToModernTranslatorRegistry.registerTranslator(KickDisconnectPacketData.class, new KickDisconnectTranslator());
         betaToModernTranslatorRegistry.registerTranslator(HandshakePacketData.class, new HandshakeTranslator());
         betaToModernTranslatorRegistry.registerTranslator(ChatPacketData.class, new ChatTranslator());
@@ -148,7 +161,6 @@ public class B_1_8 {
         betaToModernTranslatorRegistry.registerTranslator(BlockChangePacketData.class, new BlockChangeTranslator());
         betaToModernTranslatorRegistry.registerTranslator(PreChunkPacketData.class, new PreChunkTranslator());
         betaToModernTranslatorRegistry.registerTranslator(MapChunkPacketData.class, new MapChunkTranslator());
-        betaToModernTranslatorRegistry.registerTranslator(BedAndWeatherPacketData.class, new BedAndWeatherTranslator());
         betaToModernTranslatorRegistry.registerTranslator(SetSlotPacketData.class, new SetSlotTranslator());
         betaToModernTranslatorRegistry.registerTranslator(MultiBlockChangePacketData.class, new MultiBlockChangeTranslator());
         betaToModernTranslatorRegistry.registerTranslator(BlockItemSwitchPacketData.class, new BlockItemSwitchTranslator());
@@ -173,13 +185,13 @@ public class B_1_8 {
         betaToModernTranslatorRegistry.registerTranslator(UpdateSignPacketData.class, new UpdateSignTranslator());
         betaToModernTranslatorRegistry.registerTranslator(SleepPacketData.class, new SleepPacketTranslator());
         betaToModernTranslatorRegistry.registerTranslator(AttachEntityPacketData.class, new AttachEntityTranslator());
-        betaToModernTranslatorRegistry.registerTranslator(NamedEntitySpawnPacketData.class, new NamedEntitySpawnTranslator());
         betaToModernTranslatorRegistry.registerTranslator(EntityEquipmentPacketData.class, new EntityEquipmentTranslator());
         betaToModernTranslatorRegistry.registerTranslator(ThunderboltPacketData.class, new ThunderboltTranslator());
         betaToModernTranslatorRegistry.registerTranslator(CloseWindowPacketData.class, new CloseWindowTranslator());
         betaToModernTranslatorRegistry.registerTranslator(MapDataPacketData.class, new MapDataTranslator());
         betaToModernTranslatorRegistry.registerTranslator(PaintingPacketData.class, new PaintingTranslator());
         betaToModernTranslatorRegistry.registerTranslator(SoundEffectPacketData.class, new SoundEffectTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(NamedEntitySpawnPacketData.class, new NamedEntitySpawnTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());
@@ -190,7 +202,6 @@ public class B_1_8 {
         modernToBetaTranslatorRegistry.registerTranslator(ClientRequestPacket.class, new ClientRequestTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerRotationPacket.class, new ClientPlayerRotationTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerSwingArmPacket.class, new ClientPlayerSwingArmTranslator());
-        modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerStatePacket.class, new ClientPlayerStateTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerActionPacket.class, new ClientPlayerActionTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerPlaceBlockPacket.class, new ClientPlayerPlaceBlockTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientCloseWindowPacket.class, new ClientCloseWindowTranslator());

@@ -22,7 +22,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ReleaseToBeta implements Runnable {
-    private final static MinecraftVersion MINECRAFT_VERSION = MinecraftVersion.B_1_8_1;
+    public final static MinecraftVersion MINECRAFT_VERSION = MinecraftVersion.B_1_8_1;
     private final ScheduledExecutorService scheduledExecutorService;
     private SessionRegistry sessionRegistry;
     private BetaToModernTranslatorRegistry betaToModernTranslatorRegistry;

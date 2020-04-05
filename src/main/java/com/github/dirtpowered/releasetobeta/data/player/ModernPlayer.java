@@ -32,10 +32,46 @@ public class ModernPlayer implements PlayerAction {
     private PlayerInventory inventory;
     private Location location;
     private boolean inVehicle;
+    private int difficulty;
+    private int gamemode;
+    private int worldHeight;
+    private long seed;
 
     public ModernPlayer(BetaClientSession session) {
         this.session = session;
         this.inventory = new PlayerInventory();
+    }
+
+    public long getSeed() {
+        return seed;
+    }
+
+    public void setSeed(long seed) {
+        this.seed = seed;
+    }
+
+    public int getWorldHeight() {
+        return worldHeight;
+    }
+
+    public void setWorldHeight(int worldHeight) {
+        this.worldHeight = worldHeight;
+    }
+
+    public int getGamemode() {
+        return gamemode;
+    }
+
+    public void setGamemode(int gamemode) {
+        this.gamemode = gamemode;
+    }
+
+    public int getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
     }
 
     public int getDimension() {
