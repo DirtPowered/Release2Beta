@@ -1,8 +1,8 @@
 package com.github.dirtpowered.releasetobeta.network.session;
 
 import com.github.dirtpowered.betaprotocollib.model.Packet;
-import com.github.dirtpowered.betaprotocollib.packet.data.KeepAlivePacketData;
-import com.github.dirtpowered.betaprotocollib.packet.data.StatisticsPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.KeepAlivePacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.StatisticsPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
@@ -134,10 +134,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
-        Logger.warn("[client] closed connection: {}", cause.getMessage());
-
-        super.exceptionCaught(context, cause);
+    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+        Logger.warn("[client] closed connection: {}", cause.toString());
     }
 
     public String getClientId() {

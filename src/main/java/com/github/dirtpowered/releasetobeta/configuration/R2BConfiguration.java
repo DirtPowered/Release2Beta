@@ -6,7 +6,7 @@ public class R2BConfiguration {
     public static int maxPlayers = 20;
     public static boolean skinFix = true;
     public static boolean arrowFix = true;
-    public static String remoteAddress = "dev.mineblock.pl";
+    public static String remoteAddress = "localhost";
     public static int remotePort = 25567;
     public static String bindAddress = "localhost";
     public static int bindPort = 25565;
@@ -14,6 +14,7 @@ public class R2BConfiguration {
     public static String resourcePack = "https://www.dropbox.com/s/hqiluec4aoho3po/beta.zip?dl=1";
     public static String resourcePackHash = "D4EE78CF52D243371AD1AFF87EA69428BFCA096C";
     public static boolean tabComplete = true;
+    public static boolean testMode = false;
 
     public R2BConfiguration() {
         /*Toml toml = new Toml().read(new File("Release2Beta.toml"));
