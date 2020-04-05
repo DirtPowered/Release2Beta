@@ -49,7 +49,7 @@ import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.SoundEffectMap;
-import com.github.dirtpowered.releasetobeta.network.InternalServer;
+import com.github.dirtpowered.releasetobeta.network.server.ModernServer;
 import com.github.dirtpowered.releasetobeta.network.session.SessionRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.AnimationTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.AttachEntityTranslator;
@@ -155,7 +155,7 @@ public class ReleaseToBeta implements Runnable {
     private SoundEffectMap soundEffectMap;
     private BlockMap blockMap;
     private MetadataMap metadataMap;
-    private InternalServer server;
+    private ModernServer server;
 
     ReleaseToBeta() {
         this.scheduledExecutorService = Executors.newScheduledThreadPool(32);
@@ -165,7 +165,7 @@ public class ReleaseToBeta implements Runnable {
         this.soundEffectMap = new SoundEffectMap();
         this.blockMap = new BlockMap();
         this.metadataMap = new MetadataMap();
-        this.server = new InternalServer(this);
+        this.server = new ModernServer(this);
         new R2BConfiguration(); //load config
 
         BetaLib.inject();
@@ -257,7 +257,7 @@ public class ReleaseToBeta implements Runnable {
             internalSession.getBetaClientSession().tick();
         });
 
-        this.server.tick();
+        this.server.getServerConnection().tick();
     }
 
     public ScheduledExecutorService getScheduledExecutorService() {
@@ -288,7 +288,7 @@ public class ReleaseToBeta implements Runnable {
         return metadataMap;
     }
 
-    public InternalServer getServer() {
+    public ModernServer getServer() {
         return server;
     }
 }

@@ -16,7 +16,7 @@ public class ClientChatTranslator implements ModernToBeta<ClientChatPacket> {
         String message = packet.getMessage();
         if (!message.startsWith("/")) Logger.info("[CHAT] {}: {}", player.getUsername(), message);
         else {
-            if (betaSession.getMain().getServer().executeInternalCommand(player, message)) {
+            if (betaSession.getMain().getServer().executeCommand(player, message)) {
                 Logger.info("[COMMAND] {}: {}", player.getUsername(), message);
                 return;
             }

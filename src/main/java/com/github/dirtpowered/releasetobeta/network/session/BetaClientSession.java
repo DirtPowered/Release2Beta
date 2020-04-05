@@ -203,7 +203,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     private void quitPlayer() {
-        releaseToBeta.getServer().removeTabEntry(player);
+        releaseToBeta.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
         releaseToBeta.getSessionRegistry().removeSession(player.getClientId());
 
         initialPacketsQueue.clear();
@@ -215,7 +215,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     public void joinPlayer() {
         if (!isLoggedIn()) {
-            releaseToBeta.getServer().addTabEntry(player);
+            releaseToBeta.getServer().getServerConnection().getPlayerList().addTabEntry(player);
             setLoggedIn();
         }
     }
@@ -267,7 +267,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public String[] combinedPlayerList() {
         List<String> combinedPlayers = new ArrayList<>();
         //Players joined from R2B
-        for (ModernPlayer modernPlayer : getMain().getServer().getPlayers()) {
+        for (ModernPlayer modernPlayer : getMain().getServer().getServerConnection().getPlayerList().getPlayers()) {
             combinedPlayers.add(modernPlayer.getUsername());
         }
         //Players using beta client

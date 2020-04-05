@@ -1,5 +1,6 @@
 package com.github.dirtpowered.releasetobeta.network.session;
 
+import com.github.steveice10.packetlib.Session;
 import org.pmw.tinylog.Logger;
 
 import java.util.Map;
@@ -9,7 +10,7 @@ public class SessionRegistry {
 
     private Map<String, MultiSession> sessions = new ConcurrentHashMap<>();
 
-    public void addSession(String clientId, MultiSession multiSession) {
+    void addSession(String clientId, MultiSession multiSession) {
         sessions.put(clientId, multiSession);
 
         Logger.info("[count={}/id={}] adding new session", sessions.size(), clientId);
@@ -26,5 +27,11 @@ public class SessionRegistry {
 
     public MultiSession getSession(String clientId) {
         return sessions.get(clientId);
+    }
+
+    public BetaClientSession getClientSessionFromServerSession(Session modernSession) {
+        return sessions.values().stream()
+                .filter(multiSession -> multiSession.getModernSession() == modernSession).findFirst()
+                .map(MultiSession::getBetaClientSession).orElse(null);
     }
 }

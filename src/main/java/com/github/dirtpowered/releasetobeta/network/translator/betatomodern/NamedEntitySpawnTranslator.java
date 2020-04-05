@@ -24,7 +24,7 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
 
         float yaw = Utils.toModernYaw(packet.getRotation());
         float pitch = Utils.toModernPitch(packet.getPitch());
-        UUID uuid = session.getMain().getServer().getUUIDFromUsername(username);
+        UUID uuid = session.getMain().getServer().getServerConnection().getPlayerList().getUUIDFromUsername(username);
 
         if (uuid == null) {
             //spawn players using beta client too
