@@ -204,6 +204,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private void quitPlayer() {
         releaseToBeta.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
         releaseToBeta.getSessionRegistry().removeSession(player.getClientId());
+        session.disconnect("unexpectedly disconnected");
 
         initialPacketsQueue.clear();
         blockChangeQueue.clear();

@@ -11,6 +11,7 @@ import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.ServerLoginHandler;
 import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoBuilder;
+import com.github.steveice10.mc.protocol.packet.login.client.LoginStartPacket;
 import com.github.steveice10.packetlib.Server;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.server.ServerAdapter;
@@ -38,7 +39,6 @@ public class ServerConnection implements Tickable {
     private final Queue<ServerQueuedPacket> packetQueue = new ConcurrentLinkedQueue<>();
     private ReleaseToBeta main;
     private PlayerList playerList;
-    private NioEventLoopGroup loopGroup;
     private ServerListPing serverListPing;
 
     ServerConnection(ModernServer modernServer) {
@@ -78,7 +78,9 @@ public class ServerConnection implements Tickable {
                 event.getSession().addListener(new SessionAdapter() {
                     @Override
                     public void packetReceived(PacketReceivedEvent event) {
-                        ServerQueuedPacket queuedPacket = new ServerQueuedPacket(event.getSession(), event.getPacket());
+                        Packet packet = event.getPacket();
+
+                        ServerQueuedPacket queuedPacket = new ServerQueuedPacket(event.getSession(), packet, packet instanceof LoginStartPacket);
 
                         packetQueue.add(queuedPacket);
                     }
@@ -99,10 +101,11 @@ public class ServerConnection implements Tickable {
     }
 
     private void createClientSession(String clientId, Session session) throws InterruptedException {
+        NioEventLoopGroup loopGroup = new NioEventLoopGroup();
+
         try {
             Bootstrap clientBootstrap = new Bootstrap();
 
-            loopGroup = new NioEventLoopGroup();
             clientBootstrap.group(loopGroup);
             clientBootstrap.channel(NioSocketChannel.class);
             clientBootstrap
@@ -137,7 +140,6 @@ public class ServerConnection implements Tickable {
             ServerQueuedPacket queuedPacket = packetQueue.peek();
             if (queuedPacket != null) {
                 packetQueue.poll();
-
                 translatePacket(queuedPacket);
             }
         }
@@ -150,6 +152,12 @@ public class ServerConnection implements Tickable {
             BetaClientSession clientSession = main.getSessionRegistry().getClientSessionFromServerSession(queuedPacket.session);
             if (clientSession != null) {
                 handler.translate(queuedPacket.packet, queuedPacket.session, clientSession);
+            } else {
+                if (queuedPacket.loginPacket && queuedPacket.session.isConnected()) {
+                    packetQueue.add(queuedPacket);
+                    return;
+                }
+                Logger.error("{} was not handled", queuedPacket.packet);
             }
         }
     }
@@ -178,10 +186,12 @@ public class ServerConnection implements Tickable {
     static class ServerQueuedPacket {
         private final Session session;
         private final Packet packet;
+        private final boolean loginPacket;
 
-        ServerQueuedPacket(Session session, Packet packet) {
+        ServerQueuedPacket(Session session, Packet packet, boolean loginPacket) {
             this.session = session;
             this.packet = packet;
+            this.loginPacket = loginPacket;
         }
     }
 }

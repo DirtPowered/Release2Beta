@@ -92,6 +92,6 @@ public class PlayerList {
             }
         }
 
-        return UUID.randomUUID();
+        return null;
     }
 }
