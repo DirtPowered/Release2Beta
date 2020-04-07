@@ -1,8 +1,10 @@
 package com.github.dirtpowered.releasetobeta.network.server.ping;
 
-import com.github.dirtpowered.releasetobeta.utils.ChatColor;
+import com.github.dirtpowered.releasetobeta.utils.TextColor;
 import com.github.steveice10.mc.auth.data.GameProfile;
+import com.github.steveice10.mc.protocol.data.message.ChatColor;
 import com.github.steveice10.mc.protocol.data.message.Message;
+import com.github.steveice10.mc.protocol.data.message.MessageStyle;
 import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.data.status.PlayerInfo;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
@@ -32,7 +34,8 @@ public class ServerListPing {
     }
 
     public void setMotd(String motd) {
-        this.motd = TextMessage.fromString(ChatColor.translate(motd));
+        this.motd = TextMessage.fromString(TextColor.translate(motd))
+                .setStyle(new MessageStyle().setColor(ChatColor.RESET));
     }
 
     public void setPlayerListSample(List<GameProfile> playerListSample) {

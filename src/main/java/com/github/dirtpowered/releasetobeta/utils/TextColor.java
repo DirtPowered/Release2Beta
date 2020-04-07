@@ -1,6 +1,6 @@
 package com.github.dirtpowered.releasetobeta.utils;
 
-public class ChatColor {
+public class TextColor {
     private static final char COLOR_CHAR = '§';
 
     public static String translate(String rawMessage) {

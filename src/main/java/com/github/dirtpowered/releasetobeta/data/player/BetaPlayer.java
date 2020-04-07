@@ -4,7 +4,7 @@ import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.utils.Callback;
-import com.github.dirtpowered.releasetobeta.utils.ChatColor;
+import com.github.dirtpowered.releasetobeta.utils.TextColor;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
@@ -36,7 +36,7 @@ public class BetaPlayer extends Entity {
 
     public PlayerListEntry getTabEntry() {
         return new PlayerListEntry(gameProfile, GameMode.SURVIVAL, 0,
-                Message.fromString(ChatColor.translate("&9[BETA] &r" + username)));
+                Message.fromString(TextColor.translate("&9[BETA] &r" + username)));
     }
 
     public UUID getUUID() {

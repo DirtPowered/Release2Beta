@@ -135,8 +135,10 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
-        cause.printStackTrace();
         Logger.warn("[client] closed connection: {}", cause.toString());
+
+        cause.printStackTrace();
+        context.close();
     }
 
     public String getClientId() {

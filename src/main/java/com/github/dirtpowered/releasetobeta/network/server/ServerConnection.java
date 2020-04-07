@@ -3,6 +3,7 @@ package com.github.dirtpowered.releasetobeta.network.server;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
+import com.github.dirtpowered.releasetobeta.network.server.ping.LegacyPing.model.PingMessage;
 import com.github.dirtpowered.releasetobeta.network.server.ping.ServerListPing;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
@@ -56,8 +57,20 @@ public class ServerConnection implements Tickable {
         server.setGlobalFlag(MinecraftConstants.SERVER_COMPRESSION_THRESHOLD, 256);
         server.setGlobalFlag(MinecraftConstants.SERVER_INFO_BUILDER_KEY, (ServerInfoBuilder) session -> {
 
-            serverListPing.setPlayerListSample(playerList.getProfiles());
-            serverListPing.setOnlinePlayers(playerList.getPlayers().size());
+            if (R2BConfiguration.ver1_8PingPassthrough) {
+                PingMessage pingMessage = main.getPingPassthroughThread().getPingMessage();
+                if (pingMessage == null) {
+                    return serverListPing.get();
+                }
+
+                serverListPing.setMotd(pingMessage.getMotd());
+                serverListPing.setOnlinePlayers(pingMessage.getOnlinePlayers());
+                serverListPing.setMaxPlayers(pingMessage.getMaxPlayers());
+                serverListPing.setPlayerListSample(playerList.getProfiles());
+            } else {
+                serverListPing.setPlayerListSample(playerList.getProfiles());
+                serverListPing.setOnlinePlayers(playerList.getPlayers().size());
+            }
 
             return serverListPing.get();
         });

@@ -11,10 +11,11 @@ public class R2BConfiguration {
     public static String bindAddress = "localhost";
     public static int bindPort = 25565;
     public static boolean disableSprinting = false;
-    public static String resourcePack = "https://www.dropbox.com/s/hqiluec4aoho3po/beta.zip?dl=1";
-    public static String resourcePackHash = "D4EE78CF52D243371AD1AFF87EA69428BFCA096C";
+    public static String resourcePack = "";
+    public static String resourcePackHash = "";
     public static boolean tabComplete = true;
     public static boolean testMode = false;
+    public static boolean ver1_8PingPassthrough = true;
 
     public R2BConfiguration() {
         /*Toml toml = new Toml().read(new File("Release2Beta.toml"));

@@ -10,6 +10,7 @@ import com.github.dirtpowered.releasetobeta.data.mapping.SoundEffectMap;
 import com.github.dirtpowered.releasetobeta.network.protocol.B_1_7;
 import com.github.dirtpowered.releasetobeta.network.protocol.B_1_8;
 import com.github.dirtpowered.releasetobeta.network.server.ModernServer;
+import com.github.dirtpowered.releasetobeta.network.server.ping.LegacyPing.PingPassthroughThread;
 import com.github.dirtpowered.releasetobeta.network.session.SessionRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.internal.ClientResourcePackStatusTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.internal.ClientTabCompleteTranslator;
@@ -33,6 +34,7 @@ public class ReleaseToBeta implements Runnable {
     private BlockMap blockMap;
     private MetadataMap metadataMap;
     private ModernServer server;
+    private PingPassthroughThread pingPassthroughThread;
 
     ReleaseToBeta() {
         this.scheduledExecutorService = Executors.newScheduledThreadPool(32);
@@ -44,6 +46,7 @@ public class ReleaseToBeta implements Runnable {
         this.metadataMap = new MetadataMap();
         this.entityEffectMap = new EntityEffectMap();
         this.server = new ModernServer(this);
+
         new R2BConfiguration(); //load config
 
         BetaLib.inject(MINECRAFT_VERSION);
@@ -66,6 +69,11 @@ public class ReleaseToBeta implements Runnable {
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Main Thread"));
         executor.scheduleAtFixedRate(this, 0L, 50L, TimeUnit.MILLISECONDS);
+
+        if (R2BConfiguration.ver1_8PingPassthrough) {
+            this.pingPassthroughThread = new PingPassthroughThread();
+            scheduledExecutorService.scheduleAtFixedRate(pingPassthroughThread, 0L, 5L, TimeUnit.SECONDS);
+        }
     }
 
     void stop() {
@@ -115,5 +123,9 @@ public class ReleaseToBeta implements Runnable {
 
     public EntityEffectMap getEntityEffectMap() {
         return entityEffectMap;
+    }
+
+    public PingPassthroughThread getPingPassthroughThread() {
+        return pingPassthroughThread;
     }
 }
