@@ -11,5 +11,6 @@ public class SoundEffectMap extends Remapper<WorldEffect> {
         remap(1004, SoundEffect.BLOCK_FIRE_EXTINGUISH);
         remap(1007, SoundEffect.ENTITY_GHAST_WARN);
         remap(2001, ParticleEffect.BREAK_BLOCK);
+        remap(1005, SoundEffect.RECORD);
     }
 }

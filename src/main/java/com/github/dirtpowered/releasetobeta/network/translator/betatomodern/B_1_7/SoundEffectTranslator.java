@@ -9,6 +9,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.data.game.world.effect.BreakBlockEffectData;
 import com.github.steveice10.mc.protocol.data.game.world.effect.ParticleEffect;
+import com.github.steveice10.mc.protocol.data.game.world.effect.RecordEffectData;
 import com.github.steveice10.mc.protocol.data.game.world.effect.SoundEffect;
 import com.github.steveice10.mc.protocol.data.game.world.effect.WorldEffect;
 import com.github.steveice10.mc.protocol.data.game.world.effect.WorldEffectData;
@@ -29,6 +30,13 @@ public class SoundEffectTranslator implements BetaToModern<SoundEffectPacketData
         WorldEffect worldEffect = soundEffectMap.getFromId(id);
 
         if (worldEffect instanceof SoundEffect) {
+            if (worldEffect == SoundEffect.RECORD) {
+                modernSession.send(new ServerPlayEffectPacket(worldEffect, pos, new RecordEffectData(data) {
+
+                }));
+                return;
+            }
+
             modernSession.send(new ServerPlayEffectPacket(worldEffect, pos, new WorldEffectData() {
 
             }));
