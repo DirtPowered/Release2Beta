@@ -1,4 +1,4 @@
-package com.github.dirtpowered.releasetobeta.data.entity.mob;
+package com.github.dirtpowered.releasetobeta.data.entity.monster;
 
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
@@ -7,10 +7,10 @@ import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.packetlib.Session;
 
-public class EntityPig extends Entity implements Mob {
+public class EntityEnderman extends Entity implements Mob {
 
-    public EntityPig(int entityId) {
-        super(entityId, MobType.PIG);
+    public EntityEnderman(int entityId) {
+        super(entityId, MobType.ENDERMAN);
     }
 
     @Override
@@ -20,11 +20,11 @@ public class EntityPig extends Entity implements Mob {
 
     @Override
     public void onDeath(Session session) {
-        playSound(session, BuiltinSound.ENTITY_PIG_DEATH, SoundCategory.AMBIENT);
+        playSound(session, BuiltinSound.ENTITY_ENDERMEN_DEATH, SoundCategory.HOSTILE);
     }
 
     @Override
     public void onDamage(Session session) {
-        playSound(session, BuiltinSound.ENTITY_PIG_HURT, SoundCategory.AMBIENT);
+        playSound(session, BuiltinSound.ENTITY_ENDERMEN_HURT, SoundCategory.HOSTILE);
     }
 }

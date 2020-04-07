@@ -4,6 +4,7 @@ import com.github.dirtpowered.betaprotocollib.BetaLib;
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
+import com.github.dirtpowered.releasetobeta.data.mapping.EntityEffectMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.SoundEffectMap;
 import com.github.dirtpowered.releasetobeta.network.protocol.B_1_7;
@@ -28,6 +29,7 @@ public class ReleaseToBeta implements Runnable {
     private BetaToModernTranslatorRegistry betaToModernTranslatorRegistry;
     private ModernToBetaTranslatorRegistry modernToBetaTranslatorRegistry;
     private SoundEffectMap soundEffectMap;
+    private EntityEffectMap entityEffectMap;
     private BlockMap blockMap;
     private MetadataMap metadataMap;
     private ModernServer server;
@@ -40,6 +42,7 @@ public class ReleaseToBeta implements Runnable {
         this.soundEffectMap = new SoundEffectMap();
         this.blockMap = new BlockMap();
         this.metadataMap = new MetadataMap();
+        this.entityEffectMap = new EntityEffectMap();
         this.server = new ModernServer(this);
         new R2BConfiguration(); //load config
 
@@ -108,5 +111,9 @@ public class ReleaseToBeta implements Runnable {
 
     public ModernServer getServer() {
         return server;
+    }
+
+    public EntityEffectMap getEntityEffectMap() {
+        return entityEffectMap;
     }
 }

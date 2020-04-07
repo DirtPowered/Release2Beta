@@ -55,12 +55,6 @@ public abstract class Entity {
         return z;
     }
 
-    public void setLocation(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
     public void setLocation(double x, double y, double z) {
         this.x = (int) x;
         this.y = (int) y;

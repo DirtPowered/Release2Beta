@@ -1,5 +1,6 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.HandshakePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.LoginPacketData;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
@@ -18,7 +19,7 @@ public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
 
         betaSession.getPlayer().fillProfile(username, result -> {
             betaSession.sendPacket(new HandshakePacketData(username));
-            betaSession.sendPacket(new LoginPacketData(14, username, 0, 0));
+            betaSession.sendPacket(new LoginPacketData(MinecraftVersion.B1_7_3.getProtocolVersion(), username, 0, 0));
         });
     }
 }

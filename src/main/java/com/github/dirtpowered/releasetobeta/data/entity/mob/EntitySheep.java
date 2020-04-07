@@ -20,11 +20,11 @@ public class EntitySheep extends Entity implements Mob {
 
     @Override
     public void onDeath(Session session) {
-        playSound(session, BuiltinSound.ENTITY_SHEEP_DEATH, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_SHEEP_DEATH, SoundCategory.AMBIENT);
     }
 
     @Override
     public void onDamage(Session session) {
-        playSound(session, BuiltinSound.ENTITY_SHEEP_HURT, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_SHEEP_HURT, SoundCategory.AMBIENT);
     }
 }

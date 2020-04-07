@@ -7,9 +7,12 @@ import com.github.dirtpowered.releasetobeta.data.entity.mob.EntitySheep;
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntitySquid;
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntityWolf;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityCaveSpider;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityCreeper;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityEnderman;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityGhast;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityPigZombie;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntitySilverfish;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntitySkeleton;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntitySlime;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntitySpider;
@@ -37,6 +40,9 @@ public class EntityRegistry {
         register(MobType.CREEPER, EntityCreeper.class);
         register(MobType.SLIME, EntitySlime.class);
         register(MobType.GIANT_ZOMBIE, EntityZombie.class);
+        register(MobType.ENDERMAN, EntityEnderman.class);
+        register(MobType.SILVERFISH, EntitySilverfish.class);
+        register(MobType.CAVE_SPIDER, EntityCaveSpider.class);
 
         //mobs
         register(MobType.PIG, EntityPig.class);
