@@ -12,19 +12,18 @@ public class AnimationTranslator implements BetaToModern<AnimationPacketData> {
 
     @Override
     public void translate(AnimationPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
         int entityId = packet.getEntityId();
         int animation = packet.getAnimate();
         Animation modernAnimation;
 
         switch (animation) {
-            case 0:
+            case 1:
                 modernAnimation = Animation.SWING_ARM;
                 break;
-            case 1:
+            case 2:
                 modernAnimation = Animation.DAMAGE;
                 break;
-            case 2:
+            case 3:
                 modernAnimation = Animation.LEAVE_BED;
                 break;
             case 5:
