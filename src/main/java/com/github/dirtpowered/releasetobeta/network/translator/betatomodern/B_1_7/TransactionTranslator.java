@@ -11,8 +11,6 @@ public class TransactionTranslator implements BetaToModern<TransactionPacketData
 
     @Override
     public void translate(TransactionPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
-
         int windowId = packet.getWindowId();
         int actionId = packet.getShortWindowId();
         boolean accepted = packet.isAccepted();

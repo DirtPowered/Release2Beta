@@ -17,6 +17,7 @@ import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerResourcePackSendPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerCloseWindowPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerOpenTileEntityEditorPacket;
 import com.github.steveice10.packetlib.packet.Packet;
@@ -156,6 +157,10 @@ public class ModernPlayer implements PlayerAction {
 
     public void updateInventory() {
         sendPacket(new ServerWindowItemsPacket(0, inventory.getItems()));
+    }
+
+    public void closeInventory() {
+        sendPacket(new ServerCloseWindowPacket(0));
     }
 
     public Location getLocation() {

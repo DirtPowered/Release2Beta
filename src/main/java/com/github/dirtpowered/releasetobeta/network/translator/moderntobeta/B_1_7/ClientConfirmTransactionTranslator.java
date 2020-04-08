@@ -11,8 +11,6 @@ public class ClientConfirmTransactionTranslator implements ModernToBeta<ClientCo
 
     @Override
     public void translate(ClientConfirmTransactionPacket packet, Session modernSession, BetaClientSession betaSession) {
-        Utils.debug(packet);
-
         int windowId = packet.getWindowId();
         int actionId = packet.getActionId();
         boolean accepted = packet.getAccepted();
