@@ -56,7 +56,6 @@ public class ServerConnection implements Tickable {
         server.setGlobalFlag(MinecraftConstants.VERIFY_USERS_KEY, false);
         server.setGlobalFlag(MinecraftConstants.SERVER_COMPRESSION_THRESHOLD, 256);
         server.setGlobalFlag(MinecraftConstants.SERVER_INFO_BUILDER_KEY, (ServerInfoBuilder) session -> {
-
             if (R2BConfiguration.ver1_8PingPassthrough) {
                 PingMessage pingMessage = main.getPingPassthroughThread().getPingMessage();
                 if (pingMessage == null) {
@@ -178,6 +177,7 @@ public class ServerConnection implements Tickable {
     @Override
     public void tick() {
         handlePackets();
+        playerList.updateInternalTabList();
     }
 
     void broadcastPacket(Packet packet) {

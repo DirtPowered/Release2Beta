@@ -8,6 +8,7 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.utils.Callback;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.auth.data.GameProfile;
+import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -20,6 +21,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.ServerResourcePack
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerCloseWindowPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerOpenTileEntityEditorPacket;
+import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.packet.Packet;
 
 public class ModernPlayer implements PlayerAction {
@@ -88,7 +90,7 @@ public class ModernPlayer implements PlayerAction {
     }
 
     public PlayerListEntry getTabEntry() {
-        return new PlayerListEntry(getGameProfile(), GameMode.SURVIVAL, 0, Message.fromString(username));
+        return new PlayerListEntry(getGameProfile(), GameMode.SURVIVAL, getPing(), Message.fromString(username));
     }
 
     public BetaClientSession getSession() {
@@ -130,7 +132,11 @@ public class ModernPlayer implements PlayerAction {
     }
 
     public void sendPacket(Packet modernPacket) {
-        session.getMain().getSessionRegistry().getSession(clientId).getModernSession().send(modernPacket);
+        getModernSession().send(modernPacket);
+    }
+
+    private Session getModernSession() {
+        return session.getMain().getSessionRegistry().getSession(clientId).getModernSession();
     }
 
     public void sendResourcePack() {
@@ -190,5 +196,9 @@ public class ModernPlayer implements PlayerAction {
 
     public void sendMessage(String message) {
         sendPacket(new ServerChatPacket(TextMessage.fromString(message)));
+    }
+
+    private int getPing() {
+        return getModernSession().getFlag(MinecraftConstants.PING_KEY);
     }
 }

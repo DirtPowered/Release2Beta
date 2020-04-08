@@ -18,6 +18,7 @@ import java.util.function.Function;
 
 public class PlayerList {
     private ServerConnection serverConnection;
+    private long lastTabUpdate;
 
     PlayerList(ServerConnection serverConnection) {
         this.serverConnection = serverConnection;
@@ -93,5 +94,15 @@ public class PlayerList {
         }
 
         return null;
+    }
+
+    void updateInternalTabList() {
+        if (System.currentTimeMillis() - lastTabUpdate > 3000L) {
+            getPlayers().forEach(player -> {
+                player.sendPacket(new ServerPlayerListEntryPacket(PlayerListEntryAction.UPDATE_LATENCY, getTabEntries().toArray(new PlayerListEntry[0])));
+            });
+
+            lastTabUpdate = System.currentTimeMillis();
+        }
     }
 }
