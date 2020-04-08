@@ -13,6 +13,7 @@ import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.dirtpowered.releasetobeta.utils.TextColor;
 import com.github.dirtpowered.releasetobeta.utils.Tickable;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
@@ -206,7 +207,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private void quitPlayer() {
         releaseToBeta.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
         releaseToBeta.getSessionRegistry().removeSession(player.getClientId());
-        session.disconnect("unexpectedly disconnected");
+        session.disconnect(TextColor.translate("&cunexpectedly disconnected by server"));
 
         initialPacketsQueue.clear();
         blockChangeQueue.clear();
@@ -260,7 +261,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public int remapMetadata(int blockId, int rawData) {
         MetadataMap m = releaseToBeta.getMetadataMap();
         if (m.exist(blockId)) {
-            return m.getFromId(blockId);
+            if (m.getFromId(blockId).getFrom() == rawData) {
+                return m.getFromId(blockId).getTo();
+            }
         }
 
         return rawData;

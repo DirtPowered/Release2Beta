@@ -14,9 +14,10 @@ public class EntityEquipmentTranslator implements BetaToModern<EntityEquipmentPa
     public void translate(EntityEquipmentPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
         int itemId = session.remapBlock(packet.getItemId());
+        int data = session.remapMetadata(packet.getItemId(), packet.getItemData());
 
         if (itemId == -1) itemId = 0;
-        ItemStack itemStack = new ItemStack(itemId, 1, packet.getItemData());
+        ItemStack itemStack = new ItemStack(itemId, 1, data);
 
         int slot = packet.getSlot();
         EquipmentSlot equipmentSlot;

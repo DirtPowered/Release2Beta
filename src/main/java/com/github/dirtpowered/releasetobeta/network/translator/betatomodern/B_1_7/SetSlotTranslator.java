@@ -16,8 +16,10 @@ public class SetSlotTranslator implements BetaToModern<SetSlotPacketData> {
         int itemSlot = packet.getItemSlot();
         BetaItemStack itemStack = packet.getItemStack();
 
-        if (itemStack != null)
+        if (itemStack != null) {
             itemStack.setBlockId(session.remapBlock(itemStack.getBlockId()));
+            itemStack.setData(session.remapMetadata(itemStack.getBlockId(), itemStack.getData()));
+        }
 
         modernSession.send(new ServerSetSlotPacket(windowId, itemSlot, Utils.betaItemStackToItemStack(itemStack)));
     }
