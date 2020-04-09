@@ -12,7 +12,6 @@ public class ClientCreativeInventoryActionTranslator implements ModernToBeta<Cli
 
     @Override
     public void translate(ClientCreativeInventoryActionPacket packet, Session modernSession, BetaClientSession betaSession) {
-        Utils.debug(packet);
         betaSession.getMain().getScheduledExecutorService().execute(() -> {
 
             ItemStack itemStack = packet.getClickedItem();

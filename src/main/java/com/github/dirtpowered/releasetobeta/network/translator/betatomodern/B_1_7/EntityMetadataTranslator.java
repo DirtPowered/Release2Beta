@@ -7,7 +7,6 @@ import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityCreeper;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.MetadataType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
@@ -21,7 +20,6 @@ public class EntityMetadataTranslator implements BetaToModern<EntityMetadataPack
 
     @Override
     public void translate(EntityMetadataPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
         int entityId = packet.getEntityId();
         Entity e = session.getEntityCache().getEntityById(entityId);
         MobType mobType = null;

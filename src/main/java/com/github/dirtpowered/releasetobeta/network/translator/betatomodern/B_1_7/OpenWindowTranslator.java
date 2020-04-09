@@ -1,6 +1,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.OpenWindowPacketData;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.window.WindowType;
@@ -12,6 +13,7 @@ public class OpenWindowTranslator implements BetaToModern<OpenWindowPacketData> 
 
     @Override
     public void translate(OpenWindowPacketData packet, BetaClientSession session, Session modernSession) {
+        ModernPlayer player = session.getPlayer();
         int windowId = packet.getWindowId();
         int inventoryType = packet.getInventoryType();
         String inventoryTitle = TextMessage.fromString(packet.getWindowTitle()).toJsonString();
@@ -39,5 +41,6 @@ public class OpenWindowTranslator implements BetaToModern<OpenWindowPacketData> 
         }
 
         modernSession.send(new ServerOpenWindowPacket(windowId, windowType, inventoryTitle, slots));
+        player.onInventoryOpen(windowType);
     }
 }

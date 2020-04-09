@@ -1,11 +1,16 @@
 package com.github.dirtpowered.releasetobeta.data.mapping;
 
-public class DataObject {
-    private int from, to;
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 
-    DataObject(int from, int to) {
+public class DataObject {
+    private int from;
+    private int to;
+    private MinecraftVersion[] minecraftVersion;
+
+    DataObject(int from, int to, MinecraftVersion... minecraftVersion) {
         this.from = from;
         this.to = to;
+        this.minecraftVersion = minecraftVersion;
     }
 
     public int getFrom() {
@@ -14,5 +19,9 @@ public class DataObject {
 
     public int getTo() {
         return to;
+    }
+
+    public MinecraftVersion[] getMinecraftVersion() {
+        return minecraftVersion;
     }
 }

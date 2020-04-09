@@ -19,7 +19,7 @@ public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
 
         betaSession.getPlayer().fillProfile(username, result -> {
             betaSession.sendPacket(new HandshakePacketData(username));
-            betaSession.sendPacket(new LoginPacketData(MinecraftVersion.B1_7_3.getProtocolVersion(), username, 0, 0));
+            betaSession.sendPacket(new LoginPacketData(MinecraftVersion.B_1_7_3.getProtocolVersion(), username, 0, 0));
         });
     }
 }

@@ -13,6 +13,7 @@ import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
+import com.github.steveice10.mc.protocol.data.game.window.WindowType;
 import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
@@ -39,10 +40,13 @@ public class ModernPlayer implements PlayerAction {
     private int gamemode;
     private int worldHeight;
     private long seed;
+    private WindowType openedInventoryType;
 
     public ModernPlayer(BetaClientSession session) {
         this.session = session;
+
         this.inventory = new PlayerInventory();
+        this.openedInventoryType = WindowType.GENERIC_INVENTORY;
     }
 
     public long getSeed() {
@@ -184,6 +188,20 @@ public class ModernPlayer implements PlayerAction {
         if (itemId == 323) {
             sendPacket(new ServerOpenTileEntityEditorPacket(pos));
         }
+    }
+
+    @Override
+    public void onInventoryClose() {
+        this.openedInventoryType = WindowType.GENERIC_INVENTORY;
+    }
+
+    @Override
+    public void onInventoryOpen(WindowType windowType) {
+        this.openedInventoryType = windowType;
+    }
+
+    public WindowType getOpenedInventoryType() {
+        return openedInventoryType;
     }
 
     public boolean isInVehicle() {

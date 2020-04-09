@@ -12,6 +12,7 @@ import com.github.steveice10.mc.protocol.data.game.window.DropItemParam;
 import com.github.steveice10.mc.protocol.data.game.window.SpreadItemParam;
 import com.github.steveice10.mc.protocol.data.game.window.WindowAction;
 import com.github.steveice10.mc.protocol.data.game.window.WindowActionParam;
+import com.github.steveice10.mc.protocol.data.game.window.WindowType;
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientWindowActionPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -46,7 +47,7 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
 
             ItemStack itemStack = packet.getClickedItem() == null ? player.getInventory().getItem(slot) : packet.getClickedItem();
 
-            if (slot == 45 || droppingUsingQ) {
+            if (player.getOpenedInventoryType() == WindowType.GENERIC_INVENTORY && slot == 45 || droppingUsingQ) {
                 player.closeInventory();
                 player.updateInventory();
 

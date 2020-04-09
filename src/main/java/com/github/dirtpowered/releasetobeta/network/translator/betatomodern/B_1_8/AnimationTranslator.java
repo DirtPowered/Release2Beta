@@ -3,7 +3,6 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.AnimationPacketData;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.player.Animation;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityAnimationPacket;
 import com.github.steveice10.packetlib.Session;

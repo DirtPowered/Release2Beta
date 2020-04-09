@@ -52,7 +52,7 @@ public class ReleaseToBeta implements Runnable {
         BetaLib.inject(MINECRAFT_VERSION);
 
         switch (MINECRAFT_VERSION) {
-            case B1_7_3:
+            case B_1_7_3:
                 new B_1_7(betaToModernTranslatorRegistry, modernToBetaTranslatorRegistry);
                 break;
             case B_1_8_1:

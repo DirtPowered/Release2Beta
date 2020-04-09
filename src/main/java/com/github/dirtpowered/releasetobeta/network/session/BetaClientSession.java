@@ -1,5 +1,6 @@
 package com.github.dirtpowered.releasetobeta.network.session;
 
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.model.Packet;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.KeepAlivePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.StatisticsPacketData;
@@ -9,6 +10,7 @@ import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.TileEntity;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
+import com.github.dirtpowered.releasetobeta.data.mapping.DataObject;
 import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
@@ -244,7 +246,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         if (TileEntity.getFromId(blockId) == TileEntity.MOB_SPAWNER) {
             blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
             blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, data)));
-        } else if (TileEntity.getFromId(blockId) == TileEntity.CHEST) {
+        } else if (TileEntity.getFromId(blockId) == TileEntity.CHEST && ReleaseToBeta.MINECRAFT_VERSION == MinecraftVersion.B_1_7_3) {
             blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, 2)));
         }
     }
@@ -258,11 +260,18 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         return blockId;
     }
 
+
     public int remapMetadata(int blockId, int rawData) {
         MetadataMap m = releaseToBeta.getMetadataMap();
         if (m.exist(blockId)) {
-            if (m.getFromId(blockId).getFrom() == rawData) {
-                return m.getFromId(blockId).getTo();
+            DataObject dataObject = m.getFromId(blockId);
+            if (dataObject.getFrom() == rawData || dataObject.getFrom() == -1) {
+                if (Arrays.asList(dataObject.getMinecraftVersion()).contains(ReleaseToBeta.MINECRAFT_VERSION)) {
+
+                    Logger.info("[{}] remapping id:{} metadata from {} to {} for {}",
+                            player.getUsername(), blockId, rawData, m.getFromId(blockId).getTo(), ReleaseToBeta.MINECRAFT_VERSION);
+                    return m.getFromId(blockId).getTo();
+                }
             }
         }
 

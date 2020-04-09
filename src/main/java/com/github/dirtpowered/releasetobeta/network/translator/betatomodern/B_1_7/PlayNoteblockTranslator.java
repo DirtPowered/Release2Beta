@@ -24,6 +24,8 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
 
         NoteBlockValueType type = MagicValues.key(NoteBlockValueType.class, packet.getInstrumentType());
         int pitch = packet.getPitch();
+        if (pitch > 24) //that should fix rare case when opening small chest disconnects all players
+            return;
 
         BuiltinSound builtinSound;
 
