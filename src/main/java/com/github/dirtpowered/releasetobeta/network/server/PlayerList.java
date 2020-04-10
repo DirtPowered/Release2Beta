@@ -7,14 +7,12 @@ import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPlayerListEntryPacket;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
 
 public class PlayerList {
     private ServerConnection serverConnection;
@@ -28,33 +26,15 @@ public class PlayerList {
         Map<String, MultiSession> sessionMap = serverConnection.getMain().getSessionRegistry().getSessions();
         List<MultiSession> players = new ArrayList<>(sessionMap.values());
 
-        return MapUtil.transform(players, new Function<MultiSession, ModernPlayer>() {
-            @Nullable
-            @Override
-            public ModernPlayer apply(@Nullable MultiSession multiSession) {
-                return Objects.requireNonNull(multiSession).getBetaClientSession().getPlayer();
-            }
-        });
+        return MapUtil.transform(players, multiSession -> Objects.requireNonNull(multiSession).getBetaClientSession().getPlayer());
     }
 
     public List<GameProfile> getProfiles() {
-        return MapUtil.transform(getPlayers(), new Function<ModernPlayer, GameProfile>() {
-            @Nullable
-            @Override
-            public GameProfile apply(@Nullable ModernPlayer player) {
-                return Objects.requireNonNull(player).getGameProfile();
-            }
-        });
+        return MapUtil.transform(getPlayers(), player -> Objects.requireNonNull(player).getGameProfile());
     }
 
     private List<PlayerListEntry> getTabEntries() {
-        return MapUtil.transform(getPlayers(), new Function<ModernPlayer, PlayerListEntry>() {
-            @Nullable
-            @Override
-            public PlayerListEntry apply(@Nullable ModernPlayer player) {
-                return Objects.requireNonNull(player).getTabEntry();
-            }
-        });
+        return MapUtil.transform(getPlayers(), player -> Objects.requireNonNull(player).getTabEntry());
     }
 
     public void removeTabEntry(ModernPlayer player) {

@@ -1,7 +1,6 @@
 package com.github.dirtpowered.releasetobeta;
 
 import com.github.dirtpowered.betaprotocollib.BetaLib;
-import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.EntityEffectMap;
@@ -26,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 
 @Getter
 public class ReleaseToBeta implements Runnable {
-    public final static MinecraftVersion MINECRAFT_VERSION = MinecraftVersion.B_1_8_1;
     private final ScheduledExecutorService scheduledExecutorService;
     private SessionRegistry sessionRegistry;
     private BetaToModernTranslatorRegistry betaToModernTranslatorRegistry;
@@ -39,6 +37,8 @@ public class ReleaseToBeta implements Runnable {
     private PingPassthroughThread pingPassthroughThread;
 
     ReleaseToBeta() {
+        new R2BConfiguration().loadConfiguration(); //load config
+
         this.scheduledExecutorService = Executors.newScheduledThreadPool(32);
         this.sessionRegistry = new SessionRegistry();
         this.betaToModernTranslatorRegistry = new BetaToModernTranslatorRegistry();
@@ -49,11 +49,9 @@ public class ReleaseToBeta implements Runnable {
         this.entityEffectMap = new EntityEffectMap();
         this.server = new ModernServer(this);
 
-        new R2BConfiguration(); //load config
+        BetaLib.inject(R2BConfiguration.version);
 
-        BetaLib.inject(MINECRAFT_VERSION);
-
-        switch (MINECRAFT_VERSION) {
+        switch (R2BConfiguration.version) {
             case B_1_7_3:
                 new B_1_7(betaToModernTranslatorRegistry, modernToBetaTranslatorRegistry);
                 break;

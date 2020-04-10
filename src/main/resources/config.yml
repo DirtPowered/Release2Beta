@@ -1,0 +1,29 @@
+general:
+  # Possible values: B_1_8_1, B_1_7_3
+  beta_version: B_1_7_3
+  # MOTD which will be displayed on server ping list
+  # if 'beta_1_8_ping_passthrough' is not enabled
+  motd: '&9Release2Beta server'
+  max_players: 10
+connection:
+  # Beta server address
+  remote_address: localhost
+  remote_port: 25567
+  # Address to connect from modern Minecraft client
+  bind_address: localhost
+  bind_port: 25565
+misc:
+  resource_pack_url: ''
+  resource_pack_hash: ''
+  # Player nicknames autocompleting
+  tab_complete: true
+  # R2B doesn't support online-mode yet, you can use this option to enable skin fetching for offline-mode
+  skin_fix: true
+  # Renders snowballs instead
+  arrows_fix: true
+  disable_sprinting: true
+  # Displays MOTD from beta server
+  beta_1_8_ping_passthrough: false
+experimental:
+  # Do not enable this unless you know what you're doing
+  enable_chunk_updates: false

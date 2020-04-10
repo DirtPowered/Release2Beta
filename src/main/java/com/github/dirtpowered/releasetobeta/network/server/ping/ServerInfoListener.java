@@ -1,5 +1,6 @@
 package com.github.dirtpowered.releasetobeta.network.server.ping;
 
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.network.server.ServerConnection;
@@ -26,7 +27,7 @@ public class ServerInfoListener implements ServerInfoBuilder {
         serverListPing.setMaxPlayers(R2BConfiguration.maxPlayers);
         serverListPing.setMotd(R2BConfiguration.motd);
 
-        if (R2BConfiguration.ver1_8PingPassthrough) {
+        if (R2BConfiguration.ver1_8PingPassthrough && R2BConfiguration.version == MinecraftVersion.B_1_8_1) {
             PingMessage pingMessage = serverConnection.getMain().getPingPassthroughThread().getPingMessage();
 
             if (pingMessage == null) {

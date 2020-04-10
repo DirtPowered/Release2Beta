@@ -219,7 +219,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         if (TileEntity.getFromId(blockId) == TileEntity.MOB_SPAWNER) {
             blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
             blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, data)));
-        } else if (TileEntity.getFromId(blockId) == TileEntity.CHEST && ReleaseToBeta.MINECRAFT_VERSION == MinecraftVersion.B_1_7_3) {
+        } else if (TileEntity.getFromId(blockId) == TileEntity.CHEST && R2BConfiguration.version == MinecraftVersion.B_1_7_3) {
             blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, 2)));
         }
     }
@@ -238,7 +238,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         if (m.exist(blockId)) {
             DataObject dataObject = m.getFromId(blockId);
             if (dataObject.getFrom() == rawData || dataObject.getFrom() == -1) {
-                if (Arrays.asList(dataObject.getMinecraftVersion()).contains(ReleaseToBeta.MINECRAFT_VERSION)) {
+                if (Arrays.asList(dataObject.getMinecraftVersion()).contains(R2BConfiguration.version)) {
                     return m.getFromId(blockId).getTo();
                 }
             }
