@@ -2,8 +2,6 @@ package com.github.dirtpowered.releasetobeta.network.session;
 
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.model.Packet;
-import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.KeepAlivePacketData;
-import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.StatisticsPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
@@ -28,6 +26,8 @@ import com.github.steveice10.packetlib.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.Getter;
+import lombok.Setter;
 import org.pmw.tinylog.Logger;
 
 import java.util.ArrayList;
@@ -38,53 +38,110 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
-
     private final Channel channel;
-    private ReleaseToBeta releaseToBeta;
-    private ProtocolState protocolState;
-    private ModernPlayer player;
     private Session session;
-    private boolean loggedIn;
-    private List<Class<? extends Packet>> packetsToSkip;
-    private EntityCache entityCache;
     private Deque<BlockChangeRecord> blockChangeQueue = new LinkedList<>();
     private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
     private List<BetaPlayer> playersInRange = new ArrayList<>();
+
+    @Getter
+    private ReleaseToBeta main;
+
+    @Getter
+    @Setter
+    private ProtocolState protocolState;
+
+    @Getter
+    private ModernPlayer player;
+
+    @Getter
+    @Setter
+    private boolean loggedIn;
+
+    @Getter
+    private EntityCache entityCache;
+
+    @Getter
+    private String clientId;
+
     private boolean resourcepack;
 
-    private String clientId;
     private int tickLimiter = 0;
     private int i;
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session, String clientId) {
-        this.releaseToBeta = server;
+        this.main = server;
         this.channel = channel;
         this.protocolState = ProtocolState.LOGIN;
         this.player = new ModernPlayer(this);
         this.session = session;
         this.entityCache = new EntityCache();
         this.clientId = clientId;
+    }
 
-        packetsToSkip = Arrays.asList(
-                StatisticsPacketData.class,
-                KeepAlivePacketData.class
-        );
+    @Override
+    public void tick() {
+        tickLimiter = (tickLimiter + 1) % 2;
+        if (tickLimiter == 0) {
+            if (channel.isActive() && player.getGameProfile() != null && !initialPacketsQueue.isEmpty()) {
+                Packet p = initialPacketsQueue.poll();
+
+                channel.writeAndFlush(p);
+                return;
+            }
+
+            //wait 3 seconds to make sure client is ready to receive resourcepack packet
+            if (i > 20 * 3 && !resourcepack && !R2BConfiguration.resourcePack.isEmpty()) {
+                player.sendResourcePack();
+                resourcepack = true;
+            }
+            //sending block change packets immediately may cause problems, so delay it
+            poolTileEntityQueue();
+        }
+
+        i++;
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, Packet packet) {
+        processPacket(packet);
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        Logger.info("[{}] connected", clientId);
+
+        super.channelActive(ctx);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        Logger.info("[{}] disconnected", clientId);
+        quitPlayer();
+
+        super.channelInactive(ctx);
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+        Logger.warn("[{}/{}] closed connection: {}", clientId, player.getUsername(), cause.toString());
+
+        cause.printStackTrace();
+        context.close();
     }
 
     public void createSession() {
-        releaseToBeta.getSessionRegistry().addSession(clientId, new MultiSession(this, session));
+        main.getSessionRegistry().addSession(clientId, new MultiSession(this, session));
         player.setClientId(clientId);
-
     }
 
     @SuppressWarnings("unchecked")
     private void processPacket(Packet packet) {
-        BetaToModern handler = releaseToBeta.getBetaToModernTranslatorRegistry().getByPacket(packet);
+        BetaToModern handler = main.getBetaToModernTranslatorRegistry().getByPacket(packet);
         if (handler != null && channel.isActive()) {
-            handler.translate(packet, this, releaseToBeta.getSessionRegistry().getSession(player.getClientId()).getModernSession());
-        } else if (!packetsToSkip.contains(packet.getClass())) {
-            Logger.warn("[client={}] missing 'BetaToModern' translator for {}", getClientId().substring(0, 8),
-                    packet.getClass().getSimpleName());
+            handler.translate(packet, this, main.getSessionRegistry().getSession(player.getClientId()).getModernSession());
+        } else {
+            Logger.warn("[client={}] missing 'BetaToModern' translator for {}", clientId, packet.getClass().getSimpleName());
         }
     }
 
@@ -108,85 +165,12 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         getPlayer().sendPacket(entryPacket);
     }
 
-    public ProtocolState getProtocolState() {
-        return protocolState;
-    }
-
-    public void setProtocolState(ProtocolState protocolState) {
-        this.protocolState = protocolState;
-    }
-
-    @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Packet packet) {
-        processPacket(packet);
-    }
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Logger.info("[client] connected");
-
-        super.channelActive(ctx);
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        Logger.info("[client] disconnected");
-        quitPlayer();
-
-        super.channelInactive(ctx);
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
-        Logger.warn("[client] closed connection: {}", cause.toString());
-
-        cause.printStackTrace();
-        context.close();
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
     public void sendPacket(Packet packet) {
         if (channel.isActive())
             channel.writeAndFlush(packet);
         else {
-            Logger.warn("channel is not ready, queueing packet '{}'", packet.getPacketClass().getSimpleName());
             initialPacketsQueue.add(packet);
         }
-    }
-
-    public ModernPlayer getPlayer() {
-        return player;
-    }
-
-    @Override
-    public void tick() {
-        tickLimiter = (tickLimiter + 1) % 2;
-        if (tickLimiter == 0) {
-            if (channel.isActive() && player.getGameProfile() != null && !initialPacketsQueue.isEmpty()) {
-                Packet p = initialPacketsQueue.poll();
-                Logger.info("sending queued packet: {}", p.getPacketClass().getSimpleName());
-
-                channel.writeAndFlush(p);
-                return;
-            }
-
-            //wait 3 seconds to make sure client is ready to receive resourcepack packet
-            if (i > 20 * 3 && !resourcepack && !R2BConfiguration.resourcePack.isEmpty()) {
-                player.sendResourcePack();
-                resourcepack = true;
-            }
-            //sending block change packets immediately may cause problems, so delay it
-            poolTileEntityQueue();
-        }
-
-        i++;
-    }
-
-    public ReleaseToBeta getMain() {
-        return releaseToBeta;
     }
 
     public void disconnect() {
@@ -194,34 +178,23 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             channel.close();
     }
 
-    public EntityCache getEntityCache() {
-        return entityCache;
-    }
-
-    private boolean isLoggedIn() {
-        return loggedIn;
-    }
-
-    private void setLoggedIn() {
-        this.loggedIn = true;
-    }
-
     private void quitPlayer() {
-        releaseToBeta.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
-        releaseToBeta.getSessionRegistry().removeSession(player.getClientId());
         session.disconnect(TextColor.translate("&cunexpectedly disconnected by server"));
+        main.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
 
         initialPacketsQueue.clear();
         blockChangeQueue.clear();
 
         entityCache.getEntities().clear();
         playersInRange.clear();
+
+        main.getSessionRegistry().removeSession(player.getClientId());
     }
 
     public void joinPlayer() {
         if (!isLoggedIn()) {
-            releaseToBeta.getServer().getServerConnection().getPlayerList().addTabEntry(player);
-            setLoggedIn();
+            main.getServer().getServerConnection().getPlayerList().addTabEntry(player);
+            setLoggedIn(true);
         }
     }
 
@@ -252,7 +225,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public int remapBlock(int blockId) {
-        BlockMap b = releaseToBeta.getBlockMap();
+        BlockMap b = main.getBlockMap();
         if (b.exist(blockId)) {
             return b.getFromId(blockId);
         }
@@ -260,16 +233,12 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         return blockId;
     }
 
-
     public int remapMetadata(int blockId, int rawData) {
-        MetadataMap m = releaseToBeta.getMetadataMap();
+        MetadataMap m = main.getMetadataMap();
         if (m.exist(blockId)) {
             DataObject dataObject = m.getFromId(blockId);
             if (dataObject.getFrom() == rawData || dataObject.getFrom() == -1) {
                 if (Arrays.asList(dataObject.getMinecraftVersion()).contains(ReleaseToBeta.MINECRAFT_VERSION)) {
-
-                    Logger.info("[{}] remapping id:{} metadata from {} to {} for {}",
-                            player.getUsername(), blockId, rawData, m.getFromId(blockId).getTo(), ReleaseToBeta.MINECRAFT_VERSION);
                     return m.getFromId(blockId).getTo();
                 }
             }
