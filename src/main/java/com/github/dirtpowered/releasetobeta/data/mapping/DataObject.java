@@ -1,7 +1,9 @@
 package com.github.dirtpowered.releasetobeta.data.mapping;
 
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
+import lombok.Getter;
 
+@Getter
 public class DataObject {
     private int from;
     private int to;
@@ -11,17 +13,5 @@ public class DataObject {
         this.from = from;
         this.to = to;
         this.minecraftVersion = minecraftVersion;
-    }
-
-    public int getFrom() {
-        return from;
-    }
-
-    public int getTo() {
-        return to;
-    }
-
-    public MinecraftVersion[] getMinecraftVersion() {
-        return minecraftVersion;
     }
 }

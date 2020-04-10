@@ -1,6 +1,9 @@
 package com.github.dirtpowered.releasetobeta.data.chunk;
 
-public class NibbleArray {
+import lombok.Getter;
+
+@Getter
+class NibbleArray {
     private final byte[] data;
 
     NibbleArray(int initialSize) {
@@ -12,9 +15,5 @@ public class NibbleArray {
         int value = index >> 1;
         boolean above = (index & 1) == 0;
         return above ? this.data[value] & 15 : this.data[value] >> 4 & 15;
-    }
-
-    public byte[] getData() {
-        return data;
     }
 }

@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EntityRegistry {
-
     private Map<MobType, Class<? extends Entity>> entities = new HashMap<>();
 
     public EntityRegistry() {

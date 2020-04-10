@@ -1,5 +1,8 @@
 package com.github.dirtpowered.releasetobeta.network.server.ping.LegacyPing.model;
 
+import lombok.Getter;
+
+@Getter
 public class PingMessage {
     private String motd;
     private int onlinePlayers;
@@ -10,17 +13,5 @@ public class PingMessage {
         this.motd = motdMessage[0];
         this.onlinePlayers = Integer.parseInt(motdMessage[1]);
         this.maxPlayers = Integer.parseInt(motdMessage[2]);
-    }
-
-    public String getMotd() {
-        return motd;
-    }
-
-    public int getOnlinePlayers() {
-        return onlinePlayers;
-    }
-
-    public int getMaxPlayers() {
-        return maxPlayers;
     }
 }

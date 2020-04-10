@@ -1,13 +1,14 @@
 package com.github.dirtpowered.releasetobeta.network.session;
 
 import com.github.steveice10.packetlib.Session;
+import lombok.Getter;
 import org.pmw.tinylog.Logger;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Getter
 public class SessionRegistry {
-
     private Map<String, MultiSession> sessions = new ConcurrentHashMap<>();
 
     void addSession(String clientId, MultiSession multiSession) {
@@ -19,10 +20,6 @@ public class SessionRegistry {
     public void removeSession(String clientId) {
         sessions.remove(clientId);
         Logger.info("[count={}/id={}] removing session", sessions.size(), clientId);
-    }
-
-    public Map<String, MultiSession> getSessions() {
-        return sessions;
     }
 
     public MultiSession getSession(String clientId) {

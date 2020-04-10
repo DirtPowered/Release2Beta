@@ -11,10 +11,12 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lombok.NoArgsConstructor;
 import org.pmw.tinylog.Logger;
 
 import java.net.InetSocketAddress;
 
+@NoArgsConstructor
 class LegacyPingConnector {
 
     void connect(Callback<PingMessage> pingMessageCallback) throws InterruptedException {

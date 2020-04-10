@@ -23,8 +23,4 @@ public enum TileEntity {
             return tileEntity.blockId == blockId;
         }).findFirst().orElse(null);
     }
-
-    public int getBlockId() {
-        return blockId;
-    }
 }

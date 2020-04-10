@@ -18,11 +18,13 @@ import com.github.dirtpowered.releasetobeta.network.translator.registry.BetaToMo
 import com.github.dirtpowered.releasetobeta.network.translator.registry.ModernToBetaTranslatorRegistry;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientResourcePackStatusPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientTabCompletePacket;
+import lombok.Getter;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Getter
 public class ReleaseToBeta implements Runnable {
     public final static MinecraftVersion MINECRAFT_VERSION = MinecraftVersion.B_1_8_1;
     private final ScheduledExecutorService scheduledExecutorService;
@@ -77,7 +79,7 @@ public class ReleaseToBeta implements Runnable {
     }
 
     void stop() {
-        getSessionRegistry().getSessions().clear();
+        sessionRegistry.getSessions().clear();
     }
 
     @Override
@@ -87,45 +89,5 @@ public class ReleaseToBeta implements Runnable {
         });
 
         this.server.getServerConnection().tick();
-    }
-
-    public ScheduledExecutorService getScheduledExecutorService() {
-        return scheduledExecutorService;
-    }
-
-    public SessionRegistry getSessionRegistry() {
-        return sessionRegistry;
-    }
-
-    public BetaToModernTranslatorRegistry getBetaToModernTranslatorRegistry() {
-        return betaToModernTranslatorRegistry;
-    }
-
-    public ModernToBetaTranslatorRegistry getModernToBetaTranslatorRegistry() {
-        return modernToBetaTranslatorRegistry;
-    }
-
-    public SoundEffectMap getSoundEffectMap() {
-        return soundEffectMap;
-    }
-
-    public BlockMap getBlockMap() {
-        return blockMap;
-    }
-
-    public MetadataMap getMetadataMap() {
-        return metadataMap;
-    }
-
-    public ModernServer getServer() {
-        return server;
-    }
-
-    public EntityEffectMap getEntityEffectMap() {
-        return entityEffectMap;
-    }
-
-    public PingPassthroughThread getPingPassthroughThread() {
-        return pingPassthroughThread;
     }
 }

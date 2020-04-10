@@ -5,9 +5,10 @@ import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayBuiltinSoundPacket;
 import com.github.steveice10.packetlib.Session;
+import lombok.Getter;
 
+@Getter
 public abstract class Entity {
-
     private int entityId;
     private MobType mobType;
     private boolean betaPlayer;
@@ -30,30 +31,6 @@ public abstract class Entity {
     }
 
     public abstract void onSpawn(Session session);
-
-    public boolean isBetaPlayer() {
-        return betaPlayer;
-    }
-
-    public MobType getMobType() {
-        return mobType;
-    }
-
-    public int getEntityId() {
-        return entityId;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getZ() {
-        return z;
-    }
 
     public void setLocation(double x, double y, double z) {
         this.x = (int) x;

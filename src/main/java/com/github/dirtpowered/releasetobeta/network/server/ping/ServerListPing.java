@@ -9,29 +9,27 @@ import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.data.status.PlayerInfo;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
 import com.github.steveice10.mc.protocol.data.status.VersionInfo;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
+@NoArgsConstructor
 public class ServerListPing {
-    private int maxPlayers;
-    private int onlinePlayers;
     private Message motd;
-    private int protocolVersion;
-    private String versionString;
     private GameProfile[] playerListSample;
 
-    public ServerListPing() {
-        protocolVersion = 340;
-        versionString = "ReleaseToBeta 1.12.2";
-    }
+    @Setter
+    private int maxPlayers;
 
-    public void setMaxPlayers(int maxPlayers) {
-        this.maxPlayers = maxPlayers;
-    }
+    @Setter
+    private int onlinePlayers;
 
-    public void setOnlinePlayers(int onlinePlayers) {
-        this.onlinePlayers = onlinePlayers;
-    }
+    @Setter
+    private int protocolVersion;
+
+    @Setter
+    private String versionString;
 
     public void setMotd(String motd) {
         this.motd = TextMessage.fromString(TextColor.translate(motd))

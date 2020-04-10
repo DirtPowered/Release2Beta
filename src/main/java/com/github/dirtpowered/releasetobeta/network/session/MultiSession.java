@@ -1,7 +1,9 @@
 package com.github.dirtpowered.releasetobeta.network.session;
 
 import com.github.steveice10.packetlib.Session;
+import lombok.Getter;
 
+@Getter
 public class MultiSession {
 
     private BetaClientSession betaClientSession;
@@ -10,13 +12,5 @@ public class MultiSession {
     MultiSession(BetaClientSession betaClientSession, Session modernSession) {
         this.betaClientSession = betaClientSession;
         this.modernSession = modernSession;
-    }
-
-    public BetaClientSession getBetaClientSession() {
-        return betaClientSession;
-    }
-
-    public Session getModernSession() {
-        return modernSession;
     }
 }

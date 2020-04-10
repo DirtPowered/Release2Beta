@@ -37,7 +37,7 @@ public class PlayerList {
         });
     }
 
-    List<GameProfile> getProfiles() {
+    public List<GameProfile> getProfiles() {
         return MapUtil.transform(getPlayers(), new Function<ModernPlayer, GameProfile>() {
             @Nullable
             @Override

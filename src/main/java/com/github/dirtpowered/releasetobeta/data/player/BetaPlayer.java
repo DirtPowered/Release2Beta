@@ -11,12 +11,14 @@ import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.packetlib.Session;
+import lombok.Getter;
 
 import java.util.UUID;
 
 public class BetaPlayer extends Entity {
-
+    @Getter
     private String username;
+    @Getter
     private GameProfile gameProfile;
 
     public BetaPlayer(BetaClientSession session, String username, int entityId, Callback<BetaPlayer> callback) {
@@ -41,14 +43,6 @@ public class BetaPlayer extends Entity {
 
     public UUID getUUID() {
         return gameProfile.getId();
-    }
-
-    public GameProfile getGameProfile() {
-        return gameProfile;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     @Override

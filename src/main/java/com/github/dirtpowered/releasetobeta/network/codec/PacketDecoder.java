@@ -28,10 +28,8 @@ public class PacketDecoder extends ReplayingDecoder<Packet> {
             return;
 
         AbstractPacket abstractPacket = BetaLib.getRegistry().getFromId(packetId).newInstance();
-
         Packet o = abstractPacket.readPacketData(buffer);
-        /*if (!o.getClass().getSimpleName().contains("hunk"))
-            Logger.info("received packet: {}", ReflectionToStringBuilder.toString(o, ToStringStyle.SHORT_PREFIX_STYLE));*/
+
         list.add(o);
     }
 }

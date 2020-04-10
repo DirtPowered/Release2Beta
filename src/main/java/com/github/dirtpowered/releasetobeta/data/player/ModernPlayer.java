@@ -17,30 +17,48 @@ import com.github.steveice10.mc.protocol.data.game.window.WindowType;
 import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerResourcePackSendPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerCloseWindowPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerOpenTileEntityEditorPacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.packet.Packet;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class ModernPlayer implements PlayerAction {
     private String username;
     private int entityId;
     private BetaClientSession session;
     private String clientId;
     private GameProfile gameProfile;
-    private int dimension;
-    private boolean sneaking;
     private PlayerInventory inventory;
-    private Location location;
-    private boolean inVehicle;
-    private int difficulty;
-    private int gamemode;
-    private int worldHeight;
-    private long seed;
     private WindowType openedInventoryType;
+
+    @Setter
+    private int dimension;
+
+    @Setter
+    private boolean sneaking;
+
+    @Setter
+    private Location location;
+
+    @Setter
+    private boolean inVehicle;
+
+    @Setter
+    private int difficulty;
+
+    @Setter
+    private int gamemode;
+
+    @Setter
+    private int worldHeight;
+
+    @Setter
+    private long seed;
 
     public ModernPlayer(BetaClientSession session) {
         this.session = session;
@@ -49,60 +67,8 @@ public class ModernPlayer implements PlayerAction {
         this.openedInventoryType = WindowType.GENERIC_INVENTORY;
     }
 
-    public long getSeed() {
-        return seed;
-    }
-
-    public void setSeed(long seed) {
-        this.seed = seed;
-    }
-
-    public int getWorldHeight() {
-        return worldHeight;
-    }
-
-    public void setWorldHeight(int worldHeight) {
-        this.worldHeight = worldHeight;
-    }
-
-    public int getGamemode() {
-        return gamemode;
-    }
-
-    public void setGamemode(int gamemode) {
-        this.gamemode = gamemode;
-    }
-
-    public int getDifficulty() {
-        return difficulty;
-    }
-
-    public void setDifficulty(int difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    public int getDimension() {
-        return dimension;
-    }
-
-    public void setDimension(int dimension) {
-        this.dimension = dimension;
-    }
-
-    public GameProfile getGameProfile() {
-        return gameProfile;
-    }
-
     public PlayerListEntry getTabEntry() {
         return new PlayerListEntry(getGameProfile(), GameMode.SURVIVAL, getPing(), Message.fromString(username));
-    }
-
-    public BetaClientSession getSession() {
-        return session;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public void fillProfile(String username, Callback<ModernPlayer> result) {
@@ -119,16 +85,8 @@ public class ModernPlayer implements PlayerAction {
         }
     }
 
-    public int getEntityId() {
-        return entityId;
-    }
-
     public void setEntityId(int entityId) {
         this.entityId = entityId;
-    }
-
-    public String getClientId() {
-        return clientId;
     }
 
     public void setClientId(String clientId) {
@@ -149,36 +107,12 @@ public class ModernPlayer implements PlayerAction {
         ));
     }
 
-    public void kick(String reason) {
-        sendPacket(new ServerDisconnectPacket(reason));
-    }
-
-    public boolean isSneaking() {
-        return sneaking;
-    }
-
-    public void setSneaking(boolean sneaking) {
-        this.sneaking = sneaking;
-    }
-
-    public PlayerInventory getInventory() {
-        return inventory;
-    }
-
     public void updateInventory() {
         sendPacket(new ServerWindowItemsPacket(0, inventory.getItems()));
     }
 
     public void closeInventory() {
         sendPacket(new ServerCloseWindowPacket(0));
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
     }
 
     @Override
@@ -200,17 +134,6 @@ public class ModernPlayer implements PlayerAction {
         this.openedInventoryType = windowType;
     }
 
-    public WindowType getOpenedInventoryType() {
-        return openedInventoryType;
-    }
-
-    public boolean isInVehicle() {
-        return inVehicle;
-    }
-
-    public void setInVehicle(boolean inVehicle) {
-        this.inVehicle = inVehicle;
-    }
 
     public void sendMessage(String message) {
         sendPacket(new ServerChatPacket(TextMessage.fromString(message)));

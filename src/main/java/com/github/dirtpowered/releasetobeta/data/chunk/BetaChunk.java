@@ -1,14 +1,16 @@
 package com.github.dirtpowered.releasetobeta.data.chunk;
 
 import com.github.dirtpowered.releasetobeta.data.Constants;
+import lombok.Getter;
 
 public class BetaChunk {
     private byte[] types;
     private NibbleArray metadata;
     private NibbleArray blocklight;
     private NibbleArray skylight;
-    private int x;
-    private int z;
+
+    @Getter
+    private int x, z;
 
     public BetaChunk(int x, int z) {
         this.x = x;
@@ -18,14 +20,6 @@ public class BetaChunk {
         this.metadata = new NibbleArray(Constants.MAX_CHUNK_SIZE);
         this.blocklight = new NibbleArray(Constants.MAX_CHUNK_SIZE);
         this.skylight = new NibbleArray(Constants.MAX_CHUNK_SIZE);
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getZ() {
-        return z;
     }
 
     private int getIndex(int x, int y, int z) {

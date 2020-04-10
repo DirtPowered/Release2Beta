@@ -1,10 +1,14 @@
 package com.github.dirtpowered.releasetobeta.data.inventory;
 
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
+import lombok.Getter;
+import lombok.Setter;
 
 public class PlayerInventory {
     private ItemStack[] inventoryItems = new ItemStack[90];
     private int currentSlot;
+    @Getter
+    @Setter
     private int lastSlot;
 
     public ItemStack getItem(int i) {
@@ -30,14 +34,6 @@ public class PlayerInventory {
 
     public void setCurrentHotbarSlot(int currentSlot) {
         this.currentSlot = 36 + currentSlot;
-    }
-
-    public int getLastSlot() {
-        return lastSlot;
-    }
-
-    public void setLastSlot(int lastSlot) {
-        this.lastSlot = lastSlot;
     }
 
     public ItemStack getItemInHand() {

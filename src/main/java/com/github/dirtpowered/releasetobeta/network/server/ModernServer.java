@@ -7,13 +7,16 @@ import com.github.dirtpowered.releasetobeta.data.command.model.Command;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.data.skin.ProfileCache;
+import lombok.Getter;
 
+@Getter
 public class ModernServer {
     private ReleaseToBeta main;
     private ServerConnection serverConnection;
     private EntityRegistry entityRegistry;
     private ProfileCache profileCache;
     private CommandRegistry commandRegistry;
+    private String[] commands;
 
     public ModernServer(ReleaseToBeta releaseToBeta) {
         this.main = releaseToBeta;
@@ -22,6 +25,7 @@ public class ModernServer {
         this.entityRegistry = new EntityRegistry();
         this.profileCache = new ProfileCache();
         this.commandRegistry = new CommandRegistry();
+        this.commands = commandRegistry.getCommands().keySet().toArray(new String[0]);
 
         registerInternalCommands();
     }
@@ -42,29 +46,5 @@ public class ModernServer {
         }
 
         return false;
-    }
-
-    public String[] getCommands() {
-        return commandRegistry.getCommands().keySet().toArray(new String[0]);
-    }
-
-    public ReleaseToBeta getMain() {
-        return main;
-    }
-
-    public ServerConnection getServerConnection() {
-        return serverConnection;
-    }
-
-    public CommandRegistry getCommandRegistry() {
-        return commandRegistry;
-    }
-
-    public EntityRegistry getEntityRegistry() {
-        return entityRegistry;
-    }
-
-    public ProfileCache getProfileCache() {
-        return profileCache;
     }
 }
