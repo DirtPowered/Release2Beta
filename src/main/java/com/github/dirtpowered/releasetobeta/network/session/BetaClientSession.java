@@ -24,11 +24,13 @@ package com.github.dirtpowered.releasetobeta.network.session;
 
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.model.Packet;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapDataPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.TileEntity;
+import com.github.dirtpowered.releasetobeta.data.map.MapTranslator;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.DataObject;
 import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
@@ -90,6 +92,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     private int tickLimiter = 0;
     private int i;
+    private MapTranslator mapTranslator;
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session, String clientId) {
         this.main = server;
@@ -99,6 +102,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         this.session = session;
         this.entityCache = new EntityCache();
         this.clientId = clientId;
+        this.mapTranslator = new MapTranslator();
     }
 
     @Override
@@ -281,5 +285,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         }
 
         return combinedPlayers.toArray(new String[0]);
+    }
+
+    public void handleMapPacket(MapDataPacketData mapData) {
+        mapTranslator.translateMapData(mapData, session);
     }
 }

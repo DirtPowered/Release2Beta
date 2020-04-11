@@ -59,6 +59,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.SetSlotPa
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.SleepPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.SoundEffectPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.SpawnPositionPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.StatisticsPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.ThunderboltPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.TransactionPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateHealthPacketData;
@@ -104,6 +105,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.SleepPacketTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.SoundEffectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.SpawnPositionTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.StatisticsTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.ThunderboltTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.TransactionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.UpdateHealthTranslator;
@@ -203,6 +205,7 @@ public class B_1_7 {
         betaToModernTranslatorRegistry.registerTranslator(PaintingPacketData.class, new PaintingTranslator());
         betaToModernTranslatorRegistry.registerTranslator(SoundEffectPacketData.class, new SoundEffectTranslator());
         betaToModernTranslatorRegistry.registerTranslator(EntityLookPacketData.class, new EntityLookTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(StatisticsPacketData.class, new StatisticsTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());

@@ -22,15 +22,18 @@
 
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
-import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapDataPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.StatisticsPacketData;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.packetlib.Session;
 
-public class MapDataTranslator implements BetaToModern<MapDataPacketData> {
+public class StatisticsTranslator implements BetaToModern<StatisticsPacketData> {
 
     @Override
-    public void translate(MapDataPacketData packet, BetaClientSession session, Session modernSession) {
-        session.handleMapPacket(packet);
+    public void translate(StatisticsPacketData packet, BetaClientSession session, Session modernSession) {
+        Utils.debug(packet);
+
+        //TODO: Translate this somehow
     }
 }
