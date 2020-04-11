@@ -40,7 +40,7 @@ public class LoginTranslator implements BetaToModern<LoginPacketData> {
     public void translate(LoginPacketData packet, BetaClientSession session, Session modernSession) {
         ModernPlayer player = session.getPlayer();
         int entityId = packet.getEntityId();
-        int dimension = packet.getDimension();
+        int dimension = packet.getDimension() == -1 ? -1 : 0;
 
         session.setProtocolState(ProtocolState.PLAY);
         modernSession.send(new ServerJoinGamePacket(

@@ -39,7 +39,8 @@ public class LoginTranslator implements BetaToModern<LoginPacketData> {
     public void translate(LoginPacketData packet, BetaClientSession session, Session modernSession) {
         ModernPlayer player = session.getPlayer();
         int entityId = packet.getEntityId();
-        int dimension = packet.getDimension();
+        int dimension = packet.getDimension() == -1 ? -1 : 0;
+
         int maxPlayers = packet.getMaxPlayers();
         GameMode gameMode = packet.getGamemode() == 0 ? GameMode.SURVIVAL : GameMode.CREATIVE;
         Difficulty difficulty;

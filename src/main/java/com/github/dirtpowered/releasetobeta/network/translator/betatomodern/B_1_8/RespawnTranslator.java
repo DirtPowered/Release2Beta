@@ -38,8 +38,9 @@ public class RespawnTranslator implements BetaToModern<RespawnPacketData> {
     public void translate(RespawnPacketData packet, BetaClientSession session, Session modernSession) {
         ModernPlayer player = session.getPlayer();
 
-        int dimension = packet.getDimension();
+        int dimension = packet.getDimension() == -1 ? -1 : 0;
         player.setDimension(dimension);
+
         GameMode gameMode = packet.getGamemode() == 0 ? GameMode.SURVIVAL : GameMode.CREATIVE;
         Difficulty difficulty;
 
