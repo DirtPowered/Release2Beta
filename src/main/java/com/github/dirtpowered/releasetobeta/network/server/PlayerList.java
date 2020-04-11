@@ -107,4 +107,8 @@ public class PlayerList {
             lastTabUpdate = System.currentTimeMillis();
         }
     }
+
+    public int getOnlineCount() {
+        return getPlayers().size();
+    }
 }

@@ -49,6 +49,7 @@ public class R2BConfiguration {
     public static boolean tabComplete;
     public static boolean testMode;
     public static boolean ver1_8PingPassthrough;
+    public static String serverFullMessage;
 
     public void loadConfiguration() {
         YamlFile config = new YamlFile("config.yml");
@@ -92,6 +93,8 @@ public class R2BConfiguration {
             arrowFix = config.getBoolean("misc.arrows_fix");
             disableSprinting = config.getBoolean("misc.disable_sprinting");
             ver1_8PingPassthrough = config.getBoolean("misc.beta_1_8_ping_passthrough");
+
+            serverFullMessage = config.getString("messages.server_full_message");
 
             testMode = config.getBoolean("experimental.enable_chunk_updates");
         } catch (Exception e) {

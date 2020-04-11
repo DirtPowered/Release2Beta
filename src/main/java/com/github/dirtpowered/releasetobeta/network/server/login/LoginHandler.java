@@ -51,6 +51,11 @@ public class LoginHandler implements ServerLoginHandler {
     public void loggedIn(Session session) {
         try {
             if (session.isConnected()) {
+                if (main.getServer().getServerConnection().getPlayerList().getOnlineCount() + 1 > R2BConfiguration.maxPlayers) {
+                    session.disconnect(R2BConfiguration.serverFullMessage);
+                    return;
+                }
+
                 createClientSession(RandomStringUtils.randomAlphabetic(8), session);
             }
         } catch (InterruptedException e) {
