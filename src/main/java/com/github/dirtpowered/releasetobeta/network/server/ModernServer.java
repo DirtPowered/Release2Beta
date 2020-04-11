@@ -47,9 +47,9 @@ public class ModernServer {
         this.entityRegistry = new EntityRegistry();
         this.profileCache = new ProfileCache();
         this.commandRegistry = new CommandRegistry();
-        this.commands = commandRegistry.getCommands().keySet().toArray(new String[0]);
 
         registerInternalCommands();
+        this.commands = commandRegistry.getCommands().keySet().toArray(new String[0]);
     }
 
     private void registerInternalCommands() {

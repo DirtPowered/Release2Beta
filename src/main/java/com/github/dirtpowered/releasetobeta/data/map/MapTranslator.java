@@ -59,7 +59,7 @@ public class MapTranslator {
                 byte centerZ = buffer[locIndex * 3 + 3];
                 byte iconRotation = (byte) (buffer[locIndex * 3 + 1] / 16);
 
-                icons.add(new MapIcon(centerX, centerZ, MapIconType.RED_ARROW, iconRotation));
+                icons.add(new MapIcon(centerX, centerZ, MapIconType.WHITE_ARROW, iconRotation));
                 session.send(new ServerMapDataPacket(mapId, (byte) 4, false, icons.toArray(new MapIcon[0]), null));
             }
         }
