@@ -9,6 +9,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.CloseWind
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.CollectPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityDestroyPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityEquipmentPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityLookPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityMetadataPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityMoveLookPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityPositionPacketData;
@@ -58,6 +59,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.CollectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.EntityDestroyTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.EntityEquipmentTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.EntityLookTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.EntityMetadataTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.EntityMoveLookTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.EntityPositionTranslator;
@@ -205,6 +207,7 @@ public class B_1_8 {
         betaToModernTranslatorRegistry.registerTranslator(PaintingPacketData.class, new PaintingTranslator());
         betaToModernTranslatorRegistry.registerTranslator(SoundEffectPacketData.class, new SoundEffectTranslator());
         betaToModernTranslatorRegistry.registerTranslator(NamedEntitySpawnPacketData.class, new NamedEntitySpawnTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(EntityLookPacketData.class, new EntityLookTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientChatPacket.class, new ClientChatTranslator());
