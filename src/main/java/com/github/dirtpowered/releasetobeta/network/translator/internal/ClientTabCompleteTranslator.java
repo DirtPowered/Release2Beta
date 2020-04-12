@@ -64,7 +64,7 @@ public class ClientTabCompleteTranslator implements ModernToBeta<ClientTabComple
             }
         }
 
-        Collections.sort(strList);
+        strList.sort(String.CASE_INSENSITIVE_ORDER);
         return strList.toArray(new String[0]);
     }
 }

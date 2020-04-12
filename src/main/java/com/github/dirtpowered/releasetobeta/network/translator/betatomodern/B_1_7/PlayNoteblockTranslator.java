@@ -27,7 +27,9 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.BlockValueType;
+import com.github.steveice10.mc.protocol.data.game.world.block.value.GenericBlockValue;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.NoteBlockValue;
+import com.github.steveice10.mc.protocol.data.game.world.block.value.NoteBlockValueType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockValuePacket;
@@ -45,34 +47,42 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
         Position position = new Position(x, y, z);
 
         int pitch = packet.getPitch();
-        if (pitch > 24) //that should fix rare case when opening small chest disconnects all players
-            return;
 
         BuiltinSound builtinSound;
+        BlockValueType type;
 
         switch (packet.getInstrumentType()) {
             case 0:
                 builtinSound = BuiltinSound.BLOCK_NOTE_HARP;
+                type = NoteBlockValueType.HARP;
                 break;
             case 1:
-                builtinSound = BuiltinSound.BLOCK_NOTE_BASEDRUM;
+                /*builtinSound = BuiltinSound.BLOCK_NOTE_BASEDRUM;
+                type = NoteBlockValueType.BASS_DRUM;*/
+
+                //Opening chest fix
+                builtinSound = BuiltinSound.BLOCK_NOTE_BASS;
+                type = NoteBlockValueType.DOUBLE_BASS;
                 break;
             case 2:
                 builtinSound = BuiltinSound.BLOCK_NOTE_SNARE;
+                type = NoteBlockValueType.SNARE_DRUM;
                 break;
             case 3:
                 builtinSound = BuiltinSound.BLOCK_NOTE_HAT;
+                type = NoteBlockValueType.HI_HAT;
                 break;
             case 4:
                 builtinSound = BuiltinSound.BLOCK_NOTE_BASS;
+                type = NoteBlockValueType.DOUBLE_BASS;
                 break;
             default:
                 builtinSound = BuiltinSound.BLOCK_NOTE_HARP;
+                type = NoteBlockValueType.HARP;
                 break;
         }
 
         modernSession.send(new ServerPlayBuiltinSoundPacket(builtinSound, SoundCategory.RECORD, x, y, z, 3.0f, pitch));
-        modernSession.send(new ServerBlockValuePacket(position, new BlockValueType() {
-        }, new NoteBlockValue(pitch), 25));
+        modernSession.send(new ServerBlockValuePacket(position, type, new GenericBlockValue(pitch), 25));
     }
 }
