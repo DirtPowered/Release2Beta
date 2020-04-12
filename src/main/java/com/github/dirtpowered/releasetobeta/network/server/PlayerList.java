@@ -72,7 +72,7 @@ public class PlayerList {
     }
 
     public void addTabEntry(ModernPlayer player) {
-        if (player.getTabEntry() == null)
+        if (player.getGameProfile() == null)
             return;
 
         player.sendPacket(new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, getTabEntries().toArray(new PlayerListEntry[0])));

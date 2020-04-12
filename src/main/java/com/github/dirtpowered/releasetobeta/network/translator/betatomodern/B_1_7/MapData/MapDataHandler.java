@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-public class MapTranslator {
+public class MapDataHandler {
     private byte[] colors = new byte[128 * 128];
 
     public void translateMapData(MapDataPacketData data, Session session) {

@@ -28,6 +28,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.ClientTabCompleteP
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerTabCompletePacket;
 import com.github.steveice10.packetlib.Session;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +59,7 @@ public class ClientTabCompleteTranslator implements ModernToBeta<ClientTabComple
         List<String> strList = new ArrayList<>();
 
         for (String word : possibleCompletions) {
-            if (word.startsWith(current)) {
+            if (StringUtils.startsWithIgnoreCase(word, current)) {
                 strList.add(current + word.substring(current.length()));
             }
         }
