@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.data.map;
+package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.MapData;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapDataPacketData;
 import com.github.steveice10.mc.protocol.data.game.world.map.MapData;

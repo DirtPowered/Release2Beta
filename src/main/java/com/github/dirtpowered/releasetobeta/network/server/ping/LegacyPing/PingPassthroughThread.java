@@ -29,14 +29,17 @@ import org.pmw.tinylog.Logger;
 @Getter
 public class PingPassthroughThread implements Runnable {
     private PingMessage pingMessage;
+    private long lastStatusUpdate;
 
     @Override
     public void run() {
         try {
             new LegacyPingConnector().connect(result -> {
                 pingMessage = result;
+                lastStatusUpdate = System.currentTimeMillis();
             });
         } catch (InterruptedException e) {
+            e.printStackTrace();
             Logger.error(e.getMessage());
         }
     }

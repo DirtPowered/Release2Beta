@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta;
 
 import com.github.dirtpowered.betaprotocollib.BetaLib;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.EntityEffectMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
@@ -94,7 +95,7 @@ public class ReleaseToBeta implements Runnable {
 
         if (R2BConfiguration.ver1_8PingPassthrough) {
             this.pingPassthroughThread = new PingPassthroughThread();
-            scheduledExecutorService.scheduleAtFixedRate(pingPassthroughThread, 0L, 5L, TimeUnit.SECONDS);
+            scheduledExecutorService.scheduleAtFixedRate(pingPassthroughThread, 0L, Constants.PING_INTERVAL, TimeUnit.MILLISECONDS);
         }
     }
 
