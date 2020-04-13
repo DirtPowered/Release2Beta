@@ -28,7 +28,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModer
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.BlockValueType;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.GenericBlockValue;
-import com.github.steveice10.mc.protocol.data.game.world.block.value.NoteBlockValue;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.NoteBlockValueType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;

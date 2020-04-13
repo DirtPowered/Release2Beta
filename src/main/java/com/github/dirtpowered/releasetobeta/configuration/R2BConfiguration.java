@@ -50,6 +50,8 @@ public class R2BConfiguration {
     public static boolean testMode;
     public static boolean ver1_8PingPassthrough;
     public static String serverFullMessage;
+    public static String connectionThrottleKickMessage;
+    public static int globalConnectionThrottle;
 
     public void loadConfiguration() {
         YamlFile config = new YamlFile("config.yml");
@@ -85,6 +87,7 @@ public class R2BConfiguration {
             remotePort = config.getInt("connection.remote_port");
             bindAddress = config.getString("connection.bind_address");
             bindPort = config.getInt("connection.bind_port");
+            globalConnectionThrottle = config.getInt("connection.global_connection_throttle");
 
             resourcePack = config.getString("misc.resource_pack_url");
             resourcePackHash = config.getString("misc.resource_pack_hash");
@@ -95,6 +98,7 @@ public class R2BConfiguration {
             ver1_8PingPassthrough = config.getBoolean("misc.beta_1_8_ping_passthrough");
 
             serverFullMessage = config.getString("messages.server_full_message");
+            connectionThrottleKickMessage = config.getString("messages.connection_throttle_kick_message");
 
             testMode = config.getBoolean("experimental.enable_chunk_updates");
         } catch (Exception e) {

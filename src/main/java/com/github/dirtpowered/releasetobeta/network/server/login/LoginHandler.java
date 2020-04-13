@@ -26,6 +26,7 @@ import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
+import com.github.dirtpowered.releasetobeta.utils.TextColor;
 import com.github.steveice10.mc.protocol.ServerLoginHandler;
 import com.github.steveice10.packetlib.Session;
 import io.netty.bootstrap.Bootstrap;
@@ -42,6 +43,7 @@ import java.net.InetSocketAddress;
 
 public class LoginHandler implements ServerLoginHandler {
     private ReleaseToBeta main;
+    private long lastLogin;
 
     public LoginHandler(ReleaseToBeta releaseToBeta) {
         this.main = releaseToBeta;
@@ -51,8 +53,15 @@ public class LoginHandler implements ServerLoginHandler {
     public void loggedIn(Session session) {
         try {
             if (session.isConnected()) {
+                if ((System.currentTimeMillis() - lastLogin) < R2BConfiguration.globalConnectionThrottle) {
+                    session.disconnect(TextColor.translate(R2BConfiguration.connectionThrottleKickMessage));
+                    return;
+                }
+
+                this.lastLogin = System.currentTimeMillis();
+
                 if (main.getServer().getServerConnection().getPlayerList().getOnlineCount() + 1 > R2BConfiguration.maxPlayers) {
-                    session.disconnect(R2BConfiguration.serverFullMessage);
+                    session.disconnect(TextColor.translate(R2BConfiguration.serverFullMessage));
                     return;
                 }
 
@@ -80,10 +89,7 @@ public class LoginHandler implements ServerLoginHandler {
                 @Override
                 protected void initChannel(SocketChannel ch) {
                     ch.pipeline().addLast("mc_pipeline", new PipelineFactory());
-                    BetaClientSession clientSession = new BetaClientSession(main, ch, session, clientId);
-
-                    clientSession.createSession();
-                    ch.pipeline().addLast("client_connection_handler", clientSession);
+                    ch.pipeline().addLast("client_connection_handler", new BetaClientSession(main, ch, session, clientId));
                 }
             });
 

@@ -32,10 +32,11 @@ public class ExperienceUpdateTranslator implements BetaToModern<ExperienceUpdate
 
     @Override
     public void translate(ExperienceUpdatePacketData packet, BetaClientSession session, Session modernSession) {
+        float exp = packet.getProgress();
         int level = packet.getLevel();
-        float progress = packet.getProgress(); //TODO: calculate progress
         int totalExperience = packet.getLevel();
 
-        modernSession.send(new ServerPlayerSetExperiencePacket(0, level, totalExperience));
+        exp = (exp - 1) / (10 * totalExperience);
+        modernSession.send(new ServerPlayerSetExperiencePacket(exp, level, totalExperience));
     }
 }

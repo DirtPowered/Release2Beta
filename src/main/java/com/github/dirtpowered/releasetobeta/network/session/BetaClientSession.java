@@ -107,6 +107,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         this.clientId = clientId;
         this.mapDataHandler = new MapDataHandler();
         this.updateProgressHandler = new UpdateProgressHandler();
+
+        createSession();
     }
 
     @Override
@@ -160,7 +162,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         context.close();
     }
 
-    public void createSession() {
+    private void createSession() {
         main.getSessionRegistry().addSession(clientId, new MultiSession(this, session));
         player.setClientId(clientId);
     }

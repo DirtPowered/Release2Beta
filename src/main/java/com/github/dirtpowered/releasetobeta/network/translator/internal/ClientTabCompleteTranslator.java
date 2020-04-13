@@ -31,7 +31,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ClientTabCompleteTranslator implements ModernToBeta<ClientTabCompletePacket> {

@@ -90,7 +90,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            Logger.warn("Chunk at [x={} z={}] was skipped", Utils.fromChunkPos(chunkX), Utils.fromChunkPos(chunkZ));
+            Logger.warn("Chunk at [x={} z={}] was skipped", chunkX, chunkZ);
         }
     }
 

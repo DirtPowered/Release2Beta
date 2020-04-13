@@ -12,13 +12,14 @@ connection:
   # Address to connect from modern Minecraft client
   bind_address: localhost
   bind_port: 25565
+  global_connection_throttle: 3000
 misc:
   resource_pack_url: ''
   resource_pack_hash: ''
   # Player nicknames autocompleting
   tab_complete: true
   # R2B doesn't support online-mode yet, you can use this option to enable skin fetching for offline-mode
-  skin_fix: true
+  skin_fix: false
   # Renders snowballs instead
   arrows_fix: true
   disable_sprinting: true
@@ -26,6 +27,7 @@ misc:
   beta_1_8_ping_passthrough: false
 messages:
   server_full_message: Server is full
+  connection_throttle_kick_message: '&cConnection Throttled! Try again later'
 experimental:
   # Do not enable this unless you know what you're doing
   enable_chunk_updates: false
