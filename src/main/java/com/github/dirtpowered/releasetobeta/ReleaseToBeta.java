@@ -75,6 +75,10 @@ public class ReleaseToBeta implements Runnable {
         BetaLib.inject(R2BConfiguration.version);
 
         switch (R2BConfiguration.version) {
+            case B_1_6_6:
+                //no protocol changes compared to b1.7
+                new B_1_7(betaToModernTranslatorRegistry, modernToBetaTranslatorRegistry);
+                break;
             case B_1_7_3:
                 new B_1_7(betaToModernTranslatorRegistry, modernToBetaTranslatorRegistry);
                 break;
