@@ -13,12 +13,13 @@ connection:
   bind_address: localhost
   bind_port: 25565
   global_connection_throttle: 3000
+  # Beta server have to be offline first
+  online_mode: false
 misc:
   resource_pack_url: ''
   resource_pack_hash: ''
   # Player nicknames autocompleting
   tab_complete: true
-  # R2B doesn't support online-mode yet, you can use this option to enable skin fetching for offline-mode
   skin_fix: false
   # Renders snowballs instead
   arrows_fix: true

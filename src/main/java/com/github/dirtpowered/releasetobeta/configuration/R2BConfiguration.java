@@ -52,6 +52,7 @@ public class R2BConfiguration {
     public static String serverFullMessage;
     public static String connectionThrottleKickMessage;
     public static int globalConnectionThrottle;
+    public static boolean onlineMode;
 
     public void loadConfiguration() {
         YamlFile config = new YamlFile("config.yml");
@@ -88,6 +89,7 @@ public class R2BConfiguration {
             bindAddress = config.getString("connection.bind_address");
             bindPort = config.getInt("connection.bind_port");
             globalConnectionThrottle = config.getInt("connection.global_connection_throttle");
+            onlineMode = config.getBoolean("connection.online_mode");
 
             resourcePack = config.getString("misc.resource_pack_url");
             resourcePackHash = config.getString("misc.resource_pack_hash");
