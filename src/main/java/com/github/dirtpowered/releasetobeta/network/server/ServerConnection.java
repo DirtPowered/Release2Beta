@@ -119,6 +119,8 @@ public class ServerConnection implements Tickable {
                 }
                 Logger.error("{} was not handled", queuedPacket.packet);
             }
+        } else {
+            Logger.warn("skipped {}", queuedPacket.packet);
         }
     }
 

@@ -37,11 +37,13 @@ public class EntityDestroyTranslator implements BetaToModern<EntityDestroyPacket
     public void translate(EntityDestroyPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
         Entity e = (session.getEntityCache().getEntityById(entityId));
+
         if (e != null) {
             if (e instanceof Mob) {
-                Mob mob = (Mob) e;
-                mob.onDeath(modernSession);
-            } else if (e instanceof BetaPlayer) {
+                ((Mob) e).onDeath(modernSession);
+            }
+
+            if (e.isBetaPlayer()) {
                 session.removeBetaTabEntry((BetaPlayer) e);
             }
         }

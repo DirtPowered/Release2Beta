@@ -65,6 +65,11 @@ public class EntityStatusTranslator implements BetaToModern<EntityStatusPacketDa
             case 8:
                 entityStatus = EntityStatus.WOLF_SHAKE_WATER;
                 break;
+            case 9:
+                //this status belongs to b1.8+
+                //TODO: Move it to own class
+                entityStatus = EntityStatus.PLAYER_FINISH_USING_ITEM;
+                break;
             default:
                 entityStatus = EntityStatus.LIVING_HURT;
                 break;

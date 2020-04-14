@@ -25,7 +25,9 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.BedAndWeatherPacketData;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.game.world.notify.ClientNotification;
+import com.github.steveice10.mc.protocol.data.game.world.notify.ClientNotificationValue;
 import com.github.steveice10.mc.protocol.data.game.world.notify.ThunderStrengthValue;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerNotifyClientPacket;
 import com.github.steveice10.packetlib.Session;
@@ -36,6 +38,8 @@ public class BedAndWeatherTranslator implements BetaToModern<BedAndWeatherPacket
     public void translate(BedAndWeatherPacketData packet, BetaClientSession session, Session modernSession) {
         int state = packet.getReason();
         ClientNotification notification;
+        ClientNotificationValue value = new ThunderStrengthValue(0);
+
         switch (state) {
             case 0:
                 notification = ClientNotification.INVALID_BED;
@@ -48,6 +52,7 @@ public class BedAndWeatherTranslator implements BetaToModern<BedAndWeatherPacket
                 break;
             case 3:
                 notification = ClientNotification.CHANGE_GAMEMODE;
+                value = packet.getGamemode() == 0 ? GameMode.SURVIVAL : GameMode.CREATIVE;
                 break;
             case 4:
                 notification = ClientNotification.ENTER_CREDITS;
@@ -57,6 +62,6 @@ public class BedAndWeatherTranslator implements BetaToModern<BedAndWeatherPacket
                 break;
         }
 
-        modernSession.send(new ServerNotifyClientPacket(notification, new ThunderStrengthValue(0)));
+        modernSession.send(new ServerNotifyClientPacket(notification, value));
     }
 }
