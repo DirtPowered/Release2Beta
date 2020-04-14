@@ -138,6 +138,10 @@ public class ServerConnection implements Tickable {
         });
     }
 
+    public void UNSAFE_addPacketToQueue(Session session, Packet packet) {
+        packetQueue.add(new ServerQueuedPacket(session, packet, false));
+    }
+
     static class ServerQueuedPacket {
         private final Session session;
         private final Packet packet;
