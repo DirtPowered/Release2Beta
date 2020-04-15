@@ -29,6 +29,10 @@ import com.github.dirtpowered.releasetobeta.data.command.model.Command;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.data.skin.ProfileCache;
+import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
+import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
+import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayBuiltinSoundPacket;
+import com.github.steveice10.packetlib.Session;
 import lombok.Getter;
 
 @Getter
@@ -68,5 +72,10 @@ public class ModernServer {
         }
 
         return false;
+    }
+
+
+    public void playWorldSound(Session session, int x, int y, int z, BuiltinSound sound, SoundCategory category) {
+        session.send(new ServerPlayBuiltinSoundPacket(sound, category, x, y, z, 1.f, 1.f));
     }
 }

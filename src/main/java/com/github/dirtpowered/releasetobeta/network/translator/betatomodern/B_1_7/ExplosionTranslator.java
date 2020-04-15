@@ -28,6 +28,8 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.world.block.ExplodedBlockRecord;
+import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
+import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerExplosionPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -54,5 +56,6 @@ public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
         }
 
         modernSession.send(new ServerExplosionPacket(x, y, z, explosionSize, records, 0, 0, 0));
+        session.getMain().getServer().playWorldSound(modernSession, (int) x, (int) y, (int) z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT);
     }
 }

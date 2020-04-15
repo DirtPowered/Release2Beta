@@ -60,7 +60,9 @@ public abstract class Entity {
         this.z = (int) z;
     }
 
+    @Deprecated
     protected void playSound(Session session, BuiltinSound sound, SoundCategory category) {
+        //TODO: Use {@link com.github.dirtpowered.releasetobeta.network.server.ModernServer#playWorldSound}
         session.send(new ServerPlayBuiltinSoundPacket(sound, category, x, y, z, 1.f, 1.f));
     }
 }
