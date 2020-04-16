@@ -28,7 +28,12 @@ import lombok.Setter;
 
 public class PlayerInventory {
     private ItemStack[] inventoryItems = new ItemStack[90];
+
+    @Getter
+    private ItemStack[] armorItems = new ItemStack[9];
+
     private int currentSlot;
+
     @Getter
     @Setter
     private int lastSlot;
@@ -38,8 +43,11 @@ public class PlayerInventory {
         return inv[i];
     }
 
-    private void setItem(int i, ItemStack itemstack) {
+    public void setItem(int i, ItemStack itemstack) {
         ItemStack[] inv = this.inventoryItems;
+        if (i > 4 && i < 9)
+            armorItems[i] = itemstack;
+
         inv[i] = itemstack;
     }
 

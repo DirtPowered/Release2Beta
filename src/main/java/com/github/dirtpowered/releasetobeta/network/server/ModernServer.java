@@ -27,13 +27,21 @@ import com.github.dirtpowered.releasetobeta.data.command.CommandRegistry;
 import com.github.dirtpowered.releasetobeta.data.command.R2BCommand;
 import com.github.dirtpowered.releasetobeta.data.command.model.Command;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
+import com.github.dirtpowered.releasetobeta.data.item.ArmorItem;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.data.skin.ProfileCache;
+import com.github.steveice10.mc.protocol.data.game.entity.attribute.Attribute;
+import com.github.steveice10.mc.protocol.data.game.entity.attribute.AttributeType;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityPropertiesPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayBuiltinSoundPacket;
 import com.github.steveice10.packetlib.Session;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class ModernServer {
@@ -77,5 +85,20 @@ public class ModernServer {
 
     public void playWorldSound(Session session, int x, int y, int z, BuiltinSound sound, SoundCategory category) {
         session.send(new ServerPlayBuiltinSoundPacket(sound, category, x, y, z, 1.f, 1.f));
+    }
+
+    public void updatePlayerProperties(Session session, ModernPlayer player) {
+        List<Attribute> attributes = new ArrayList<>();
+        double aVal = 0;
+
+        ItemStack[] items = player.getInventory().getArmorItems();
+
+        for (ItemStack item : items) {
+            if (item != null)
+                aVal += ArmorItem.getArmorValueFromItemId(item.getId());
+        }
+
+        attributes.add(new Attribute(AttributeType.GENERIC_ARMOR, aVal));
+        session.send(new ServerEntityPropertiesPacket(player.getEntityId(), attributes));
     }
 }

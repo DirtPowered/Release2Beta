@@ -22,33 +22,46 @@
 
 package com.github.dirtpowered.releasetobeta.data.item;
 
-import java.util.Arrays;
+public enum ArmorItem {
+    LEATHER_HELMET(298, 1.0D),
+    LEATHER_CHESTPLATE(299, 3.0D),
+    LEATHER_LEGGINGS(300, 2.0D),
+    LEATHER_BOOTS(301, 1.0D),
 
-public enum ItemFood {
-    APPLE(260),
-    BREAD(297),
-    PORK(319),
-    GRILLED_PORK(320),
-    GOLDEN_APPLE(322),
-    RAW_FISH(349),
-    COOKED_FISH(350),
-    COOKIE(357),
-    MELON(360),
-    RAW_BEEF(363),
-    COOKED_BEEF(364),
-    RAW_CHICKEN(365),
-    COOKED_CHICKEN(366),
-    ROTTEN_FLESH(367);
+    CHAINMAIL_HELMET(302, 2.0D),
+    CHAINMAIL_CHESTPLATE(303, 5.0D),
+    CHAINMAIL_LEGGINGS(304, 4.0D),
+    CHAINMAIL_BOOTS(305, 1.0D),
+
+    IRON_HELMET(306, 2.0D),
+    IRON_CHESTPLATE(307, 6.0D),
+    IRON_LEGGINGS(308, 5.0D),
+    IRON_BOOTS(309, 2.0D),
+
+    DIAMOND_HELMET(310, 3.0D),
+    DIAMOND_CHESTPLATE(311, 8.0D),
+    DIAMOND_LEGGINGS(312, 6.0D),
+    DIAMOND_BOOTS(313, 3.0D),
+    GOLDEN_HELMET(314, 2.0D),
+    GOLDEN_CHESTPLATE(315, 5.0D),
+    GOLDEN_LEGGINGS(316, 3.0D),
+    GOLDEN_BOOTS(317, 1.0D);
 
     private int itemId;
+    private double armorValue;
 
-    ItemFood(int itemId) {
+    ArmorItem(int itemId, double armorValue) {
         this.itemId = itemId;
+        this.armorValue = armorValue;
     }
 
-    public static boolean isFoodItem(int itemId) {
-        return Arrays.stream(values()).anyMatch(itemFood -> {
-            return itemId == itemFood.itemId;
-        });
+    public static double getArmorValueFromItemId(int itemId) {
+        for (ArmorItem armorItem : values()) {
+            if (itemId == armorItem.itemId) {
+                return armorItem.armorValue;
+            }
+        }
+
+        return 0.0D;
     }
 }

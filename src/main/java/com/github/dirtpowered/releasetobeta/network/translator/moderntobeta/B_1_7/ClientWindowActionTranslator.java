@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.WindowClickPacketData;
+import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
@@ -44,6 +45,7 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
     public void translate(ClientWindowActionPacket packet, Session modernSession, BetaClientSession betaSession) {
         betaSession.getMain().getScheduledExecutorService().execute(() -> {
             ModernPlayer player = betaSession.getPlayer();
+            PlayerInventory inventory = player.getInventory();
 
             int windowId = packet.getWindowId();
             int slot = packet.getSlot();
@@ -64,6 +66,10 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
 
             if (clickingOutside) {
                 betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) 0, null, false));
+                inventory.setItem(inventory.getLastSlot(), new ItemStack(0));
+
+                //Update armor bar
+                betaSession.getMain().getServer().updatePlayerProperties(modernSession, player);
                 return;
             }
 
@@ -78,7 +84,7 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
             }
 
             betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) 0, Utils.itemStackToBetaItemStack(itemStack), usingShift));
-            player.getInventory().setLastSlot(slot);
+            inventory.setLastSlot(slot);
         });
     }
 }
