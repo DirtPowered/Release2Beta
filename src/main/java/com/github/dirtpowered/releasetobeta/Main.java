@@ -30,9 +30,14 @@ public class Main {
     private static ReleaseToBeta server;
 
     public static void main(String... arguments) {
+        long startTime = System.nanoTime();
+
         Configurator.currentConfig().formatPattern("[{level} {date:HH:mm:ss}] {message}").activate();
         server = new ReleaseToBeta();
         addShutdownHook();
+
+        long endTime = System.nanoTime();
+        Logger.info("Ready for connections ({}ms)", (endTime - startTime) / 1000000);
     }
 
     private static void addShutdownHook() {

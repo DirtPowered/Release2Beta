@@ -45,14 +45,22 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
         int face = MagicValues.value(Integer.class, packet.getFace());
         betaSession.sendPacket(new BlockPlacePacketData(x, y, z, face, new BetaItemStack()));
 
-        if (face == 2) {
-            z -= 1;
-        } else if (face == 3) {
-            z += 1;
-        } else if (face == 4) {
-            x -= 1;
-        } else if (face == 5) {
-            x += 1;
+        switch (face) {
+            case 1:
+                ++y;
+                break;
+            case 2:
+                --z;
+                break;
+            case 3:
+                ++z;
+                break;
+            case 4:
+                --x;
+                break;
+            case 5:
+                ++x;
+                break;
         }
 
         player.onBlockPlace(new Position(x, y, z), player.getInventory().getItemInHand());
