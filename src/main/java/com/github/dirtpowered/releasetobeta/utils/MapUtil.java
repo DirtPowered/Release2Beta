@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.utils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MapUtil {
@@ -30,6 +31,6 @@ public class MapUtil {
         if (null == input) {
             return null;
         }
-        return input.stream().map(kvFunction).collect(Collectors.toList());
+        return input.stream().map(kvFunction).filter(Objects::nonNull).collect(Collectors.toList());
     }
 }

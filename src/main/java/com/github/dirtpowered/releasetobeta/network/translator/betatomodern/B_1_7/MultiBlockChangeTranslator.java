@@ -58,7 +58,7 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
             int blockZ = (chunkZ << 4) + (coord >> 8 & 15);
 
             records.add(new BlockChangeRecord(
-                    new Position(blockX, blockY, blockZ), new BlockState(block, metadata)));
+                    new Position(blockX, blockY, blockZ), new BlockState(block, session.remapMetadata(block, metadata))));
         }
 
         modernSession.send(new ServerMultiBlockChangePacket(records.toArray(new BlockChangeRecord[0])));

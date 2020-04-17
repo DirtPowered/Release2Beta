@@ -266,12 +266,17 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public int remapMetadata(int blockId, int rawData) {
+        if (blockId == 0) //skip air
+            return 0;
+
         MetadataMap m = main.getMetadataMap();
         if (m.exist(blockId)) {
-            DataObject dataObject = m.getFromId(blockId);
-            if (dataObject.getFrom() == rawData || dataObject.getFrom() == -1) {
-                if (Arrays.asList(dataObject.getMinecraftVersion()).contains(R2BConfiguration.version)) {
-                    return m.getFromId(blockId).getTo();
+            DataObject[] dataObjects = m.getFromId(blockId);
+            for (DataObject dataObject : dataObjects) {
+                if (dataObject.getFrom() == rawData || dataObject.getFrom() == -1) {
+                    if (Arrays.asList(dataObject.getMinecraftVersion()).contains(R2BConfiguration.version)) {
+                        return dataObject.getTo();
+                    }
                 }
             }
         }
