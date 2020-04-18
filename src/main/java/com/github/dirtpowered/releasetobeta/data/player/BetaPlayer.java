@@ -26,7 +26,6 @@ import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
-import com.github.dirtpowered.releasetobeta.utils.Callback;
 import com.github.dirtpowered.releasetobeta.utils.TextColor;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.auth.data.GameProfile;
@@ -46,18 +45,16 @@ public class BetaPlayer extends Entity implements Mob {
     @Getter
     private GameProfile gameProfile;
 
-    public BetaPlayer(BetaClientSession session, String username, int entityId, Callback<BetaPlayer> callback) {
+    public BetaPlayer(BetaClientSession session, String username, int entityId) {
         super(entityId, true);
 
         this.username = username;
+        gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
+
         if (R2BConfiguration.skinFix) {
             session.getMain().getServer().getProfileCache().getSkin(username).whenComplete((profile, throwable) -> {
                 gameProfile = profile;
-                callback.onComplete(this);
             });
-        } else {
-            gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
-            callback.onComplete(this);
         }
     }
 

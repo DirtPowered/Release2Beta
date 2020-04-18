@@ -31,7 +31,14 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBet
 import com.github.dirtpowered.releasetobeta.utils.Tickable;
 import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
+import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.ClientPluginMessagePacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.ClientSettingsPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerAbilitiesPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerMovementPacket;
 import com.github.steveice10.mc.protocol.packet.login.client.LoginStartPacket;
+import com.github.steveice10.mc.protocol.packet.status.client.StatusPingPacket;
+import com.github.steveice10.mc.protocol.packet.status.client.StatusQueryPacket;
 import com.github.steveice10.packetlib.Server;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.server.ServerAdapter;
@@ -44,6 +51,7 @@ import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
 import lombok.Getter;
 import org.pmw.tinylog.Logger;
 
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -55,6 +63,14 @@ public class ServerConnection implements Tickable {
 
     @Getter
     private PlayerList playerList;
+
+    private Class[] notNeededPackets = new Class[]{
+            ClientPlayerMovementPacket.class,
+            ClientPlayerAbilitiesPacket.class,
+            ClientSettingsPacket.class,
+            StatusPingPacket.class,
+            ClientPluginMessagePacket.class
+    };
 
     ServerConnection(ModernServer modernServer) {
         main = modernServer.getMain();
@@ -74,9 +90,14 @@ public class ServerConnection implements Tickable {
                     @Override
                     public void packetReceived(PacketReceivedEvent event) {
                         Packet packet = event.getPacket();
+                        if (packet instanceof StatusQueryPacket) {
+                            Logger.info("{} has pinged", event.getSession().getLocalAddress());
+                            return;
+                        } else if (packet instanceof HandshakePacket) {
+                            return;
+                        }
 
                         ServerQueuedPacket queuedPacket = new ServerQueuedPacket(event.getSession(), packet, packet instanceof LoginStartPacket);
-
                         packetQueue.add(queuedPacket);
                     }
                 });
@@ -119,7 +140,7 @@ public class ServerConnection implements Tickable {
                 }
                 Logger.error("{} was not handled", queuedPacket.packet);
             }
-        } else {
+        } else if (Arrays.stream(notNeededPackets).noneMatch(aClass -> aClass.equals(queuedPacket.packet.getClass()))) {
             Logger.warn("skipped {}", queuedPacket.packet);
         }
     }

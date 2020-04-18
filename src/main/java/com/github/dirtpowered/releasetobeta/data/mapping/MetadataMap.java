@@ -28,7 +28,7 @@ public class MetadataMap extends Remapper<DataObject[]> {
 
     public MetadataMap() {
         remap(90, new DataObject[]{
-                new DataObject(0, 2, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_7_3),
+                new DataObject(0, 2, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
         });
 
         remap(18, new DataObject[]{
@@ -45,6 +45,10 @@ public class MetadataMap extends Remapper<DataObject[]> {
 
         remap(29, new DataObject[]{
                 new DataObject(7, 0, MinecraftVersion.B_1_8_1),
+        });
+
+        remap(355, new DataObject[]{
+                new DataObject(-1, 14, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
         });
     }
 }

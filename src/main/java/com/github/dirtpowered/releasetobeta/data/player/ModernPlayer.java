@@ -27,7 +27,6 @@ import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.model.PlayerAction;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
-import com.github.dirtpowered.releasetobeta.utils.Callback;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.MinecraftConstants;
@@ -93,17 +92,14 @@ public class ModernPlayer implements PlayerAction {
         return new PlayerListEntry(getGameProfile(), GameMode.SURVIVAL, getPing(), Message.fromString(username));
     }
 
-    public void fillProfile(String username, Callback<ModernPlayer> result) {
+    public void fillProfile(String username) {
         this.username = username;
+        this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
 
         if (R2BConfiguration.skinFix) {
             session.getMain().getServer().getProfileCache().getSkin(username).whenComplete((profile, throwable) -> {
                 this.gameProfile = profile;
-                result.onComplete(this);
             });
-        } else {
-            this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
-            result.onComplete(this);
         }
     }
 

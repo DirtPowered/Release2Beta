@@ -54,7 +54,11 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         int z = packet.getZ();
 
         int xSize = packet.getXSize();
-        int ySize = packet.getYSize();
+        int ySize = y + packet.getYSize();
+
+        ySize = ySize > 128 ? 128 : ySize;
+        y = y < 0 ? 0 : y;
+
         int zSize = packet.getZSize();
 
         int chunkX = x / 16;

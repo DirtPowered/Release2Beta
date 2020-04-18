@@ -26,7 +26,7 @@ import java.util.Arrays;
 
 public enum TileEntity {
 
-    CHEST(54), MOB_SPAWNER(52);
+    CHEST(54), MOB_SPAWNER(52), BED(26);
 
     private int blockId;
 

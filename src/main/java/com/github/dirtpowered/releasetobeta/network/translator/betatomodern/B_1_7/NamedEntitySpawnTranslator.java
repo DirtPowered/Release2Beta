@@ -50,14 +50,13 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
 
         if (uuid == null) {
             //spawn players using beta client too
-            new BetaPlayer(session, username, entityId, completePlayer -> {
-                session.addBetaTabEntry(completePlayer);
-                completePlayer.onSpawn(modernSession);
+            BetaPlayer betaPlayer = new BetaPlayer(session, username, entityId);
+            session.addBetaTabEntry(betaPlayer);
 
-                session.getEntityCache().addEntity(entityId, completePlayer);
-                spawn(modernSession, entityId, completePlayer.getUUID(), x, y, z, yaw, pitch);
-            });
+            betaPlayer.onSpawn(modernSession);
 
+            session.getEntityCache().addEntity(entityId, betaPlayer);
+            spawn(modernSession, entityId, betaPlayer.getUUID(), x, y, z, yaw, pitch);
             return;
         }
 

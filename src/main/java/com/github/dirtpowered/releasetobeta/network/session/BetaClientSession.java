@@ -127,10 +127,10 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
                 player.sendResourcePack();
                 resourcepack = true;
             }
-            //sending block change packets immediately may cause problems, so delay it
-            poolTileEntityQueue();
         }
 
+        //sending block change packets immediately may cause problems, so delay it
+        poolTileEntityQueue();
         i++;
     }
 
@@ -141,14 +141,14 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Logger.info("[{}] connected", clientId);
+        //Logger.info("[{}] connected", clientId);
 
         super.channelActive(ctx);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        Logger.info("[{}] disconnected", clientId);
+        Logger.info("[{}] disconnected", player.getUsername());
         quitPlayer();
 
         super.channelInactive(ctx);
@@ -225,6 +225,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     public void joinPlayer() {
         if (!isLoggedIn()) {
+            Logger.info("[{}] connected", player.getUsername());
             main.getServer().getServerConnection().getPlayerList().addTabEntry(player);
             setLoggedIn(true);
         }
@@ -234,7 +235,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         if (blockChangeQueue.isEmpty())
             return;
 
-        int allowance = Math.min(1, blockChangeQueue.size());
+        int allowance = Math.min(2, blockChangeQueue.size());
 
         for (int i = 0; i < allowance; i++) {
             BlockChangeRecord block = blockChangeQueue.remove();
@@ -246,13 +247,23 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public void queueBlockChange(int x, int y, int z, int blockId, int data) {
+        TileEntity tileEntity = TileEntity.getFromId(blockId);
         Position position = new Position(x, y, z);
 
-        if (TileEntity.getFromId(blockId) == TileEntity.MOB_SPAWNER) {
-            blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
-            blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, data)));
-        } else if (TileEntity.getFromId(blockId) == TileEntity.CHEST && R2BConfiguration.version == MinecraftVersion.B_1_7_3) {
-            blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, 2)));
+        switch (tileEntity) {
+            case CHEST:
+                if (R2BConfiguration.version == MinecraftVersion.B_1_7_3 || R2BConfiguration.version == MinecraftVersion.B_1_6_6) {
+                    blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, 2)));
+                }
+                break;
+            case MOB_SPAWNER:
+                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
+                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, data)));
+                break;
+            case BED:
+                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
+                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, remapMetadata(blockId, data))));
+                break;
         }
     }
 
