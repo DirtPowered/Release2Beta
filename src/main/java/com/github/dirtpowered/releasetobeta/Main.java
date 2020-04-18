@@ -37,7 +37,7 @@ public class Main {
         addShutdownHook();
 
         long endTime = System.nanoTime();
-        Logger.info("Ready for connections ({}ms)", (endTime - startTime) / 1000000);
+        Logger.info("Ready for connections ({}ms)", (endTime - startTime) / 1000000L);
     }
 
     private static void addShutdownHook() {

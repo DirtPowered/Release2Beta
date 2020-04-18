@@ -99,6 +99,8 @@ public class ModernServer {
         }
 
         attributes.add(new Attribute(AttributeType.GENERIC_ARMOR, aVal));
+        attributes.add(new Attribute(AttributeType.GENERIC_ATTACK_SPEED, 32.0D)); //disables 1.9+ pvp delay
+
         session.send(new ServerEntityPropertiesPacket(player.getEntityId(), attributes));
     }
 }

@@ -227,6 +227,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         if (!isLoggedIn()) {
             Logger.info("[{}] connected", player.getUsername());
             main.getServer().getServerConnection().getPlayerList().addTabEntry(player);
+            main.getServer().updatePlayerProperties(session, player);
             setLoggedIn(true);
         }
     }

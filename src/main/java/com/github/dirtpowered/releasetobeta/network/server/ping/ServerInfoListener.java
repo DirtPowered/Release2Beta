@@ -62,7 +62,8 @@ public class ServerInfoListener implements ServerInfoBuilder {
                 serverListPing.setMotd(pingMessage.getMotd());
                 serverListPing.setOnlinePlayers(pingMessage.getOnlinePlayers());
                 serverListPing.setMaxPlayers(pingMessage.getMaxPlayers());
-                serverListPing.setPlayerListSample(serverConnection.getPlayerList().getProfiles().subList(0, 20));
+                int onlineCount = serverConnection.getPlayerList().getOnlineCount();
+                serverListPing.setPlayerListSample(serverConnection.getPlayerList().getProfiles().subList(0, onlineCount < 20 ? onlineCount : 20));
             } else {
                 serverListPing.setMotd(TextColor.translate("&9Can't connect to remote server"));
                 serverListPing.setOnlinePlayers(0);
