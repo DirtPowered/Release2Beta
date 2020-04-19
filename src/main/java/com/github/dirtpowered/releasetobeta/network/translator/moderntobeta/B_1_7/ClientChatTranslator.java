@@ -46,7 +46,7 @@ public class ClientChatTranslator implements ModernToBeta<ClientChatPacket> {
             'æ', 'Æ', 'ô', 'ö', 'ò', 'û', 'ù', 'ÿ', 'Ö', 'Ü',
             'ø', '£', 'Ø', '×', 'ƒ', 'á', 'í', 'ó', 'ú', 'ñ',
             'Ñ', 'ª', 'º', '¿', '®', '¬', '½', '¼', '¡', '«',
-            '»', '_'
+            '»', '_', '^', '\''
     };
 
     @Override
