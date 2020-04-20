@@ -94,12 +94,17 @@ public class ModernPlayer implements PlayerAction {
 
     public void fillProfile(String username) {
         this.username = username;
-        this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
 
         if (R2BConfiguration.skinFix) {
             session.getMain().getServer().getProfileCache().getSkin(username).whenComplete((profile, throwable) -> {
                 this.gameProfile = profile;
+
+                session.getMain().getServer().getServerConnection().getPlayerList().addTabEntry(this);
             });
+        } else {
+            this.gameProfile = new GameProfile(Utils.getOfflineUUID(username), username);
+
+            session.getMain().getServer().getServerConnection().getPlayerList().addTabEntry(this);
         }
     }
 

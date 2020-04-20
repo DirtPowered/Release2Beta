@@ -206,8 +206,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public void disconnect() {
-        if (channel.isActive())
-            channel.close();
+        channel.close();
+        channel.flush();
     }
 
     private void quitPlayer() {
@@ -226,7 +226,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public void joinPlayer() {
         if (!isLoggedIn()) {
             Logger.info("[{}] connected", player.getUsername());
-            main.getServer().getServerConnection().getPlayerList().addTabEntry(player);
             main.getServer().updatePlayerProperties(session, player);
             setLoggedIn(true);
         }

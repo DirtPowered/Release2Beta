@@ -44,6 +44,7 @@ import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.server.ServerAdapter;
 import com.github.steveice10.packetlib.event.server.SessionAddedEvent;
 import com.github.steveice10.packetlib.event.server.SessionRemovedEvent;
+import com.github.steveice10.packetlib.event.session.DisconnectingEvent;
 import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
@@ -87,6 +88,13 @@ public class ServerConnection implements Tickable {
             @Override
             public void sessionAdded(SessionAddedEvent event) {
                 event.getSession().addListener(new SessionAdapter() {
+
+                    @Override
+                    public void disconnecting(DisconnectingEvent event) {
+                        //just to get more detailed stacktrace about all possible errors
+                        event.getCause().printStackTrace();
+                    }
+
                     @Override
                     public void packetReceived(PacketReceivedEvent event) {
                         Packet packet = event.getPacket();

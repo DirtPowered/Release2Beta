@@ -51,6 +51,11 @@ public class ServerInfoListener implements ServerInfoBuilder {
         serverListPing.setMaxPlayers(R2BConfiguration.maxPlayers);
         serverListPing.setMotd(R2BConfiguration.motd);
 
+        serverListPing.setOnlinePlayers(serverConnection.getPlayerList().getPlayers().size());
+        int onlineCount = serverConnection.getPlayerList().getOnlineCount();
+
+        serverListPing.setPlayerListSample(serverConnection.getPlayerList().getProfiles().subList(0, onlineCount < 20 ? onlineCount : 20));
+
         if (R2BConfiguration.ver1_8PingPassthrough && R2BConfiguration.version == MinecraftVersion.B_1_8_1) {
             PingMessage pingMessage = serverConnection.getMain().getPingPassthroughThread().getPingMessage();
 
@@ -62,8 +67,6 @@ public class ServerInfoListener implements ServerInfoBuilder {
                 serverListPing.setMotd(pingMessage.getMotd());
                 serverListPing.setOnlinePlayers(pingMessage.getOnlinePlayers());
                 serverListPing.setMaxPlayers(pingMessage.getMaxPlayers());
-                int onlineCount = serverConnection.getPlayerList().getOnlineCount();
-                serverListPing.setPlayerListSample(serverConnection.getPlayerList().getProfiles().subList(0, onlineCount < 20 ? onlineCount : 20));
             } else {
                 serverListPing.setMotd(TextColor.translate("&9Can't connect to remote server"));
                 serverListPing.setOnlinePlayers(0);
@@ -72,9 +75,6 @@ public class ServerInfoListener implements ServerInfoBuilder {
                 serverListPing.setProtocolVersion(-1);
                 serverListPing.setVersionString(StringUtils.EMPTY);
             }
-        } else {
-            serverListPing.setOnlinePlayers(serverConnection.getPlayerList().getPlayers().size());
-            serverListPing.setPlayerListSample(serverConnection.getPlayerList().getProfiles());
         }
 
         return serverListPing.get();

@@ -56,7 +56,12 @@ public class PlayerList {
     }
 
     private List<PlayerListEntry> getTabEntries() {
-        return MapUtil.transform(getPlayers(), player -> Objects.requireNonNull(player).getTabEntry());
+        return MapUtil.transform(getPlayers(), player -> {
+            if (player.getGameProfile() == null) {
+                return null;
+            }
+            return player.getTabEntry();
+        });
     }
 
     public void removeTabEntry(ModernPlayer player) {
@@ -72,9 +77,6 @@ public class PlayerList {
     }
 
     public void addTabEntry(ModernPlayer player) {
-        if (player.getGameProfile() == null)
-            return;
-
         player.sendPacket(new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, getTabEntries().toArray(new PlayerListEntry[0])));
         ServerPlayerListEntryPacket entryPacket =
                 new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, new PlayerListEntry[]{
