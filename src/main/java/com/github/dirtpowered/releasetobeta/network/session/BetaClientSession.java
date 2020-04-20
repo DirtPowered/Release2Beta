@@ -107,8 +107,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         this.clientId = clientId;
         this.mapDataHandler = new MapDataHandler();
         this.updateProgressHandler = new UpdateProgressHandler();
-
-        createSession();
     }
 
     @Override
@@ -141,8 +139,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        //Logger.info("[{}] connected", clientId);
-
+        createSession();
         super.channelActive(ctx);
     }
 
@@ -226,6 +223,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public void joinPlayer() {
         if (!isLoggedIn()) {
             Logger.info("[{}] connected", player.getUsername());
+            main.getServer().getServerConnection().getPlayerList().addTabEntry(player);
             main.getServer().updatePlayerProperties(session, player);
             setLoggedIn(true);
         }
