@@ -138,13 +138,13 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerPositionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerRotationTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerSwingArmTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerUseItemTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientTeleportConfirmTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientUpdateSignTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientWindowActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientCreativeInventoryActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientKeepAliveTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientPlayerStateTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientPlayerUseItemTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientRequestTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.LoginStartTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.BetaToModernTranslatorRegistry;

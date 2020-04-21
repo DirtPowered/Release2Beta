@@ -23,6 +23,8 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerLookPacketData;
+import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerRotationPacket;
@@ -32,9 +34,14 @@ public class ClientPlayerRotationTranslator implements ModernToBeta<ClientPlayer
 
     @Override
     public void translate(ClientPlayerRotationPacket packet, Session modernSession, BetaClientSession betaSession) {
+        ModernPlayer player = betaSession.getPlayer();
+
         float yaw = (float) packet.getYaw();
         float pitch = (float) packet.getPitch();
         boolean onGround = packet.isOnGround();
+
+        player.setLocation(new Location(-1, -1, -1, yaw, pitch));
+        player.setOnGround(onGround);
 
         betaSession.sendPacket(new PlayerLookPacketData(yaw, pitch, onGround));
     }

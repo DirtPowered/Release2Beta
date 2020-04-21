@@ -59,6 +59,9 @@ public class ModernPlayer implements PlayerAction {
     private WindowType openedInventoryType;
 
     @Setter
+    private boolean onGround;
+
+    @Setter
     private int dimension;
 
     @Setter

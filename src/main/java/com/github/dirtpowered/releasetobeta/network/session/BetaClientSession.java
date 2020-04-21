@@ -25,7 +25,9 @@ package com.github.dirtpowered.releasetobeta.network.session;
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.model.Packet;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapDataPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerLookPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateProgressPacketData;
+import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
@@ -92,7 +94,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     private boolean resourcepack;
 
-    private int tickLimiter = 0;
     private int i;
     private MapDataHandler mapDataHandler;
     private UpdateProgressHandler updateProgressHandler;
@@ -111,20 +112,24 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     @Override
     public void tick() {
-        tickLimiter = (tickLimiter + 1) % 2;
-        if (tickLimiter == 0) {
-            if (channel.isActive() && player.getGameProfile() != null && !initialPacketsQueue.isEmpty()) {
-                Packet p = initialPacketsQueue.poll();
+        if (channel.isActive())
+            if (player.getGameProfile() != null) {
+                Location l = player.getLocation();
+                if (l != null)
+                    sendPacket(new PlayerLookPacketData(l.getYaw(), l.getPitch(), player.isOnGround()));
 
-                channel.writeAndFlush(p);
-                return;
+                if (!initialPacketsQueue.isEmpty()) {
+                    Packet p = initialPacketsQueue.poll();
+
+                    channel.writeAndFlush(p);
+                    return;
+                }
             }
 
-            //wait 3 seconds to make sure client is ready to receive resourcepack packet
-            if (i > 20 * 3 && !resourcepack && !R2BConfiguration.resourcePack.isEmpty()) {
-                player.sendResourcePack();
-                resourcepack = true;
-            }
+        //wait 3 seconds to make sure client is ready to receive resourcepack packet
+        if (i > 20 * 3 && !resourcepack && !R2BConfiguration.resourcePack.isEmpty()) {
+            player.sendResourcePack();
+            resourcepack = true;
         }
 
         //sending block change packets immediately may cause problems, so delay it
