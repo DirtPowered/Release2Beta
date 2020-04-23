@@ -28,19 +28,25 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.data.game.ClientRequest;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientRequestPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerStatisticsPacket;
 import com.github.steveice10.packetlib.Session;
+
+import java.util.Collections;
 
 public class ClientRequestTranslator implements ModernToBeta<ClientRequestPacket> {
 
     @Override
     public void translate(ClientRequestPacket packet, Session modernSession, BetaClientSession betaSession) {
         ClientRequest request = packet.getRequest();
-        if (request != ClientRequest.RESPAWN)
-            return;
 
-        ModernPlayer player = betaSession.getPlayer();
-
-        betaSession.sendPacket(new RespawnPacketData(player.getDimension(),
-                player.getDifficulty(), player.getGamemode(), player.getWorldHeight(), player.getSeed()));
+        switch (request) {
+            case STATS:
+                modernSession.send(new ServerStatisticsPacket(Collections.emptyMap()));
+                break;
+            case RESPAWN:
+                ModernPlayer player = betaSession.getPlayer();
+                betaSession.sendPacket(new RespawnPacketData(player.getDimension(), player.getDifficulty(), player.getGamemode(), player.getWorldHeight(), player.getSeed()));
+                break;
+        }
     }
 }

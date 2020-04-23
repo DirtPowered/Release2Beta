@@ -22,7 +22,9 @@
 
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityDestroyPacketData;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
@@ -43,7 +45,7 @@ public class EntityDestroyTranslator implements BetaToModern<EntityDestroyPacket
                 ((Mob) e).onDeath(modernSession);
             }
 
-            if (e.isBetaPlayer()) {
+            if (e.isBetaPlayer() && R2BConfiguration.version != MinecraftVersion.B_1_8_1) {
                 session.removeBetaTabEntry((BetaPlayer) e);
             }
         }

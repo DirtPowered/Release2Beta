@@ -30,7 +30,6 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.utils.Callback;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.auth.data.GameProfile;
-import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -51,12 +50,16 @@ import lombok.Setter;
 @Getter
 public class ModernPlayer implements PlayerAction {
     private String username;
-    private int entityId;
     private BetaClientSession session;
-    private String clientId;
     private GameProfile gameProfile;
     private PlayerInventory inventory;
     private WindowType openedInventoryType;
+
+    @Setter
+    private String clientId;
+
+    @Setter
+    private int entityId;
 
     @Setter
     private boolean onGround;
@@ -110,14 +113,6 @@ public class ModernPlayer implements PlayerAction {
         }
     }
 
-    public void setEntityId(int entityId) {
-        this.entityId = entityId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
     public void sendPacket(Packet modernPacket) {
         getModernSession().send(modernPacket);
     }
@@ -159,12 +154,11 @@ public class ModernPlayer implements PlayerAction {
         this.openedInventoryType = windowType;
     }
 
-
     public void sendMessage(String message) {
         sendPacket(new ServerChatPacket(TextMessage.fromString(message)));
     }
 
-    private int getPing() {
-        return getModernSession().getFlag(MinecraftConstants.PING_KEY);
+    public int getPing() {
+        return getModernSession().getFlag("ping");
     }
 }

@@ -104,7 +104,7 @@ public class ReleaseToBeta implements Runnable {
     }
 
     void stop() {
-        sessionRegistry.getSessions().clear();
+        server.getServerConnection().shutdown();
     }
 
     @Override

@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.PlayerListItemPacketData;
+import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.packetlib.Session;
@@ -35,9 +36,14 @@ public class PlayerListItemTranslator implements BetaToModern<PlayerListItemPack
         boolean online = packet.isOnline();
 
         if (online) {
-            //TODO: add tab entry
+            //Entity id will be set later (in NamedEntitySpawn)
+            new BetaPlayer(session, username, 0, result -> {
+                session.addBetaTabEntry(result);
+            });
         } else {
-            //TODO: remove tab entry
+            if (session.getBetaPlayers().containsKey(username)) {
+                session.removeBetaTabEntry(session.getBetaPlayers().get(username));
+            }
         }
     }
 }

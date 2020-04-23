@@ -47,6 +47,8 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
         int hasVelocity = packet.getVelocity();
         UUID uuid = UUID.randomUUID();
 
+        boolean customVelocity = false;
+
         ObjectType type = null;
         ObjectData data = null;
 
@@ -58,48 +60,64 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
         double vecY = 0;
         double vecZ = 0;
 
-        if (hasVelocity > 0) {
-            vecX = packet.getVelocityX() / 8000.0D;
-            vecY = packet.getVelocityY() / 8000.0D;
-            vecZ = packet.getVelocityZ() / 8000.0D;
-        }
-
-        if (packet.getType() == 10) {
-            type = ObjectType.MINECART;
-            data = MinecartType.NORMAL;
-        } else if (packet.getType() == 11) {
-            type = ObjectType.MINECART;
-            data = MinecartType.CHEST;
-        } else if (packet.getType() == 12) {
-            type = ObjectType.MINECART;
-            data = MinecartType.POWERED;
-        } else if (packet.getType() == 60) {
-            type = R2BConfiguration.arrowFix ? ObjectType.SNOWBALL : ObjectType.TIPPED_ARROW;
-            data = new ProjectileData(ownerId);
-        } else if (packet.getType() == 50) {
-            type = ObjectType.PRIMED_TNT;
-        } else if (packet.getType() == 61) {
-            type = ObjectType.SNOWBALL;
-            data = new ProjectileData(ownerId);
-        } else if (packet.getType() == 62) {
-            type = ObjectType.EGG;
-            data = new ProjectileData(ownerId);
-        } else if (packet.getType() == 90) {
-            type = ObjectType.FISH_HOOK;
-        } else if (packet.getType() == 1) {
-            type = ObjectType.BOAT;
-        } else if (packet.getType() == 63) {
-            type = ObjectType.GHAST_FIREBALL;
-        } else if (packet.getType() == 70) {
-            type = ObjectType.FALLING_BLOCK;
-            data = new FallingBlockData(12, 0);
-        } else if (packet.getType() == 71) {
-            type = ObjectType.FALLING_BLOCK;
-            data = new FallingBlockData(13, 0);
+        switch (packet.getType()) {
+            case 10:
+                type = ObjectType.MINECART;
+                data = MinecartType.NORMAL;
+                break;
+            case 11:
+                type = ObjectType.MINECART;
+                data = MinecartType.CHEST;
+                break;
+            case 12:
+                type = ObjectType.MINECART;
+                data = MinecartType.POWERED;
+                break;
+            case 60:
+                type = R2BConfiguration.arrowFix ? ObjectType.SNOWBALL : ObjectType.TIPPED_ARROW;
+                data = new ProjectileData(ownerId);
+                break;
+            case 50:
+                type = ObjectType.PRIMED_TNT;
+                break;
+            case 61:
+                type = ObjectType.SNOWBALL;
+                data = new ProjectileData(ownerId);
+                break;
+            case 62:
+                type = ObjectType.EGG;
+                data = new ProjectileData(ownerId);
+                break;
+            case 90:
+                type = ObjectType.FISH_HOOK;
+                break;
+            case 1:
+                type = ObjectType.BOAT;
+                break;
+            case 63:
+                type = ObjectType.GHAST_FIREBALL;
+                data = new ProjectileData(0);
+                //TODO: Get direction & calculate new velocity
+                customVelocity = true;
+                break;
+            case 70:
+                type = ObjectType.FALLING_BLOCK;
+                data = new FallingBlockData(12, 0);
+                break;
+            case 71:
+                type = ObjectType.FALLING_BLOCK;
+                data = new FallingBlockData(13, 0);
+                break;
         }
 
         if (type == null) //server sends weird IDs sometimes
             return;
+
+        if (hasVelocity > 0 && !customVelocity) {
+            vecX = packet.getVelocityX() / 8000.0D;
+            vecY = packet.getVelocityY() / 8000.0D;
+            vecZ = packet.getVelocityZ() / 8000.0D;
+        }
 
         modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, type, data, x, y, z, 0, 0));
         modernSession.send(new ServerEntityVelocityPacket(entityId, vecX, vecY, vecZ));

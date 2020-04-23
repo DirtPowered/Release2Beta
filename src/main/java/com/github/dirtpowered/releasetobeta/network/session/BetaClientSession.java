@@ -63,6 +63,8 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
@@ -70,7 +72,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private Session session;
     private Deque<BlockChangeRecord> blockChangeQueue = new LinkedList<>();
     private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
-    private List<BetaPlayer> playersInRange = new ArrayList<>();
+
+    @Getter
+    private Map<String, BetaPlayer> betaPlayers = new ConcurrentHashMap<>();
 
     @Getter
     private ReleaseToBeta main;
@@ -116,6 +120,10 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             if (player.getGameProfile() != null) {
                 Location l = player.getLocation();
                 if (l != null)
+                    /*
+                     * Beta client sending position every tick, without that 'hack' nether portals,
+                     * food eating, mob effects(potions?) will not work correctly.
+                     */
                     sendPacket(new PlayerLookPacketData(l.getYaw(), l.getPitch(), player.isOnGround()));
 
                 if (!initialPacketsQueue.isEmpty()) {
@@ -180,7 +188,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public void removeBetaTabEntry(BetaPlayer player) {
-        playersInRange.remove(player);
+        betaPlayers.remove(player.getUsername());
         ServerPlayerListEntryPacket entryPacket =
                 new ServerPlayerListEntryPacket(PlayerListEntryAction.REMOVE_PLAYER, new PlayerListEntry[]{
                         new PlayerListEntry(player.getGameProfile())
@@ -190,7 +198,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public void addBetaTabEntry(BetaPlayer player) {
-        playersInRange.add(player);
+        betaPlayers.put(player.getUsername(), player);
         ServerPlayerListEntryPacket entryPacket =
                 new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, new PlayerListEntry[]{
                         player.getTabEntry()
@@ -214,13 +222,14 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     private void quitPlayer() {
         session.disconnect(TextColor.translate("&cunexpectedly disconnected by server"));
-        main.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
-
+        if (R2BConfiguration.version != MinecraftVersion.B_1_8_1) {
+            main.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
+        }
         initialPacketsQueue.clear();
         blockChangeQueue.clear();
 
         entityCache.getEntities().clear();
-        playersInRange.clear();
+        betaPlayers.clear();
 
         main.getSessionRegistry().removeSession(player.getClientId());
     }
@@ -228,7 +237,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public void joinPlayer() {
         if (!isLoggedIn()) {
             Logger.info("[{}] connected", player.getUsername());
-            main.getServer().getServerConnection().getPlayerList().addTabEntry(player);
+            if (R2BConfiguration.version != MinecraftVersion.B_1_8_1) {
+                main.getServer().getServerConnection().getPlayerList().addTabEntry(player);
+            }
             main.getServer().updatePlayerProperties(session, player);
             setLoggedIn(true);
         }
@@ -305,9 +316,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             combinedPlayers.add(modernPlayer.getUsername());
         }
         //Players using beta client
-        for (BetaPlayer betaPlayer : playersInRange) {
-            combinedPlayers.add(betaPlayer.getUsername());
-        }
+        combinedPlayers.addAll(betaPlayers.keySet());
 
         return combinedPlayers.toArray(new String[0]);
     }

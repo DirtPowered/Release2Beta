@@ -22,6 +22,7 @@
 
 package com.github.dirtpowered.releasetobeta.data.player;
 
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
@@ -63,7 +64,7 @@ public class BetaPlayer extends Entity implements Mob {
 
     public PlayerListEntry getTabEntry() {
         return new PlayerListEntry(gameProfile, GameMode.SURVIVAL, 0,
-                Message.fromString(TextColor.translate("&9[BETA] &r" + username)));
+                Message.fromString(R2BConfiguration.version != MinecraftVersion.B_1_8_1 ? TextColor.translate("&9[BETA] &r" + username) : username));
     }
 
     public UUID getUUID() {

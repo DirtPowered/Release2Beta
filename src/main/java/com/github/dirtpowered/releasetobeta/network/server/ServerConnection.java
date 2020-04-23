@@ -42,6 +42,7 @@ import com.github.steveice10.mc.protocol.packet.status.client.StatusQueryPacket;
 import com.github.steveice10.packetlib.Server;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.server.ServerAdapter;
+import com.github.steveice10.packetlib.event.server.ServerClosingEvent;
 import com.github.steveice10.packetlib.event.server.SessionAddedEvent;
 import com.github.steveice10.packetlib.event.server.SessionRemovedEvent;
 import com.github.steveice10.packetlib.event.session.DisconnectingEvent;
@@ -58,6 +59,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ServerConnection implements Tickable {
     private final Queue<ServerQueuedPacket> packetQueue = new ConcurrentLinkedQueue<>();
+    private Server server;
 
     @Getter
     private ReleaseToBeta main;
@@ -77,7 +79,7 @@ public class ServerConnection implements Tickable {
         main = modernServer.getMain();
         playerList = new PlayerList(this);
 
-        Server server = new Server(R2BConfiguration.bindAddress, R2BConfiguration.bindPort, MinecraftProtocol.class, new TcpSessionFactory());
+        server = new Server(R2BConfiguration.bindAddress, R2BConfiguration.bindPort, MinecraftProtocol.class, new TcpSessionFactory());
 
         server.setGlobalFlag(MinecraftConstants.VERIFY_USERS_KEY, R2BConfiguration.onlineMode);
         server.setGlobalFlag(MinecraftConstants.SERVER_COMPRESSION_THRESHOLD, 256);
@@ -85,6 +87,15 @@ public class ServerConnection implements Tickable {
         server.setGlobalFlag(MinecraftConstants.SERVER_LOGIN_HANDLER_KEY, new LoginHandler(main));
 
         server.addListener(new ServerAdapter() {
+
+            @Override
+            public void serverClosing(ServerClosingEvent event) {
+                event.getServer().getSessions().forEach(session -> {
+                    if (session != null)
+                        session.disconnect("Server closed", true);
+                });
+            }
+
             @Override
             public void sessionAdded(SessionAddedEvent event) {
                 event.getSession().addListener(new SessionAdapter() {
@@ -167,8 +178,8 @@ public class ServerConnection implements Tickable {
         });
     }
 
-    public void UNSAFE_addPacketToQueue(Session session, Packet packet) {
-        packetQueue.add(new ServerQueuedPacket(session, packet, false));
+    public void shutdown() {
+        server.close(true);
     }
 
     static class ServerQueuedPacket {
