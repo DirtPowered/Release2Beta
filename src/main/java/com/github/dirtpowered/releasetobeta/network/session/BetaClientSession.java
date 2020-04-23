@@ -63,8 +63,6 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
@@ -74,7 +72,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
 
     @Getter
-    private Map<String, BetaPlayer> betaPlayers = new ConcurrentHashMap<>();
+    private List<BetaPlayer> betaPlayers = new ArrayList<>();
 
     @Getter
     private ReleaseToBeta main;
@@ -188,7 +186,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public void removeBetaTabEntry(BetaPlayer player) {
-        betaPlayers.remove(player.getUsername());
+        betaPlayers.remove(player);
         ServerPlayerListEntryPacket entryPacket =
                 new ServerPlayerListEntryPacket(PlayerListEntryAction.REMOVE_PLAYER, new PlayerListEntry[]{
                         new PlayerListEntry(player.getGameProfile())
@@ -198,7 +196,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public void addBetaTabEntry(BetaPlayer player) {
-        betaPlayers.put(player.getUsername(), player);
+        betaPlayers.add(player);
         ServerPlayerListEntryPacket entryPacket =
                 new ServerPlayerListEntryPacket(PlayerListEntryAction.ADD_PLAYER, new PlayerListEntry[]{
                         player.getTabEntry()
@@ -222,9 +220,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     private void quitPlayer() {
         session.disconnect(TextColor.translate("&cunexpectedly disconnected by server"));
-        if (R2BConfiguration.version != MinecraftVersion.B_1_8_1) {
-            main.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
-        }
+        main.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
         initialPacketsQueue.clear();
         blockChangeQueue.clear();
 
@@ -237,9 +233,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public void joinPlayer() {
         if (!isLoggedIn()) {
             Logger.info("[{}] connected", player.getUsername());
-            if (R2BConfiguration.version != MinecraftVersion.B_1_8_1) {
-                main.getServer().getServerConnection().getPlayerList().addTabEntry(player);
-            }
+            main.getServer().getServerConnection().getPlayerList().addTabEntry(player);
             main.getServer().updatePlayerProperties(session, player);
             setLoggedIn(true);
         }
@@ -316,7 +310,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             combinedPlayers.add(modernPlayer.getUsername());
         }
         //Players using beta client
-        combinedPlayers.addAll(betaPlayers.keySet());
+        for (BetaPlayer betaPlayer : betaPlayers) {
+            combinedPlayers.add(betaPlayer.getUsername());
+        }
 
         return combinedPlayers.toArray(new String[0]);
     }

@@ -22,9 +22,7 @@
 
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
-import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.NamedEntitySpawnPacketData;
-import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -52,25 +50,14 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
 
         if (uuid == null) {
             //spawn players using beta client too
-            if (R2BConfiguration.version != MinecraftVersion.B_1_8_1) {
-                new BetaPlayer(session, username, entityId, completePlayer -> {
-                    session.addBetaTabEntry(completePlayer);
-                    completePlayer.onSpawn(modernSession);
+            new BetaPlayer(session, username, entityId, completePlayer -> {
+                session.addBetaTabEntry(completePlayer);
+                completePlayer.onSpawn(modernSession);
 
-                    session.getEntityCache().addEntity(entityId, completePlayer);
-                    spawn(modernSession, entityId, completePlayer.getUUID(), x, y, z, yaw, pitch);
-                });
-            } else {
-                //TODO: Move it to B_1_8 translators
-                if (session.getBetaPlayers().containsKey(username)) {
-                    BetaPlayer betaPlayer = session.getBetaPlayers().get(username);
+                session.getEntityCache().addEntity(entityId, completePlayer);
+                spawn(modernSession, entityId, completePlayer.getUUID(), x, y, z, yaw, pitch);
+            });
 
-                    betaPlayer.onSpawn(modernSession);
-
-                    session.getEntityCache().addEntity(entityId, betaPlayer);
-                    spawn(modernSession, entityId, betaPlayer.getUUID(), x, y, z, yaw, pitch);
-                }
-            }
             return;
         }
 
