@@ -26,6 +26,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.ChatPacke
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
+import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.packetlib.Session;
 import org.pmw.tinylog.Logger;
@@ -73,6 +74,7 @@ public class ClientChatTranslator implements ModernToBeta<ClientChatPacket> {
             }
         }
 
-        betaSession.sendPacket(new ChatPacketData(message.length() > 100 ? message.substring(0, 100) : message));
+        message = Utils.toBetaChatColors(message.length() > 100 ? message.substring(0, 100) : message);
+        betaSession.sendPacket(new ChatPacketData(message));
     }
 }
