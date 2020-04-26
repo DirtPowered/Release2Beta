@@ -88,6 +88,9 @@ public class ModernPlayer implements PlayerAction {
     @Setter
     private long seed;
 
+    @Setter
+    private boolean sprinting;
+
     public ModernPlayer(BetaClientSession session) {
         this.session = session;
 

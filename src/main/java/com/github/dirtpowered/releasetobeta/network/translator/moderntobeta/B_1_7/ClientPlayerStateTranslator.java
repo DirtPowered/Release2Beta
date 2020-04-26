@@ -53,6 +53,18 @@ public class ClientPlayerStateTranslator implements ModernToBeta<ClientPlayerSta
             case LEAVE_BED:
                 newState = 3;
                 break;
+            case START_SPRINTING:
+                player.setSprinting(true);
+
+                betaSession.getMain().getServer().updatePlayerProperties(modernSession, player);
+                newState = -1;
+                break;
+            case STOP_SPRINTING:
+                player.setSprinting(false);
+
+                betaSession.getMain().getServer().updatePlayerProperties(modernSession, player);
+                newState = -1;
+                break;
             default:
                 newState = -1;
                 break;

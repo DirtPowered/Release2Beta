@@ -306,7 +306,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     public String[] combinedPlayerList() {
         List<String> combinedPlayers = new ArrayList<>();
         //Players joined from R2B
-        for (ModernPlayer modernPlayer : getMain().getServer().getServerConnection().getPlayerList().getPlayers()) {
+        for (ModernPlayer modernPlayer : main.getServer().getServerConnection().getPlayerList().getPlayers()) {
             combinedPlayers.add(modernPlayer.getUsername());
         }
         //Players using beta client

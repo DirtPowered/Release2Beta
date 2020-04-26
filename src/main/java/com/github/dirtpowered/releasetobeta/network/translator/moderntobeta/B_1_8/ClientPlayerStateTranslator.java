@@ -54,9 +54,11 @@ public class ClientPlayerStateTranslator implements ModernToBeta<ClientPlayerSta
                 newState = 3;
                 break;
             case START_SPRINTING:
+                player.setSprinting(true);
                 newState = 4;
                 break;
             case STOP_SPRINTING:
+                player.setSprinting(false);
                 newState = 5;
                 break;
             default:
