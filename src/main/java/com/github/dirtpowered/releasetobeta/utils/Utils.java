@@ -25,17 +25,24 @@ package com.github.dirtpowered.releasetobeta.utils;
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
+import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
+import com.github.steveice10.opennbt.tag.builtin.ListTag;
+import com.github.steveice10.opennbt.tag.builtin.Tag;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.pmw.tinylog.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class Utils {
     public static ItemStack betaItemStackToItemStack(BetaItemStack itemStack) {
-        return itemStack == null ? new ItemStack(0) : new ItemStack(itemStack.getBlockId(), itemStack.getAmount(), itemStack.getData());
+        return itemStack == null ? new ItemStack(0) : new ItemStack(itemStack.getBlockId(), itemStack.getAmount(), itemStack.getData(), removeItemAttributes());
     }
 
     public static BetaItemStack itemStackToBetaItemStack(ItemStack itemStack) {
@@ -47,7 +54,7 @@ public class Utils {
         for (BetaItemStack item : itemStacks) {
             ItemStack itemStack;
             if (item != null)
-                itemStack = new ItemStack(session.remapBlock(item.getBlockId()), item.getAmount(), session.remapMetadata(item.getBlockId(), item.getData()));
+                itemStack = new ItemStack(session.remapBlock(item.getBlockId()), item.getAmount(), session.remapMetadata(item.getBlockId(), item.getData()), removeItemAttributes());
             else
                 itemStack = new ItemStack(0);
 
@@ -92,5 +99,11 @@ public class Utils {
                 .replaceAll("§m", replacement)
                 .replaceAll("§n", replacement)
                 .replaceAll("§o", replacement);
+    }
+
+    private static CompoundTag removeItemAttributes() {
+        Map<String, Tag> nbt = new HashMap<>();
+        nbt.put("AttributeModifiers", new ListTag("AttributeModifiers", Collections.emptyList()));
+        return new CompoundTag(StringUtils.EMPTY, nbt);
     }
 }
