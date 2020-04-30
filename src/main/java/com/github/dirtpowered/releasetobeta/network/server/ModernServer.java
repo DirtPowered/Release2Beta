@@ -28,6 +28,7 @@ import com.github.dirtpowered.releasetobeta.data.command.CommandRegistry;
 import com.github.dirtpowered.releasetobeta.data.command.R2BCommand;
 import com.github.dirtpowered.releasetobeta.data.command.model.Command;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
+import com.github.dirtpowered.releasetobeta.data.entity.MetadataTranslator;
 import com.github.dirtpowered.releasetobeta.data.item.ArmorItem;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.data.skin.ProfileCache;
@@ -53,6 +54,8 @@ public class ModernServer {
     private CommandRegistry commandRegistry;
     private String[] commands;
 
+    private MetadataTranslator metadataTranslator;
+
     public ModernServer(ReleaseToBeta releaseToBeta) {
         this.main = releaseToBeta;
 
@@ -63,6 +66,8 @@ public class ModernServer {
 
         registerInternalCommands();
         this.commands = commandRegistry.getCommands().keySet().toArray(new String[0]);
+
+        this.metadataTranslator = new MetadataTranslator();
     }
 
     private void registerInternalCommands() {
@@ -101,7 +106,7 @@ public class ModernServer {
 
         if (player.isSprinting() && R2BConfiguration.disableSprinting)
             attributes.add(new Attribute(AttributeType.GENERIC_MOVEMENT_SPEED, 0.1D));
-        
+
         attributes.add(new Attribute(AttributeType.GENERIC_ARMOR, aVal));
         attributes.add(new Attribute(AttributeType.GENERIC_ATTACK_SPEED, 32.0D)); //disables 1.9+ pvp delay
 
