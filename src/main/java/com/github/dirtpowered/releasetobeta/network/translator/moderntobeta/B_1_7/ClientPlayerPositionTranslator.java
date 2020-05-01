@@ -43,6 +43,11 @@ public class ClientPlayerPositionTranslator implements ModernToBeta<ClientPlayer
 
         boolean onGround = packet.isOnGround();
 
+        if (player.isInVehicle()) {
+            y = -999.0D;
+            stance = -999.0D;
+        }
+
         betaSession.sendPacket(new PlayerPositionPacketData(x, y, z, stance, onGround));
     }
 }
