@@ -56,6 +56,9 @@ public class ModernPlayer implements PlayerAction {
     private WindowType openedInventoryType;
 
     @Setter
+    private long lastInteractAtEntity;
+
+    @Setter
     private String clientId;
 
     @Setter

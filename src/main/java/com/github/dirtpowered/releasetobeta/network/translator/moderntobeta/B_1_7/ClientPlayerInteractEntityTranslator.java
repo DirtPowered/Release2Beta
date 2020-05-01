@@ -35,10 +35,19 @@ public class ClientPlayerInteractEntityTranslator implements ModernToBeta<Client
     @Override
     public void translate(ClientPlayerInteractEntityPacket packet, Session modernSession, BetaClientSession betaSession) {
         ModernPlayer player = betaSession.getPlayer();
-        int targetEntityId = packet.getEntityId();
-        int entityId = player.getEntityId();
-        InteractAction action = packet.getAction();
+        /*
+         * 1.9+ minecraft versions sends interact packet twice at the same time (~5ms-49ms)
+         * Below code should fix:
+         * 1. Wolf taming
+         * 2. Entering rideable entities
+         **/
+        if (System.currentTimeMillis() - player.getLastInteractAtEntity() >= 50L) {
+            int targetEntityId = packet.getEntityId();
+            int entityId = player.getEntityId();
+            InteractAction action = packet.getAction();
 
-        betaSession.sendPacket(new UseEntityPacketData(entityId, targetEntityId, action == InteractAction.ATTACK));
+            betaSession.sendPacket(new UseEntityPacketData(entityId, targetEntityId, action == InteractAction.ATTACK));
+            player.setLastInteractAtEntity(System.currentTimeMillis());
+        }
     }
 }
