@@ -28,6 +28,7 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityAttachPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntitySetPassengersPacket;
 import com.github.steveice10.packetlib.Session;
 
 public class AttachEntityTranslator implements BetaToModern<AttachEntityPacketData> {
@@ -40,7 +41,13 @@ public class AttachEntityTranslator implements BetaToModern<AttachEntityPacketDa
         int entityId = packet.getVehicleEntityId();
         int passenger = packet.getEntityId();
 
-        player.setInVehicle(entityId != -1);
+        boolean inVehicle = entityId != -1;
+        player.setInVehicle(inVehicle);
+
         modernSession.send(new ServerEntityAttachPacket(entityId, passenger));
+
+        if (inVehicle) {
+            modernSession.send(new ServerEntitySetPassengersPacket(entityId, passenger));
+        }
     }
 }
