@@ -97,10 +97,7 @@ public class LoginHandler implements ServerLoginHandler {
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
             session.disconnect(e.getMessage());
-            String cId = main.getSessionRegistry().getClientSessionFromServerSession(session).getClientId();
-            if (cId != null) {
-                main.getSessionRegistry().removeSession(cId);
-            }
+            main.getSessionRegistry().removeSession(clientId);
         } finally {
             loopGroup.shutdownGracefully().sync();
         }
