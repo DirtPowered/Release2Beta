@@ -20,35 +20,26 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
+package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
-import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.AttachEntityPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UseEntityPacketData;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
-import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityAttachPacket;
+import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
+import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientSteerVehiclePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntitySetPassengersPacket;
 import com.github.steveice10.packetlib.Session;
 
-public class AttachEntityTranslator implements BetaToModern<AttachEntityPacketData> {
+public class ClientSteerVehicleTranslator implements ModernToBeta<ClientSteerVehiclePacket> {
 
     @Override
-    public void translate(AttachEntityPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
-        ModernPlayer player = session.getPlayer();
+    public void translate(ClientSteerVehiclePacket packet, Session modernSession, BetaClientSession betaSession) {
+        ModernPlayer player = betaSession.getPlayer();
+        boolean dismount = packet.getDismounting();
 
-        int entityId = packet.getVehicleEntityId();
-        int passenger = packet.getEntityId();
-
-        boolean inVehicle = entityId != -1;
-        player.setInVehicle(inVehicle);
-
-        modernSession.send(new ServerEntityAttachPacket(entityId, passenger));
-
-        if (inVehicle) {
-            player.setVehicleEntityId(entityId);
-            modernSession.send(new ServerEntitySetPassengersPacket(entityId, passenger));
+        if (dismount) {
+            modernSession.send(new ServerEntitySetPassengersPacket(player.getVehicleEntityId()));
+            betaSession.sendPacket(new UseEntityPacketData(player.getEntityId(), player.getVehicleEntityId(), false));
         }
     }
 }

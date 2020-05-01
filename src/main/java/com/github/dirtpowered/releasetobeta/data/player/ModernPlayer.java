@@ -80,6 +80,9 @@ public class ModernPlayer implements PlayerAction {
     private boolean inVehicle;
 
     @Setter
+    private int vehicleEntityId;
+
+    @Setter
     private int difficulty;
 
     @Setter

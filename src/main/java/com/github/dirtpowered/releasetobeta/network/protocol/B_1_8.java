@@ -139,6 +139,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerRotationTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerSwingArmTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerUseItemTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientSteerVehicleTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientTeleportConfirmTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientUpdateSignTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientWindowActionTranslator;
@@ -167,6 +168,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientClose
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientConfirmTransactionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientCreativeInventoryActionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientWindowActionPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientSteerVehiclePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientTeleportConfirmPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientUpdateSignPacket;
 import com.github.steveice10.mc.protocol.packet.login.client.LoginStartPacket;
@@ -252,5 +254,6 @@ public class B_1_8 {
         modernToBetaTranslatorRegistry.registerTranslator(ClientWindowActionPacket.class, new ClientWindowActionTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientConfirmTransactionPacket.class, new ClientConfirmTransactionTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientUpdateSignPacket.class, new ClientUpdateSignTranslator());
+        modernToBetaTranslatorRegistry.registerTranslator(ClientSteerVehiclePacket.class, new ClientSteerVehicleTranslator());
     }
 }
