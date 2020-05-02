@@ -90,6 +90,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 break;
             case 90:
                 type = ObjectType.FISH_HOOK;
+                data = new ProjectileData(ownerId);
                 break;
             case 1:
                 type = ObjectType.BOAT;
