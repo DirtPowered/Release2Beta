@@ -42,9 +42,8 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
 
     @Override
     public void translate(VehicleSpawnPacketData packet, BetaClientSession session, Session modernSession) {
-        int ownerId = session.getPlayer().getEntityId();
+        int ownerId = packet.getThrowerEntityId();
         int entityId = packet.getEntityId();
-        int hasVelocity = packet.getVelocity();
         UUID uuid = UUID.randomUUID();
 
         boolean customVelocity = false;
@@ -56,9 +55,9 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
         double y = Utils.toModernPos(packet.getY());
         double z = Utils.toModernPos(packet.getZ());
 
-        double vecX = 0;
-        double vecY = 0;
-        double vecZ = 0;
+        double vecX;
+        double vecY;
+        double vecZ;
 
         switch (packet.getType()) {
             case 10:
@@ -75,7 +74,13 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 break;
             case 60:
                 type = R2BConfiguration.arrowFix ? ObjectType.SNOWBALL : ObjectType.TIPPED_ARROW;
-                data = new ProjectileData(ownerId);
+                /*
+                 * https://wiki.vg/Object_Data
+                 * The entity ID of the shooter + 1
+                 *
+                 * Good job mojang ...
+                 **/
+                data = new ProjectileData(ownerId + 1);
                 break;
             case 50:
                 type = ObjectType.PRIMED_TNT;
@@ -90,7 +95,9 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 break;
             case 90:
                 type = ObjectType.FISH_HOOK;
-                data = new ProjectileData(ownerId);
+                // Also... good job - throwerId is not sent by server
+                // TODO: get thrower from player location
+                data = new ProjectileData(session.getPlayer().getEntityId());
                 break;
             case 1:
                 type = ObjectType.BOAT;
@@ -114,13 +121,13 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
         if (type == null) //server sends weird IDs sometimes
             return;
 
-        if (hasVelocity > 0 && !customVelocity) {
+        modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, type, data, x, y, z, 0, 0));
+        if (ownerId > 0 && !customVelocity) {
             vecX = packet.getVelocityX() / 8000.0D;
             vecY = packet.getVelocityY() / 8000.0D;
             vecZ = packet.getVelocityZ() / 8000.0D;
-        }
 
-        modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, type, data, x, y, z, 0, 0));
-        modernSession.send(new ServerEntityVelocityPacket(entityId, vecX, vecY, vecZ));
+            modernSession.send(new ServerEntityVelocityPacket(entityId, vecX, vecY, vecZ));
+        }
     }
 }
