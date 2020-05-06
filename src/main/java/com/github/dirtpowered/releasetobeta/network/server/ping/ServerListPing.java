@@ -34,12 +34,16 @@ import com.github.steveice10.mc.protocol.data.status.VersionInfo;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 @NoArgsConstructor
 public class ServerListPing {
     private Message motd;
     private GameProfile[] playerListSample;
+
+    @Setter
+    private BufferedImage icon;
 
     @Setter
     private int maxPlayers;
@@ -66,7 +70,7 @@ public class ServerListPing {
         return new ServerStatusInfo(
                 new VersionInfo(versionString, protocolVersion),
                 new PlayerInfo(maxPlayers, onlinePlayers, playerListSample),
-                motd, null
+                motd, icon
         );
     }
 }

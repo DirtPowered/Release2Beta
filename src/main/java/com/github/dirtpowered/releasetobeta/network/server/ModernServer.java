@@ -41,7 +41,12 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntit
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayBuiltinSoundPacket;
 import com.github.steveice10.packetlib.Session;
 import lombok.Getter;
+import org.pmw.tinylog.Logger;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +58,7 @@ public class ModernServer {
     private ProfileCache profileCache;
     private CommandRegistry commandRegistry;
     private String[] commands;
+    private BufferedImage serverIcon;
 
     private MetadataTranslator metadataTranslator;
 
@@ -68,6 +74,12 @@ public class ModernServer {
         this.commands = commandRegistry.getCommands().keySet().toArray(new String[0]);
 
         this.metadataTranslator = new MetadataTranslator();
+
+        try {
+            this.serverIcon = ImageIO.read(new File("server-icon.png"));
+        } catch (IOException e) {
+            Logger.warn("unable to read server-icon.png (missing?)");
+        }
     }
 
     private void registerInternalCommands() {
@@ -111,5 +123,9 @@ public class ModernServer {
         attributes.add(new Attribute(AttributeType.GENERIC_ATTACK_SPEED, 32.0D)); //disables 1.9+ pvp delay
 
         session.send(new ServerEntityPropertiesPacket(player.getEntityId(), attributes));
+    }
+
+    public BufferedImage getServerIcon() {
+        return serverIcon;
     }
 }

@@ -55,6 +55,7 @@ public class ServerInfoListener implements ServerInfoBuilder {
         int onlineCount = serverConnection.getPlayerList().getOnlineCount();
 
         serverListPing.setPlayerListSample(serverConnection.getPlayerList().getProfiles().subList(0, onlineCount < 20 ? onlineCount : 20));
+        serverListPing.setIcon(serverConnection.getModernServer().getServerIcon());
 
         if (R2BConfiguration.ver1_8PingPassthrough && R2BConfiguration.version == MinecraftVersion.B_1_8_1) {
             PingMessage pingMessage = serverConnection.getMain().getPingPassthroughThread().getPingMessage();

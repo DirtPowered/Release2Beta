@@ -59,11 +59,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ServerConnection implements Tickable {
     private final Queue<ServerQueuedPacket> packetQueue = new ConcurrentLinkedQueue<>();
+    @Getter
+    ModernServer modernServer;
     private Server server;
-
     @Getter
     private ReleaseToBeta main;
-
     @Getter
     private PlayerList playerList;
 
@@ -76,6 +76,8 @@ public class ServerConnection implements Tickable {
     };
 
     ServerConnection(ModernServer modernServer) {
+        this.modernServer = modernServer;
+
         main = modernServer.getMain();
         playerList = new PlayerList(this);
 
