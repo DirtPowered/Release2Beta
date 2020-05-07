@@ -36,6 +36,8 @@ public class UpdateHealthTranslator implements BetaToModern<UpdateHealthPacketDa
         int food = packet.getFood();
         float saturation = packet.getSaturation();
 
+        session.getPlayer().setHealth(health);
+
         modernSession.send(new ServerPlayerHealthPacket(health, food, saturation));
     }
 }

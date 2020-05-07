@@ -97,6 +97,9 @@ public class ModernPlayer implements PlayerAction {
     @Setter
     private boolean sprinting;
 
+    @Setter
+    private float health;
+
     public ModernPlayer(BetaClientSession session) {
         this.session = session;
 

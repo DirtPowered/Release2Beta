@@ -23,11 +23,13 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityActionPacketData;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerState;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerStatePacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerHealthPacket;
 import com.github.steveice10.packetlib.Session;
 
 public class ClientPlayerStateTranslator implements ModernToBeta<ClientPlayerStatePacket> {
@@ -57,11 +59,15 @@ public class ClientPlayerStateTranslator implements ModernToBeta<ClientPlayerSta
                 player.setSprinting(true);
 
                 betaSession.getMain().getServer().updatePlayerProperties(modernSession, player);
+                if (R2BConfiguration.disableSprinting)
+                    modernSession.send(new ServerPlayerHealthPacket(player.getHealth(), 0, 0));
                 newState = -1;
                 break;
             case STOP_SPRINTING:
                 player.setSprinting(false);
 
+                if (R2BConfiguration.disableSprinting)
+                    modernSession.send(new ServerPlayerHealthPacket(player.getHealth(), 20, 0));
                 betaSession.getMain().getServer().updatePlayerProperties(modernSession, player);
                 newState = -1;
                 break;

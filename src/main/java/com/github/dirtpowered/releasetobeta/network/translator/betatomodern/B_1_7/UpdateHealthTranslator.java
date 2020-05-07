@@ -33,6 +33,7 @@ public class UpdateHealthTranslator implements BetaToModern<UpdateHealthPacketDa
     @Override
     public void translate(UpdateHealthPacketData packet, BetaClientSession session, Session modernSession) {
         float health = packet.getHealth();
+        session.getPlayer().setHealth(health);
 
         modernSession.send(new ServerPlayerHealthPacket(health, 20, 0));
     }
