@@ -41,7 +41,7 @@ import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.MapData.MapDataHandler;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.UpdateProgress.UpdateProgressHandler;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.TextColor;
+import com.github.dirtpowered.releasetobeta.utils.ChatUtils;
 import com.github.dirtpowered.releasetobeta.utils.Tickable;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
@@ -219,7 +219,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     private void quitPlayer() {
-        session.disconnect(TextColor.translate("&cunexpectedly disconnected by server"));
+        session.disconnect(ChatUtils.colorize("&cunexpectedly disconnected by server"));
         main.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
         initialPacketsQueue.clear();
         blockChangeQueue.clear();

@@ -27,7 +27,7 @@ import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
-import com.github.dirtpowered.releasetobeta.utils.TextColor;
+import com.github.dirtpowered.releasetobeta.utils.ChatUtils;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.window.ClickItemParam;
@@ -79,7 +79,7 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
                 player.closeInventory();
                 player.updateInventory();
 
-                player.sendMessage(TextColor.translate("&cunsupported operation"));
+                player.sendMessage(ChatUtils.colorize("&cunsupported operation"));
                 return;
             }
 

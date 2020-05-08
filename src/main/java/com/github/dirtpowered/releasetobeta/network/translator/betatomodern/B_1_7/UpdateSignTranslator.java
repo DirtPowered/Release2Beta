@@ -25,7 +25,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateSignPacketData;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
+import com.github.dirtpowered.releasetobeta.utils.ChatUtils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.block.UpdatedTileType;
 import com.github.steveice10.mc.protocol.data.message.ChatColor;
@@ -61,7 +61,7 @@ public class UpdateSignTranslator implements BetaToModern<UpdateSignPacketData> 
 
         for (int line = 0; line < 4; ++line) {
             nbt.put("Text" + (line + 1), new StringTag("Text" + (line + 1),
-                    TextMessage.fromString(Utils.toBetaChatColors(lines[line])).setStyle(new MessageStyle().setColor(ChatColor.RESET)).toJsonString()));
+                    TextMessage.fromString(ChatUtils.colorize(lines[line])).setStyle(new MessageStyle().setColor(ChatColor.RESET)).toJsonString()));
         }
 
         CompoundTag tag = new CompoundTag("", nbt);

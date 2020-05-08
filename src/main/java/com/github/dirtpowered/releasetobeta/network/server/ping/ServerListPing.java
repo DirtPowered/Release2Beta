@@ -22,7 +22,7 @@
 
 package com.github.dirtpowered.releasetobeta.network.server.ping;
 
-import com.github.dirtpowered.releasetobeta.utils.TextColor;
+import com.github.dirtpowered.releasetobeta.utils.ChatUtils;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.message.ChatColor;
 import com.github.steveice10.mc.protocol.data.message.Message;
@@ -58,7 +58,7 @@ public class ServerListPing {
     private String versionString;
 
     public void setMotd(String motd) {
-        this.motd = TextMessage.fromString(TextColor.translate(motd))
+        this.motd = TextMessage.fromString(ChatUtils.colorize(motd))
                 .setStyle(new MessageStyle().setColor(ChatColor.RESET));
     }
 

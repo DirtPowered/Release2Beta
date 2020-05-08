@@ -22,7 +22,6 @@
 
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
-import com.github.dirtpowered.betaprotocollib.model.Packet;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerLookMovePacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.data.Constants;

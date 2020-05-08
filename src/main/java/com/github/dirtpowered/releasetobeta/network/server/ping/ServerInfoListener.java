@@ -27,7 +27,7 @@ import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.network.server.ServerConnection;
 import com.github.dirtpowered.releasetobeta.network.server.ping.LegacyPing.model.PingMessage;
-import com.github.dirtpowered.releasetobeta.utils.TextColor;
+import com.github.dirtpowered.releasetobeta.utils.ChatUtils;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
 import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoBuilder;
 import com.github.steveice10.packetlib.Session;
@@ -69,7 +69,7 @@ public class ServerInfoListener implements ServerInfoBuilder {
                 serverListPing.setOnlinePlayers(pingMessage.getOnlinePlayers());
                 serverListPing.setMaxPlayers(pingMessage.getMaxPlayers());
             } else {
-                serverListPing.setMotd(TextColor.translate("&9Can't connect to remote server"));
+                serverListPing.setMotd(ChatUtils.colorize("&9Can't connect to remote server"));
                 serverListPing.setOnlinePlayers(0);
                 serverListPing.setMaxPlayers(0);
 

@@ -26,45 +26,17 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.ChatPacke
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
+import com.github.dirtpowered.releasetobeta.utils.ChatUtils;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.packetlib.Session;
 import org.pmw.tinylog.Logger;
 
 public class ClientChatTranslator implements ModernToBeta<ClientChatPacket> {
-    private final char[] allowedCharacters = new char[]{
-            ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')',
-            '*', '+', ',', '-', '.', '/', '0', '1', '2', '3',
-            '4', '5', '6', '7', '8', '9', ':', ';', '<', '=',
-            '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G',
-            'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
-            'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[',
-            '\\', ']', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
-            'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
-            's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|',
-            '}', '~', '⌂', 'Ç', 'ü', 'é', 'â', 'ä', 'à', 'å',
-            'ç', 'ê', 'ë', 'è', 'ï', 'î', 'ì', 'Ä', 'Å', 'É',
-            'æ', 'Æ', 'ô', 'ö', 'ò', 'û', 'ù', 'ÿ', 'Ö', 'Ü',
-            'ø', '£', 'Ø', '×', 'ƒ', 'á', 'í', 'ó', 'ú', 'ñ',
-            'Ñ', 'ª', 'º', '¿', '®', '¬', '½', '¼', '¡', '«',
-            '»', '_', '^', '\''
-    };
 
     @Override
     public void translate(ClientChatPacket packet, Session modernSession, BetaClientSession betaSession) {
         ModernPlayer player = betaSession.getPlayer();
-        String message = packet.getMessage();
-
-        message = message.trim();
-        String allowed = new String(allowedCharacters);
-
-        for (int i = 0; i < message.length(); ++i) {
-            String toReplace = Character.toString(message.charAt(i));
-
-            if (!allowed.contains(toReplace)) {
-                message = message.replaceAll(toReplace, "*");
-            }
-        }
+        String message = ChatUtils.replaceIllegal(packet.getMessage());
 
         if (!message.startsWith("/")) Logger.info("[CHAT] {}: {}", player.getUsername(), message);
         else {
@@ -74,7 +46,7 @@ public class ClientChatTranslator implements ModernToBeta<ClientChatPacket> {
             }
         }
 
-        message = Utils.toBetaChatColors(message.length() > 100 ? message.substring(0, 100) : message);
+        message = ChatUtils.toBetaChatColors(message.length() > 100 ? message.substring(0, 100) : message);
         betaSession.sendPacket(new ChatPacketData(message));
     }
 }

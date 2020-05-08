@@ -92,15 +92,6 @@ public class Utils {
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes());
     }
 
-    public static String toBetaChatColors(String message) {
-        String replacement = "§f";
-        return message
-                .replaceAll("§l", replacement)
-                .replaceAll("§m", replacement)
-                .replaceAll("§n", replacement)
-                .replaceAll("§o", replacement);
-    }
-
     private static CompoundTag removeItemAttributes() {
         Map<String, Tag> nbt = new HashMap<>();
         nbt.put("AttributeModifiers", new ListTag("AttributeModifiers", Collections.emptyList()));

@@ -84,7 +84,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     for (int z1 = 0; z1 < zSize; z1++) {
                         for (int y1 = 0; y1 < ySize; y1++) {
                             int index = (x1 * xSize + z1) * ySize + y1;
-                            int blockId = packet.getChunk()[index];
+                            int blockId = data[index];
 
                             modernSession.send(new ServerBlockChangePacket(
                                     new BlockChangeRecord(new Position(x + x1, y + y1, z + z1), new BlockState(blockId, 0)))

@@ -26,7 +26,7 @@ import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
-import com.github.dirtpowered.releasetobeta.utils.TextColor;
+import com.github.dirtpowered.releasetobeta.utils.ChatUtils;
 import com.github.steveice10.mc.protocol.ServerLoginHandler;
 import com.github.steveice10.packetlib.Session;
 import io.netty.bootstrap.Bootstrap;
@@ -54,14 +54,14 @@ public class LoginHandler implements ServerLoginHandler {
         try {
             if (session.isConnected()) {
                 if ((System.currentTimeMillis() - lastLogin) < R2BConfiguration.globalConnectionThrottle) {
-                    session.disconnect(TextColor.translate(R2BConfiguration.connectionThrottleKickMessage));
+                    session.disconnect(ChatUtils.colorize(R2BConfiguration.connectionThrottleKickMessage));
                     return;
                 }
 
                 this.lastLogin = System.currentTimeMillis();
 
                 if (main.getServer().getServerConnection().getPlayerList().getOnlineCount() + 1 > R2BConfiguration.maxPlayers) {
-                    session.disconnect(TextColor.translate(R2BConfiguration.serverFullMessage));
+                    session.disconnect(ChatUtils.colorize(R2BConfiguration.serverFullMessage));
                     return;
                 }
 
