@@ -32,7 +32,6 @@ import com.github.steveice10.mc.protocol.data.game.entity.type.object.MinecartTy
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectData;
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ProjectileData;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityVelocityPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -46,7 +45,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
         int entityId = packet.getEntityId();
         UUID uuid = UUID.randomUUID();
 
-        boolean customVelocity = false;
+        boolean isFireball = false;
 
         ObjectType type = null;
         ObjectData data = null;
@@ -105,8 +104,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
             case 63:
                 type = ObjectType.GHAST_FIREBALL;
                 data = new ProjectileData(0);
-                //TODO: Get direction & calculate new velocity
-                customVelocity = true;
+                isFireball = true;
                 break;
             case 70:
                 type = ObjectType.FALLING_BLOCK;
@@ -121,13 +119,12 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
         if (type == null) //server sends weird IDs sometimes
             return;
 
-        modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, type, data, x, y, z, 0, 0));
-        if (ownerId > 0 && !customVelocity) {
+        if (ownerId > 0 || isFireball) {
             vecX = packet.getVelocityX() / 8000.0D;
             vecY = packet.getVelocityY() / 8000.0D;
             vecZ = packet.getVelocityZ() / 8000.0D;
 
-            modernSession.send(new ServerEntityVelocityPacket(entityId, vecX, vecY, vecZ));
+            modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, type, data, x, y, z, 0, 0, vecX, vecY, vecZ));
         }
     }
 }
