@@ -38,8 +38,8 @@ public class ClientUpdateSignTranslator implements ModernToBeta<ClientUpdateSign
         String[] lines = packet.getLines();
 
         for (int i = 0; i < lines.length; i++)
-            if (!lines[i].isEmpty() && lines[i].length() >= 15)
-                lines[i] = ChatUtils.replaceIllegal(lines[i].substring(0, 15));
+            if (!lines[i].isEmpty())
+                lines[i] = ChatUtils.replaceIllegal(lines[i]).substring(0, lines[i].length() < 16 ? lines[i].length() : 15);
 
         betaSession.sendPacket(new UpdateSignPacketData(pos.getX(), pos.getY(), pos.getZ(), lines));
     }
