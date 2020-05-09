@@ -20,37 +20,21 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.bootstrap.standalone;
+package com.github.dirtpowered.releasetobeta.bootstrap.bukkit;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.bootstrap.AbstractBootstrap;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
-import com.github.dirtpowered.releasetobeta.logger.DefaultLogger;
-import org.apache.commons.lang3.StringUtils;
-import org.pmw.tinylog.Configurator;
+import com.github.dirtpowered.releasetobeta.logger.BukkitLogger;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class StandaloneBootstrap implements AbstractBootstrap {
+import java.util.logging.Logger;
+
+public class BukkitBootstrap extends JavaPlugin implements AbstractBootstrap {
+    private static final Logger LOGGER = Logger.getLogger("Minecraft");
+
     private ReleaseToBeta server;
-    private DefaultLogger logger;
-
-    public static void main(String[] args) {
-        new StandaloneBootstrap().onEnable();
-    }
-
-    @Override
-    public void onEnable() {
-        initDefaultLogger();
-
-        logger = new DefaultLogger();
-        server = new ReleaseToBeta(this);
-
-        addShutdownHook();
-    }
-
-    @Override
-    public void onDisable() {
-        server.stop();
-    }
+    private BukkitLogger logger;
 
     @Override
     public AbstractLogger getAppLogger() {
@@ -59,19 +43,21 @@ public class StandaloneBootstrap implements AbstractBootstrap {
 
     @Override
     public String getConfigPath() {
-        return StringUtils.EMPTY;
+        return getDataFolder().getAbsolutePath();
     }
 
-    private void addShutdownHook() {
-        Thread stopThread = new Thread(() -> {
-            logger.info("Stopping ...");
-            onDisable();
-        });
+    @Override
+    public void onEnable() {
+        logger = new BukkitLogger(LOGGER);
 
-        Runtime.getRuntime().addShutdownHook(stopThread);
+        if (!getDataFolder().mkdir())
+            logger.error("unable to create default plugin directory");
+
+        server = new ReleaseToBeta(this);
     }
 
-    private void initDefaultLogger() {
-        Configurator.currentConfig().formatPattern("[{level} {date:HH:mm:ss}] {message}").activate();
+    @Override
+    public void onDisable() {
+        server.stop();
     }
 }

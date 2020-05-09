@@ -12,8 +12,11 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>bukkit-repo</id>
+            <url>https://maven.enginehub.org/repo/</url>
+        </repository>
     </repositories>
-
     <build>
         <resources>
             <resource>
@@ -21,6 +24,7 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>config.yml</include>
+                    <include>plugin.yml</include>
                 </includes>
             </resource>
         </resources>
@@ -101,6 +105,14 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- old Bukkit API -->
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

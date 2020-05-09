@@ -66,7 +66,7 @@ public class ReleaseToBeta implements Runnable {
         long startTime = System.nanoTime();
 
         this.bootstrap = bootstrap;
-        new R2BConfiguration(this).loadConfiguration(); //load config
+        new R2BConfiguration(this).loadConfiguration(bootstrap.getConfigPath()); //load config
 
         this.scheduledExecutorService = Executors.newScheduledThreadPool(32);
         this.sessionRegistry = new SessionRegistry();
@@ -109,7 +109,7 @@ public class ReleaseToBeta implements Runnable {
         }
 
         long endTime = System.nanoTime();
-        bootstrap.getLogger().info("Ready for connections (" + ((endTime - startTime) / 1000000L) + "ms)");
+        getLogger().info("Ready for connections (" + ((endTime - startTime) / 1000000L) + "ms)");
     }
 
     public void stop() {
@@ -127,6 +127,6 @@ public class ReleaseToBeta implements Runnable {
 
     //helper method
     public AbstractLogger getLogger() {
-        return bootstrap.getLogger();
+        return bootstrap.getAppLogger();
     }
 }

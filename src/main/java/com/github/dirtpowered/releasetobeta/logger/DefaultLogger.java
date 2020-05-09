@@ -24,7 +24,7 @@ package com.github.dirtpowered.releasetobeta.logger;
 
 import org.pmw.tinylog.Logger;
 
-public class DefaultLogger extends AbstractLogger {
+public class DefaultLogger implements AbstractLogger {
 
     @Override
     public void info(String message) {

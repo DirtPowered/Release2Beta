@@ -26,7 +26,9 @@ import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 
 public interface AbstractBootstrap {
 
-    AbstractLogger getLogger();
+    AbstractLogger getAppLogger();
+
+    String getConfigPath();
 
     void onEnable();
 

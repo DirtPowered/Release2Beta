@@ -58,21 +58,21 @@ public class R2BConfiguration {
         this.main = main;
     }
 
-    public void loadConfiguration() {
-        YamlFile config = new YamlFile("config.yml");
-
+    public void loadConfiguration(String path) {
+        YamlFile config = new YamlFile(path + "/config.yml");
         try {
             if (config.exists()) {
+                main.getLogger().info("loading configuration file");
                 config.load();
             } else {
                 //not compiled
                 Path p = Paths.get("src/main/resources/config.yml");
                 if (Files.exists(p)) {
-                    Files.copy(p, Paths.get("config.yml"));
+                    Files.copy(p, Paths.get(path + "/config.yml"));
                 } else {
                     //compiled
                     InputStream inputStream = getClass().getResourceAsStream("/config.yml");
-                    Files.copy(inputStream, Paths.get("config.yml"));
+                    Files.copy(inputStream, Paths.get(path + "/config.yml"));
                 }
 
                 config.load();
