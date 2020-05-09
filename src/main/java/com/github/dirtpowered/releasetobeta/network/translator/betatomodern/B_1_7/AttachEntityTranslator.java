@@ -35,7 +35,7 @@ public class AttachEntityTranslator implements BetaToModern<AttachEntityPacketDa
 
     @Override
     public void translate(AttachEntityPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
+        Utils.debug(session.getMain().getLogger(), packet);
         ModernPlayer player = session.getPlayer();
 
         int entityId = packet.getVehicleEntityId();

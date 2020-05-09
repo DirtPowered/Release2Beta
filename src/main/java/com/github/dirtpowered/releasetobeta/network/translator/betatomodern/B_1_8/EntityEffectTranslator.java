@@ -34,7 +34,7 @@ public class EntityEffectTranslator implements BetaToModern<EntityEffectPacketDa
 
     @Override
     public void translate(EntityEffectPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
+        Utils.debug(session.getMain().getLogger(), packet);
         int entityId = packet.getEntityId();
         int duration = packet.getDuration();
         int amplifier = packet.getAmplifier();

@@ -29,7 +29,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBet
 import com.github.dirtpowered.releasetobeta.utils.ChatUtils;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.packetlib.Session;
-import org.pmw.tinylog.Logger;
 
 public class ClientChatTranslator implements ModernToBeta<ClientChatPacket> {
 
@@ -38,10 +37,11 @@ public class ClientChatTranslator implements ModernToBeta<ClientChatPacket> {
         ModernPlayer player = betaSession.getPlayer();
         String message = ChatUtils.replaceIllegal(packet.getMessage());
 
-        if (!message.startsWith("/")) Logger.info("[CHAT] {}: {}", player.getUsername(), message);
+        if (!message.startsWith("/"))
+            betaSession.getMain().getLogger().info("[CHAT] " + player.getUsername() + ": " + message);
         else {
             if (betaSession.getMain().getServer().executeCommand(player, message)) {
-                Logger.info("[COMMAND] {}: {}", player.getUsername(), message);
+                betaSession.getMain().getLogger().info("[COMMAND] " + player.getUsername() + ": " + message);
                 return;
             }
         }

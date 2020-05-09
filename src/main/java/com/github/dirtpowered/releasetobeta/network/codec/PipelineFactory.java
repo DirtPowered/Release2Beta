@@ -22,15 +22,22 @@
 
 package com.github.dirtpowered.releasetobeta.network.codec;
 
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 
 public class PipelineFactory extends ChannelInitializer {
 
+    private ReleaseToBeta main;
+
+    public PipelineFactory(ReleaseToBeta main) {
+        this.main = main;
+    }
+
     @Override
     protected void initChannel(Channel channel) {
-        channel.pipeline().addLast("decoder", new PacketDecoder());
+        channel.pipeline().addLast("decoder", new PacketDecoder(main));
         channel.pipeline().addLast("encoder", new PacketEncoder());
         channel.pipeline().addLast("timeout", new ReadTimeoutHandler(30));
     }

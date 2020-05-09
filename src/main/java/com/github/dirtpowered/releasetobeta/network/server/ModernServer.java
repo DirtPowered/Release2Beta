@@ -41,7 +41,6 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntit
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayBuiltinSoundPacket;
 import com.github.steveice10.packetlib.Session;
 import lombok.Getter;
-import org.pmw.tinylog.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -62,12 +61,12 @@ public class ModernServer {
 
     private MetadataTranslator metadataTranslator;
 
-    public ModernServer(ReleaseToBeta releaseToBeta) {
-        this.main = releaseToBeta;
+    public ModernServer(ReleaseToBeta main) {
+        this.main = main;
 
         this.serverConnection = new ServerConnection(this);
         this.entityRegistry = new EntityRegistry();
-        this.profileCache = new ProfileCache();
+        this.profileCache = new ProfileCache(main);
         this.commandRegistry = new CommandRegistry();
 
         registerInternalCommands();
@@ -78,7 +77,7 @@ public class ModernServer {
         try {
             this.serverIcon = ImageIO.read(new File("server-icon.png"));
         } catch (IOException e) {
-            Logger.warn("unable to read server-icon.png (missing?)");
+            main.getLogger().warning("unable to read server-icon.png (missing?)");
         }
     }
 

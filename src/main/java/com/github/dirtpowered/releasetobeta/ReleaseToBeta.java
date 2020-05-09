@@ -23,12 +23,14 @@
 package com.github.dirtpowered.releasetobeta;
 
 import com.github.dirtpowered.betaprotocollib.BetaLib;
+import com.github.dirtpowered.releasetobeta.bootstrap.AbstractBootstrap;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.EntityEffectMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.SoundEffectMap;
+import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import com.github.dirtpowered.releasetobeta.network.protocol.B_1_7;
 import com.github.dirtpowered.releasetobeta.network.protocol.B_1_8;
 import com.github.dirtpowered.releasetobeta.network.server.ModernServer;
@@ -58,9 +60,13 @@ public class ReleaseToBeta implements Runnable {
     private MetadataMap metadataMap;
     private ModernServer server;
     private PingPassthroughThread pingPassthroughThread;
+    private AbstractBootstrap bootstrap;
 
-    ReleaseToBeta() {
-        new R2BConfiguration().loadConfiguration(); //load config
+    public ReleaseToBeta(AbstractBootstrap bootstrap) {
+        long startTime = System.nanoTime();
+
+        this.bootstrap = bootstrap;
+        new R2BConfiguration(this).loadConfiguration(); //load config
 
         this.scheduledExecutorService = Executors.newScheduledThreadPool(32);
         this.sessionRegistry = new SessionRegistry();
@@ -98,12 +104,15 @@ public class ReleaseToBeta implements Runnable {
         executor.scheduleAtFixedRate(this, 0L, 50L, TimeUnit.MILLISECONDS);
 
         if (R2BConfiguration.ver1_8PingPassthrough) {
-            this.pingPassthroughThread = new PingPassthroughThread();
+            this.pingPassthroughThread = new PingPassthroughThread(this);
             scheduledExecutorService.scheduleAtFixedRate(pingPassthroughThread, 0L, Constants.PING_INTERVAL, TimeUnit.MILLISECONDS);
         }
+
+        long endTime = System.nanoTime();
+        bootstrap.getLogger().info("Ready for connections (" + ((endTime - startTime) / 1000000L) + "ms)");
     }
 
-    void stop() {
+    public void stop() {
         server.getServerConnection().shutdown();
     }
 
@@ -114,5 +123,10 @@ public class ReleaseToBeta implements Runnable {
         });
 
         this.server.getServerConnection().tick();
+    }
+
+    //helper method
+    public AbstractLogger getLogger() {
+        return bootstrap.getLogger();
     }
 }

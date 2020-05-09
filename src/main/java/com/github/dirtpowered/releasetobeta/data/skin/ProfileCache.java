@@ -24,12 +24,12 @@ package com.github.dirtpowered.releasetobeta.data.skin;
 
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.auth.exception.profile.ProfileException;
 import com.github.steveice10.mc.auth.service.ProfileService;
 import com.github.steveice10.mc.auth.service.SessionService;
-import org.pmw.tinylog.Logger;
 
 import java.net.Proxy;
 import java.util.concurrent.CompletableFuture;
@@ -39,8 +39,10 @@ public class ProfileCache {
     private static final ProfileService PROFILE_SERVICE = new ProfileService(Proxy.NO_PROXY);
     private static final SessionService SESSION_SERVICE = new SessionService(Proxy.NO_PROXY);
     private AsyncLoadingCache<String, GameProfile> profileCache;
+    private ReleaseToBeta main;
 
-    public ProfileCache() {
+    public ProfileCache(ReleaseToBeta main) {
+        this.main = main;
         profileCache = Caffeine.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.HOURS).buildAsync(k -> fetchProfile(k));
     }
 
@@ -59,13 +61,13 @@ public class ProfileCache {
                     SESSION_SERVICE.fillProfileProperties(profile);
                     gameProfile[0] = profile;
                 } catch (ProfileException e) {
-                    Logger.error("[{}] Error: {}", profile.getName(), e.getMessage());
+                    main.getLogger().error("[" + profile.getName() + "] Error: " + e.getMessage());
                 }
             }
 
             @Override
             public void onProfileLookupFailed(GameProfile profile, Exception e) {
-                Logger.error("[{}] Error: {}", profile.getName(), e.getMessage());
+                main.getLogger().error("[" + profile.getName() + "] Error: " + e.getMessage());
             }
         });
 

@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.utils;
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
+import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
@@ -31,7 +32,6 @@ import com.github.steveice10.opennbt.tag.builtin.Tag;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.pmw.tinylog.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,8 +80,8 @@ public class Utils {
         return (float) doubleValue;
     }
 
-    public static void debug(Object clazz) {
-        Logger.info("[DEBUG] {}", ReflectionToStringBuilder.toString(clazz, ToStringStyle.SHORT_PREFIX_STYLE));
+    public static void debug(AbstractLogger logger, Object clazz) {
+        logger.info("[DEBUG] " + ReflectionToStringBuilder.toString(clazz, ToStringStyle.SHORT_PREFIX_STYLE));
     }
 
     public static int fromChunkPos(int chunkPos) {

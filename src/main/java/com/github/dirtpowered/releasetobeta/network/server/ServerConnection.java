@@ -51,7 +51,6 @@ import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
 import lombok.Getter;
-import org.pmw.tinylog.Logger;
 
 import java.util.Arrays;
 import java.util.Queue;
@@ -59,11 +58,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ServerConnection implements Tickable {
     private final Queue<ServerQueuedPacket> packetQueue = new ConcurrentLinkedQueue<>();
+
     @Getter
     ModernServer modernServer;
+
     private Server server;
+
     @Getter
     private ReleaseToBeta main;
+
     @Getter
     private PlayerList playerList;
 
@@ -112,7 +115,7 @@ public class ServerConnection implements Tickable {
                     public void packetReceived(PacketReceivedEvent event) {
                         Packet packet = event.getPacket();
                         if (packet instanceof StatusQueryPacket) {
-                            Logger.info("{} has pinged", event.getSession().getLocalAddress());
+                            main.getLogger().info(event.getSession().getLocalAddress() + " has pinged");
                             return;
                         } else if (packet instanceof HandshakePacket) {
                             return;
@@ -159,10 +162,11 @@ public class ServerConnection implements Tickable {
                     packetQueue.add(queuedPacket);
                     return;
                 }
-                Logger.error("{} was not handled", queuedPacket.packet);
+
+                main.getLogger().warning(queuedPacket.packet + " was not handled");
             }
         } else if (Arrays.stream(notNeededPackets).noneMatch(aClass -> aClass.equals(queuedPacket.packet.getClass()))) {
-            Logger.warn("skipped {}", queuedPacket.packet);
+            main.getLogger().warning("skipped " + queuedPacket.packet);
         }
     }
 

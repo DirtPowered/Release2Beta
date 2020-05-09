@@ -25,23 +25,29 @@ package com.github.dirtpowered.releasetobeta.network.codec;
 import com.github.dirtpowered.betaprotocollib.BetaLib;
 import com.github.dirtpowered.betaprotocollib.model.AbstractPacket;
 import com.github.dirtpowered.betaprotocollib.model.Packet;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
-import org.pmw.tinylog.Logger;
 
 import java.io.IOException;
 import java.util.List;
 
 public class PacketDecoder extends ReplayingDecoder<Packet> {
 
+    private ReleaseToBeta main;
+
+    PacketDecoder(ReleaseToBeta main) {
+        this.main = main;
+    }
+
     @Override
     protected void decode(ChannelHandlerContext context, ByteBuf buffer, List<Object> list) throws IOException, IllegalAccessException, InstantiationException {
         final int packetId = buffer.readUnsignedByte();
 
         if (!BetaLib.getRegistry().hasId(packetId)) {
-            Logger.warn("Packet {} is not registered", packetId);
+            main.getLogger().warning("Packet " + packetId + " is not registered");
             list.add(Unpooled.EMPTY_BUFFER);
             return;
         }

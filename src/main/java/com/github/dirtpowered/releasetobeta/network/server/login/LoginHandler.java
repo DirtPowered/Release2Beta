@@ -37,7 +37,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.pmw.tinylog.Logger;
 
 import java.net.InetSocketAddress;
 
@@ -45,8 +44,8 @@ public class LoginHandler implements ServerLoginHandler {
     private ReleaseToBeta main;
     private long lastLogin;
 
-    public LoginHandler(ReleaseToBeta releaseToBeta) {
-        this.main = releaseToBeta;
+    public LoginHandler(ReleaseToBeta main) {
+        this.main = main;
     }
 
     @Override
@@ -68,7 +67,7 @@ public class LoginHandler implements ServerLoginHandler {
                 createClientSession(RandomStringUtils.randomAlphabetic(8), session);
             }
         } catch (InterruptedException e) {
-            Logger.error(e.getMessage());
+            main.getLogger().error(e.getMessage());
         }
     }
 
@@ -88,7 +87,7 @@ public class LoginHandler implements ServerLoginHandler {
 
                 @Override
                 protected void initChannel(SocketChannel ch) {
-                    ch.pipeline().addLast("mc_pipeline", new PipelineFactory());
+                    ch.pipeline().addLast("mc_pipeline", new PipelineFactory(main));
                     ch.pipeline().addLast("client_connection_handler", new BetaClientSession(main, ch, session, clientId));
                 }
             });

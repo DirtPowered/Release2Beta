@@ -23,8 +23,7 @@
 package com.github.dirtpowered.releasetobeta.configuration;
 
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
-import lombok.NoArgsConstructor;
-import org.pmw.tinylog.Logger;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import org.simpleyaml.configuration.file.YamlFile;
 
 import java.io.InputStream;
@@ -32,7 +31,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@NoArgsConstructor
 public class R2BConfiguration {
     public static MinecraftVersion version;
     public static String motd;
@@ -53,6 +51,12 @@ public class R2BConfiguration {
     public static String connectionThrottleKickMessage;
     public static int globalConnectionThrottle;
     public static boolean onlineMode;
+
+    private ReleaseToBeta main;
+
+    public R2BConfiguration(ReleaseToBeta main) {
+        this.main = main;
+    }
 
     public void loadConfiguration() {
         YamlFile config = new YamlFile("config.yml");
@@ -77,7 +81,7 @@ public class R2BConfiguration {
             try {
                 version = MinecraftVersion.valueOf(config.getString("general.beta_version"));
             } catch (Exception e) {
-                Logger.warn("'beta_version' is wrong, defaulting to B_1_7_3");
+                main.getLogger().warning("'beta_version' is wrong, defaulting to B_1_7_3");
                 version = MinecraftVersion.B_1_7_3;
             }
 
@@ -104,7 +108,7 @@ public class R2BConfiguration {
 
             testMode = config.getBoolean("experimental.enable_chunk_updates");
         } catch (Exception e) {
-            Logger.error("error: {}", e.getMessage());
+            main.getLogger().error("Error: " + e.getMessage());
         }
     }
 }

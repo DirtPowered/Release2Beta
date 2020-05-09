@@ -56,7 +56,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.Getter;
 import lombok.Setter;
-import org.pmw.tinylog.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -156,7 +155,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        Logger.info("[{}] disconnected", player.getUsername());
+        main.getLogger().info("[" + player.getUsername() + "] disconnected");
         quitPlayer();
 
         super.channelInactive(ctx);
@@ -164,7 +163,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
-        Logger.warn("[{}/{}] closed connection: {}", clientId, player.getUsername(), cause.toString());
+        main.getLogger().warning("[" + clientId + "/" + player.getUsername() + "]" + " closed connection: " + cause.toString());
 
         cause.printStackTrace();
         context.close();
@@ -181,7 +180,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         if (handler != null && channel.isActive()) {
             handler.translate(packet, this, main.getSessionRegistry().getSession(player.getClientId()).getModernSession());
         } else {
-            Logger.warn("[client={}] missing 'BetaToModern' translator for {}", clientId, packet.getClass().getSimpleName());
+            main.getLogger().warning("[" + clientId + "/" + player.getUsername() + "]" + " missing 'BetaToModern' translator for: " + packet.getClass().getSimpleName());
         }
     }
 
@@ -232,7 +231,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     public void joinPlayer() {
         if (!isLoggedIn()) {
-            Logger.info("[{}] connected", player.getUsername());
+            main.getLogger().info("[" + player.getUsername() + "] connected");
             main.getServer().getServerConnection().getPlayerList().addTabEntry(player);
             main.getServer().updatePlayerProperties(session, player);
             setLoggedIn(true);

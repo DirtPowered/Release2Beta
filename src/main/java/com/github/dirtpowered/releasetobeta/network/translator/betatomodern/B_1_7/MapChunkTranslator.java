@@ -39,7 +39,6 @@ import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockChangePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
 import com.github.steveice10.packetlib.Session;
-import org.pmw.tinylog.Logger;
 
 public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
@@ -94,7 +93,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            Logger.warn("Chunk at [x={} z={}] was skipped", chunkX, chunkZ);
+            session.getMain().getLogger().warning("Chunk at [x=" + chunkX + " z=" + chunkZ + "] was skipped");
         }
     }
 

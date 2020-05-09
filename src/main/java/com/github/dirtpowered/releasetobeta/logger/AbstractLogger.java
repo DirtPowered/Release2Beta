@@ -20,32 +20,13 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta;
+package com.github.dirtpowered.releasetobeta.logger;
 
-import org.pmw.tinylog.Configurator;
-import org.pmw.tinylog.Logger;
+public abstract class AbstractLogger {
 
-public class Main {
+    public abstract void info(String message);
 
-    private static ReleaseToBeta server;
+    public abstract void warning(String message);
 
-    public static void main(String... arguments) {
-        long startTime = System.nanoTime();
-
-        Configurator.currentConfig().formatPattern("[{level} {date:HH:mm:ss}] {message}").activate();
-        server = new ReleaseToBeta();
-        addShutdownHook();
-
-        long endTime = System.nanoTime();
-        Logger.info("Ready for connections ({}ms)", (endTime - startTime) / 1000000L);
-    }
-
-    private static void addShutdownHook() {
-        Thread stopThread = new Thread(() -> {
-            Logger.info("Stopping ...");
-            server.stop();
-        });
-
-        Runtime.getRuntime().addShutdownHook(stopThread);
-    }
+    public abstract void error(String message);
 }

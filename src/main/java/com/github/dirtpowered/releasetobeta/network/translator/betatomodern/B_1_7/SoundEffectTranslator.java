@@ -42,7 +42,7 @@ public class SoundEffectTranslator implements BetaToModern<SoundEffectPacketData
 
     @Override
     public void translate(SoundEffectPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(packet);
+        Utils.debug(session.getMain().getLogger(), packet);
         SoundEffectMap soundEffectMap = session.getMain().getSoundEffectMap();
 
         int id = packet.getSoundType();

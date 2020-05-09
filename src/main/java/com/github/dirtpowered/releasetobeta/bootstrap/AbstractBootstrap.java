@@ -20,32 +20,15 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.network.server.ping.LegacyPing;
+package com.github.dirtpowered.releasetobeta.bootstrap;
 
-import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
-import com.github.dirtpowered.releasetobeta.network.server.ping.LegacyPing.model.PingMessage;
-import lombok.Getter;
+import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 
-@Getter
-public class PingPassthroughThread implements Runnable {
-    private PingMessage pingMessage;
-    private long lastStatusUpdate;
+public interface AbstractBootstrap {
 
-    private ReleaseToBeta main;
+    AbstractLogger getLogger();
 
-    public PingPassthroughThread(ReleaseToBeta main) {
-        this.main = main;
-    }
+    void onEnable();
 
-    @Override
-    public void run() {
-        try {
-            new LegacyPingConnector(main).connect(result -> {
-                pingMessage = result;
-                lastStatusUpdate = System.currentTimeMillis();
-            });
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+    void onDisable();
 }

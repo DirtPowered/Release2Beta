@@ -32,7 +32,7 @@ public class ClientResourcePackStatusTranslator implements ModernToBeta<ClientRe
 
     @Override
     public void translate(ClientResourcePackStatusPacket packet, Session modernSession, BetaClientSession betaSession) {
-        Utils.debug(packet);
+        Utils.debug(betaSession.getMain().getLogger(), packet);
 
         //TODO: command & message when client reject resourcepack
     }
