@@ -1,0 +1,3 @@
+name: ${groupId}
+main: com.github.dirtpowered.releasetobeta.bootstrap.bukkit.BukkitBootstrap
+version: ${version}
