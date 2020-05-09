@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.bootstrap.bukkit;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.bootstrap.AbstractBootstrap;
+import com.github.dirtpowered.releasetobeta.bootstrap.Platform;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import com.github.dirtpowered.releasetobeta.logger.BukkitLogger;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,6 +45,11 @@ public class BukkitBootstrap extends JavaPlugin implements AbstractBootstrap {
     @Override
     public String getConfigPath() {
         return getDataFolder().getAbsolutePath();
+    }
+
+    @Override
+    public Platform getPlatform() {
+        return Platform.BUKKIT;
     }
 
     @Override

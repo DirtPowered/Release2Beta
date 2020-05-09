@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.configuration;
 
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import org.apache.commons.lang3.StringUtils;
 import org.simpleyaml.configuration.file.YamlFile;
 
 import java.io.InputStream;
@@ -58,21 +59,25 @@ public class R2BConfiguration {
         this.main = main;
     }
 
+    private String fixPath(String path) {
+        return path.isEmpty() ? StringUtils.EMPTY : path + "/";
+    }
+
     public void loadConfiguration(String path) {
-        YamlFile config = new YamlFile(path + "/config.yml");
+        YamlFile config = new YamlFile(fixPath(path) + "config.yml");
         try {
             if (config.exists()) {
-                main.getLogger().info("loading configuration file");
+                main.getLogger().info("Loading configuration file");
                 config.load();
             } else {
                 //not compiled
                 Path p = Paths.get("src/main/resources/config.yml");
                 if (Files.exists(p)) {
-                    Files.copy(p, Paths.get(path + "/config.yml"));
+                    Files.copy(p, Paths.get(fixPath(path) + "config.yml"));
                 } else {
                     //compiled
                     InputStream inputStream = getClass().getResourceAsStream("/config.yml");
-                    Files.copy(inputStream, Paths.get(path + "/config.yml"));
+                    Files.copy(inputStream, Paths.get(fixPath(path) + "config.yml"));
                 }
 
                 config.load();

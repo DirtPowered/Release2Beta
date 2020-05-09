@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.bootstrap.standalone;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.bootstrap.AbstractBootstrap;
+import com.github.dirtpowered.releasetobeta.bootstrap.Platform;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import com.github.dirtpowered.releasetobeta.logger.DefaultLogger;
 import org.apache.commons.lang3.StringUtils;
@@ -60,6 +61,11 @@ public class StandaloneBootstrap implements AbstractBootstrap {
     @Override
     public String getConfigPath() {
         return StringUtils.EMPTY;
+    }
+
+    @Override
+    public Platform getPlatform() {
+        return Platform.STANDALONE;
     }
 
     private void addShutdownHook() {

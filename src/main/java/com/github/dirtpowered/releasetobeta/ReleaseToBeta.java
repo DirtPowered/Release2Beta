@@ -64,8 +64,9 @@ public class ReleaseToBeta implements Runnable {
 
     public ReleaseToBeta(AbstractBootstrap bootstrap) {
         long startTime = System.nanoTime();
-
         this.bootstrap = bootstrap;
+        getLogger().info("Starting ReleaseToBeta on " + bootstrap.getPlatform() + " platform");
+
         new R2BConfiguration(this).loadConfiguration(bootstrap.getConfigPath()); //load config
 
         this.scheduledExecutorService = Executors.newScheduledThreadPool(32);

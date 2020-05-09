@@ -22,17 +22,6 @@
 
 package com.github.dirtpowered.releasetobeta.bootstrap;
 
-import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
-
-public interface AbstractBootstrap {
-
-    AbstractLogger getAppLogger();
-
-    String getConfigPath();
-
-    Platform getPlatform();
-
-    void onEnable();
-
-    void onDisable();
+public enum Platform {
+    STANDALONE, BUKKIT
 }
