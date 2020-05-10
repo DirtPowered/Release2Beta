@@ -125,6 +125,8 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
             vecZ = packet.getVelocityZ() / 8000.0D;
 
             modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, type, data, x, y, z, 0, 0, vecX, vecY, vecZ));
+        } else {
+            modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, type, data, x, y, z, 0, 0));
         }
     }
 }
