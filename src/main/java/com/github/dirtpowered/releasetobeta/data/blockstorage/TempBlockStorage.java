@@ -34,7 +34,7 @@ public class TempBlockStorage {
 
     @Getter
     private Map<Long, DataBlock[]> blockStorageMap = new HashMap<>();
-    private int[] blocksToCache = new int[]{25, 29, 33, 52, 54};
+    private int[] blocksToCache = new int[]{29, 33, 54};
 
     public void cacheBlocks(int chunkX, int chunkZ, DataBlock[] blocks) {
         if (needsCaching(blocks)) {

@@ -33,6 +33,7 @@ import com.github.steveice10.mc.protocol.data.game.world.block.value.BlockValueT
 import com.github.steveice10.mc.protocol.data.game.world.block.value.ChestValueType;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.GenericBlockValue;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.NoteBlockValueType;
+import com.github.steveice10.mc.protocol.data.game.world.block.value.PistonValueType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockValuePacket;
@@ -61,13 +62,23 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
             int blockId = b.getBlockState().getId();
             switch (packet.getInstrumentType()) {
                 case 0:
-                    builtinSound = BuiltinSound.BLOCK_NOTE_HARP;
-                    type = NoteBlockValueType.HARP;
+                    if (blockId == 33 || blockId == 29) {
+                        builtinSound = BuiltinSound.BLOCK_PISTON_EXTEND;
+                        type = PistonValueType.PUSHING;
+                        pitch = 0;
+                    } else {
+                        builtinSound = BuiltinSound.BLOCK_NOTE_HARP;
+                        type = NoteBlockValueType.HARP;
+                    }
                     break;
                 case 1:
                     if (blockId == 54) {
                         builtinSound = BuiltinSound.BLOCK_CHEST_OPEN;
                         type = ChestValueType.VIEWING_PLAYER_COUNT;
+                    } else if (blockId == 33 || blockId == 29) {
+                        builtinSound = BuiltinSound.BLOCK_PISTON_CONTRACT;
+                        type = PistonValueType.PULLING;
+                        pitch = 0;
                     } else {
                         builtinSound = BuiltinSound.BLOCK_NOTE_BASEDRUM;
                         type = NoteBlockValueType.BASS_DRUM;
