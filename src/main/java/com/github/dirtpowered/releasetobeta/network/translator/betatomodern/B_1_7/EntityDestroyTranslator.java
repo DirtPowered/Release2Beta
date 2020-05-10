@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityDestroyPacketData;
+import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
@@ -40,7 +41,10 @@ public class EntityDestroyTranslator implements BetaToModern<EntityDestroyPacket
 
         if (e != null) {
             if (e instanceof Mob) {
-                ((Mob) e).onDeath(modernSession);
+                double dist = session.getPlayer().getLocation().distanceTo(e.getLocation());
+                if (dist < Constants.SOUND_RANGE) {
+                    ((Mob) e).onDeath(modernSession);
+                }
             }
 
             if (e.isBetaPlayer()) {

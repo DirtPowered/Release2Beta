@@ -56,7 +56,7 @@ public class BukkitBootstrap extends JavaPlugin implements AbstractBootstrap {
     public void onEnable() {
         logger = new BukkitLogger(LOGGER);
 
-        if (!getDataFolder().mkdir())
+        if (!getDataFolder().mkdir() && !getDataFolder().exists())
             logger.error("unable to create default plugin directory");
 
         server = new ReleaseToBeta(this);

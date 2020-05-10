@@ -23,6 +23,8 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityStatusPacketData;
+import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
@@ -51,7 +53,7 @@ public class EntityStatusTranslator implements BetaToModern<EntityStatusPacketDa
         switch (status) {
             case 2:
                 entityStatus = EntityStatus.LIVING_HURT;
-                onDamage(entityId, session.getEntityCache(), modernSession);
+                onDamage(entityId, session.getEntityCache(), modernSession, session.getPlayer().getLocation());
                 break;
             case 3:
                 entityStatus = EntityStatus.LIVING_DEATH;
@@ -78,12 +80,15 @@ public class EntityStatusTranslator implements BetaToModern<EntityStatusPacketDa
         modernSession.send(new ServerEntityStatusPacket(entityId, entityStatus));
     }
 
-    private void onDamage(int entityId, EntityCache entityCache, Session session) {
+    private void onDamage(int entityId, EntityCache entityCache, Session session, Location l) {
         Entity e = entityCache.getEntityById(entityId);
         if (e != null) {
             if (e instanceof Mob) {
                 Mob mob = (Mob) e;
-                mob.onDamage(session);
+                double dist = l.distanceTo(e.getLocation());
+                if (dist < Constants.SOUND_RANGE) {
+                    mob.onDamage(session);
+                }
             }
         }
     }

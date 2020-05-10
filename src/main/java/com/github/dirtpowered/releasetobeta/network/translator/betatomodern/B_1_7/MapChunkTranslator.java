@@ -23,7 +23,9 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapChunkPacketData;
+import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.DataBlock;
 import com.github.dirtpowered.releasetobeta.data.chunk.BetaChunk;
 import com.github.dirtpowered.releasetobeta.data.entity.TileEntity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -39,6 +41,9 @@ import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockChangePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
 import com.github.steveice10.packetlib.Session;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
@@ -102,6 +107,8 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         NibbleArray3d nibbleBlockLight = new NibbleArray3d(4096);
         NibbleArray3d nibbleSkyLight = new NibbleArray3d(4096);
 
+        List<DataBlock> blockList = new ArrayList<>();
+
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
@@ -119,13 +126,21 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                         );
                     }
 
-                    storage.set(x, y, z, new BlockState(blockId, blockData));
+                    BlockState blockState = new BlockState(blockId, blockData);
+
+                    blockList.add(new DataBlock(new Location(
+                            Utils.fromChunkPos(chunk.getX()) + x,
+                            y + height,
+                            Utils.fromChunkPos(chunk.getZ()) + z), blockState));
+
+                    storage.set(x, y, z, blockState);
                     nibbleBlockLight.set(x, y, z, blockLight);
                     nibbleSkyLight.set(x, y, z, skyLight);
                 }
             }
         }
 
+        session.getBlockStorage().cacheBlocks(chunk.getX(), chunk.getZ(), blockList.toArray(new DataBlock[0]));
         return new Chunk(storage, nibbleBlockLight, skylight ? nibbleSkyLight : null);
     }
 }

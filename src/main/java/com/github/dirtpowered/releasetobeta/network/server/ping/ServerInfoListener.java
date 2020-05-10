@@ -51,8 +51,8 @@ public class ServerInfoListener implements ServerInfoBuilder {
         serverListPing.setMaxPlayers(R2BConfiguration.maxPlayers);
         serverListPing.setMotd(R2BConfiguration.motd);
 
-        serverListPing.setOnlinePlayers(serverConnection.getPlayerList().getPlayers().size());
         int onlineCount = serverConnection.getPlayerList().getOnlineCount();
+        serverListPing.setOnlinePlayers(onlineCount);
 
         serverListPing.setPlayerListSample(serverConnection.getPlayerList().getProfiles().subList(0, onlineCount < 20 ? onlineCount : 20));
         serverListPing.setIcon(serverConnection.getModernServer().getServerIcon());

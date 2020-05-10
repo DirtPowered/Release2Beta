@@ -22,6 +22,7 @@
 
 package com.github.dirtpowered.releasetobeta.data.entity.model;
 
+import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
@@ -34,7 +35,7 @@ public abstract class Entity {
     private int entityId;
     private MobType mobType;
     private boolean betaPlayer;
-    private int x, y, z;
+    private Location location;
 
     public Entity(int entityId, MobType type) {
         this.entityId = entityId;
@@ -55,14 +56,12 @@ public abstract class Entity {
     public abstract void onSpawn(Session session);
 
     public void setLocation(double x, double y, double z) {
-        this.x = (int) x;
-        this.y = (int) y;
-        this.z = (int) z;
+        this.location = new Location(x, y, z);
     }
 
     @Deprecated
     protected void playSound(Session session, BuiltinSound sound, SoundCategory category) {
         //TODO: Use {@link com.github.dirtpowered.releasetobeta.network.server.ModernServer#playWorldSound}
-        session.send(new ServerPlayBuiltinSoundPacket(sound, category, x, y, z, 1.f, 1.f));
+        session.send(new ServerPlayBuiltinSoundPacket(sound, category, location.getX(), location.getY(), location.getZ(), 1.f, 1.f));
     }
 }

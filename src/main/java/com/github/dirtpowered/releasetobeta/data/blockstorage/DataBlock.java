@@ -20,14 +20,16 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.data;
+package com.github.dirtpowered.releasetobeta.data.blockstorage;
 
-public class Constants {
-    public final static double PLAYER_STANCE = 1.6200000047683716D;
-    public final static double PLAYER_STANCE_SNEAKING = 1.5399999991059303;
-    public final static int MAX_CHUNK_SIZE = 32768;
-    public final static String PING_VERSION_STRING = "ReleaseToBeta";
-    public final static int PING_PROTOCOL = 340;
-    public final static int PING_INTERVAL = 5000;
-    public final static double SOUND_RANGE = 15.0D;
+import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class DataBlock {
+    private Location location;
+    private BlockState blockState;
 }

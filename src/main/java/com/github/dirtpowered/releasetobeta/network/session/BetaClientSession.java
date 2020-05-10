@@ -31,6 +31,7 @@ import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.TempBlockStorage;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.TileEntity;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
@@ -66,35 +67,28 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
     private final Channel channel;
+    @Getter
+    TempBlockStorage blockStorage;
     private Session session;
     private Deque<BlockChangeRecord> blockChangeQueue = new LinkedList<>();
     private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
-
     @Getter
     private List<BetaPlayer> betaPlayers = new ArrayList<>();
-
     @Getter
     private ReleaseToBeta main;
-
     @Getter
     @Setter
     private ProtocolState protocolState;
-
     @Getter
     private ModernPlayer player;
-
     @Getter
     @Setter
     private boolean loggedIn;
-
     @Getter
     private EntityCache entityCache;
-
     @Getter
     private String clientId;
-
     private boolean resourcepack;
-
     private int i;
     private MapDataHandler mapDataHandler;
     private UpdateProgressHandler updateProgressHandler;
@@ -109,6 +103,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         this.clientId = clientId;
         this.mapDataHandler = new MapDataHandler();
         this.updateProgressHandler = new UpdateProgressHandler();
+
+        //blockstorage
+        this.blockStorage = new TempBlockStorage();
     }
 
     @Override
@@ -226,6 +223,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         entityCache.getEntities().clear();
         betaPlayers.clear();
 
+        blockStorage.purgeAll();
         main.getSessionRegistry().removeSession(player.getClientId());
     }
 

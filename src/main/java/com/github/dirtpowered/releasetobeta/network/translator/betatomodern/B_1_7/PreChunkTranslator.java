@@ -49,6 +49,7 @@ public class PreChunkTranslator implements BetaToModern<PreChunkPacketData> {
         } else {
             //unload
             modernSession.send(new ServerUnloadChunkPacket(x, z));
+            session.getBlockStorage().remove(x, z);
         }
     }
 }

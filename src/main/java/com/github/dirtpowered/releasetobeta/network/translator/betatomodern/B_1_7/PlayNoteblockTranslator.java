@@ -23,10 +23,14 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayNoteblockPacketData;
+import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.data.Constants;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.DataBlock;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.BlockValueType;
+import com.github.steveice10.mc.protocol.data.game.world.block.value.ChestValueType;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.GenericBlockValue;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.NoteBlockValueType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
@@ -43,45 +47,52 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
         int y = packet.getY();
         int z = packet.getZ();
 
-        Position position = new Position(x, y, z);
-
         int pitch = packet.getPitch();
 
         BuiltinSound builtinSound;
         BlockValueType type;
 
-        switch (packet.getInstrumentType()) {
-            case 0:
-                builtinSound = BuiltinSound.BLOCK_NOTE_HARP;
-                type = NoteBlockValueType.HARP;
-                break;
-            case 1:
-                /*builtinSound = BuiltinSound.BLOCK_NOTE_BASEDRUM;
-                type = NoteBlockValueType.BASS_DRUM;*/
+        Location l = new Location(x, y, z);
 
-                //Opening chest fix
-                builtinSound = BuiltinSound.BLOCK_NOTE_BASS;
-                type = NoteBlockValueType.DOUBLE_BASS;
-                break;
-            case 2:
-                builtinSound = BuiltinSound.BLOCK_NOTE_SNARE;
-                type = NoteBlockValueType.SNARE_DRUM;
-                break;
-            case 3:
-                builtinSound = BuiltinSound.BLOCK_NOTE_HAT;
-                type = NoteBlockValueType.HI_HAT;
-                break;
-            case 4:
-                builtinSound = BuiltinSound.BLOCK_NOTE_BASS;
-                type = NoteBlockValueType.DOUBLE_BASS;
-                break;
-            default:
-                builtinSound = BuiltinSound.BLOCK_NOTE_HARP;
-                type = NoteBlockValueType.HARP;
-                break;
+        double dist = l.distanceTo(session.getPlayer().getLocation());
+        if (dist < Constants.SOUND_RANGE) {
+            DataBlock b = session.getBlockStorage().getCachedBlockAt(l);
+
+            int blockId = b.getBlockState().getId();
+            switch (packet.getInstrumentType()) {
+                case 0:
+                    builtinSound = BuiltinSound.BLOCK_NOTE_HARP;
+                    type = NoteBlockValueType.HARP;
+                    break;
+                case 1:
+                    if (blockId == 54) {
+                        builtinSound = BuiltinSound.BLOCK_CHEST_OPEN;
+                        type = ChestValueType.VIEWING_PLAYER_COUNT;
+                    } else {
+                        builtinSound = BuiltinSound.BLOCK_NOTE_BASEDRUM;
+                        type = NoteBlockValueType.BASS_DRUM;
+                    }
+                    break;
+                case 2:
+                    builtinSound = BuiltinSound.BLOCK_NOTE_SNARE;
+                    type = NoteBlockValueType.SNARE_DRUM;
+                    break;
+                case 3:
+                    builtinSound = BuiltinSound.BLOCK_NOTE_HAT;
+                    type = NoteBlockValueType.HI_HAT;
+                    break;
+                case 4:
+                    builtinSound = BuiltinSound.BLOCK_NOTE_BASS;
+                    type = NoteBlockValueType.DOUBLE_BASS;
+                    break;
+                default:
+                    builtinSound = BuiltinSound.BLOCK_NOTE_HARP;
+                    type = NoteBlockValueType.HARP;
+                    break;
+            }
+
+            modernSession.send(new ServerPlayBuiltinSoundPacket(builtinSound, SoundCategory.BLOCK, x, y, z, 1.33f, pitch));
+            modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, new GenericBlockValue(pitch), blockId));
         }
-
-        modernSession.send(new ServerPlayBuiltinSoundPacket(builtinSound, SoundCategory.RECORD, x, y, z, 3.0f, pitch));
-        modernSession.send(new ServerBlockValuePacket(position, type, new GenericBlockValue(pitch), 25));
     }
 }
