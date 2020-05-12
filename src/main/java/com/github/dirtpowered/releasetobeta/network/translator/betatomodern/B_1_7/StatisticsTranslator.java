@@ -23,6 +23,8 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.StatisticsPacketData;
+import com.github.dirtpowered.releasetobeta.data.achievement.Achievement;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.packetlib.Session;
@@ -31,8 +33,19 @@ public class StatisticsTranslator implements BetaToModern<StatisticsPacketData> 
 
     @Override
     public void translate(StatisticsPacketData packet, BetaClientSession session, Session modernSession) {
-        //Utils.debug(packet);
+        int rawId = packet.getStatId();
+        ModernPlayer player = session.getPlayer();
 
-        //TODO: Translate this somehow
+        if (rawId > 5242999 || rawId < 5000)
+            return;
+
+        int achievementId = rawId - Achievement.ACHIEVEMENT_OFFSET;
+        session.getMain().getLogger().info("[" + player.getUsername() + "] achievement type: " + Achievement.fromStatId(achievementId));
+
+        /*
+         * Achievements, statistics in beta were client-side
+         *
+         * TODO: player cache
+         **/
     }
 }
