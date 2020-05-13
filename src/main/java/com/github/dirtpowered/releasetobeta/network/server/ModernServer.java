@@ -23,7 +23,6 @@
 package com.github.dirtpowered.releasetobeta.network.server;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
-import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.command.CommandRegistry;
 import com.github.dirtpowered.releasetobeta.data.command.R2BCommand;
 import com.github.dirtpowered.releasetobeta.data.command.model.Command;
@@ -114,9 +113,6 @@ public class ModernServer {
             if (item != null)
                 aVal += ArmorItem.getArmorValueFromItemId(item.getId());
         }
-
-        if (player.isSprinting() && R2BConfiguration.disableSprinting)
-            attributes.add(new Attribute(AttributeType.GENERIC_MOVEMENT_SPEED, 0.1D));
 
         attributes.add(new Attribute(AttributeType.GENERIC_ARMOR, aVal));
         attributes.add(new Attribute(AttributeType.GENERIC_ATTACK_SPEED, 32.0D)); //disables 1.9+ pvp delay
