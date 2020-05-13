@@ -48,6 +48,7 @@ public class ClientPlayerPositionTranslator implements ModernToBeta<ClientPlayer
             stance = -999.0D;
         }
 
+        player.setLastLocationUpdate(System.currentTimeMillis());
         betaSession.sendPacket(new PlayerPositionPacketData(x, y, z, stance, onGround));
     }
 }

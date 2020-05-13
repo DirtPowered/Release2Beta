@@ -100,6 +100,9 @@ public class ModernPlayer implements PlayerAction {
     @Setter
     private float health;
 
+    @Setter
+    private long lastLocationUpdate;
+
     public ModernPlayer(BetaClientSession session) {
         this.session = session;
 

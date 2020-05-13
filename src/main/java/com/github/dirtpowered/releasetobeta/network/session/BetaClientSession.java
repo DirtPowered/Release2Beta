@@ -118,7 +118,11 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
                      * Beta client sending position every tick, without that 'hack' nether portals,
                      * food eating, mob effects(potions?) will not work correctly.
                      */
-                    sendPacket(new PlayerLookPacketData(l.getYaw(), l.getPitch(), player.isOnGround()));
+
+                    /* If location is send more often than 1 tick - player starts to starve, drown faster */
+                    if ((System.currentTimeMillis() - player.getLastLocationUpdate()) >= 51) {
+                        sendPacket(new PlayerLookPacketData(l.getYaw(), l.getPitch(), player.isOnGround()));
+                    }
 
                 if (!initialPacketsQueue.isEmpty()) {
                     Packet p = initialPacketsQueue.poll();

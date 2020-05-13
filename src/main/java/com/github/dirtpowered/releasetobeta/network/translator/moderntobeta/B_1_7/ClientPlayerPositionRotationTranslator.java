@@ -55,6 +55,7 @@ public class ClientPlayerPositionRotationTranslator implements ModernToBeta<Clie
         player.setLocation(new Location(x, y, z, yaw, pitch));
         player.setOnGround(onGround);
 
+        player.setLastLocationUpdate(System.currentTimeMillis());
         betaSession.sendPacket(new PlayerLookMovePacketData(x, y, stance, z, yaw, pitch, onGround));
     }
 }
