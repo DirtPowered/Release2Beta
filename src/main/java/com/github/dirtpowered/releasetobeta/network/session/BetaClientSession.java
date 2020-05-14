@@ -25,7 +25,7 @@ package com.github.dirtpowered.releasetobeta.network.session;
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.model.Packet;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapDataPacketData;
-import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerLookPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerPositionPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateProgressPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
@@ -121,7 +121,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
                     /* If location is send more often than 1 tick - player starts to starve, drown faster */
                     if ((System.currentTimeMillis() - player.getLastLocationUpdate()) >= 51) {
-                        sendPacket(new PlayerLookPacketData(l.getYaw(), l.getPitch(), player.isOnGround()));
+                        sendPacket(new PlayerPositionPacketData(0, -999.0D, 0, -999.0D, player.isOnGround()));
                     }
 
                 if (!initialPacketsQueue.isEmpty()) {
