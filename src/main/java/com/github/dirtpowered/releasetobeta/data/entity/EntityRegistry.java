@@ -22,6 +22,8 @@
 
 package com.github.dirtpowered.releasetobeta.data.entity;
 
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntityChicken;
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntityCow;
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntityMooshroomCow;
@@ -60,43 +62,44 @@ public class EntityRegistry {
     private void registerEntities() {
         //monsters
 
-        //1.7
-        register(MobType.SKELETON, EntitySkeleton.class);
-        register(MobType.ZOMBIE, EntityZombie.class);
-        register(MobType.SPIDER, EntitySpider.class);
-        register(MobType.ZOMBIE_PIGMAN, EntityPigZombie.class);
-        register(MobType.GHAST, EntityGhast.class);
-        register(MobType.CREEPER, EntityCreeper.class);
-        register(MobType.SLIME, EntitySlime.class);
-        register(MobType.GIANT_ZOMBIE, EntityZombie.class);
+        //1.6-1.7
+        register(MobType.SKELETON, EntitySkeleton.class, MinecraftVersion.B_1_6_6);
+        register(MobType.ZOMBIE, EntityZombie.class, MinecraftVersion.B_1_6_6);
+        register(MobType.SPIDER, EntitySpider.class, MinecraftVersion.B_1_6_6);
+        register(MobType.ZOMBIE_PIGMAN, EntityPigZombie.class, MinecraftVersion.B_1_6_6);
+        register(MobType.GHAST, EntityGhast.class, MinecraftVersion.B_1_6_6);
+        register(MobType.CREEPER, EntityCreeper.class, MinecraftVersion.B_1_6_6);
+        register(MobType.SLIME, EntitySlime.class, MinecraftVersion.B_1_6_6);
+        register(MobType.GIANT_ZOMBIE, EntityZombie.class, MinecraftVersion.B_1_6_6);
 
         //1.8
-        register(MobType.ENDERMAN, EntityEnderman.class);
-        register(MobType.SILVERFISH, EntitySilverfish.class);
-        register(MobType.CAVE_SPIDER, EntityCaveSpider.class);
+        register(MobType.ENDERMAN, EntityEnderman.class, MinecraftVersion.B_1_8_1);
+        register(MobType.SILVERFISH, EntitySilverfish.class, MinecraftVersion.B_1_8_1);
+        register(MobType.CAVE_SPIDER, EntityCaveSpider.class, MinecraftVersion.B_1_8_1);
 
         //1.9
-        register(MobType.BLAZE, EntityBlaze.class);
-        register(MobType.ENDER_DRAGON, EntityEnderDragon.class);
-        register(MobType.MAGMA_CUBE, EntityMagmaCube.class);
-        register(MobType.SNOWMAN, EntitySnowman.class);
+        register(MobType.BLAZE, EntityBlaze.class, MinecraftVersion.B_1_9);
+        register(MobType.ENDER_DRAGON, EntityEnderDragon.class, MinecraftVersion.B_1_9);
+        register(MobType.MAGMA_CUBE, EntityMagmaCube.class, MinecraftVersion.B_1_9);
+        register(MobType.SNOWMAN, EntitySnowman.class, MinecraftVersion.B_1_9);
 
         //mobs
-        register(MobType.PIG, EntityPig.class);
-        register(MobType.COW, EntityCow.class);
-        register(MobType.SHEEP, EntitySheep.class);
-        register(MobType.CHICKEN, EntityChicken.class);
-        register(MobType.SQUID, EntitySquid.class);
-        register(MobType.WOLF, EntityWolf.class);
+        register(MobType.PIG, EntityPig.class, MinecraftVersion.B_1_6_6);
+        register(MobType.COW, EntityCow.class, MinecraftVersion.B_1_6_6);
+        register(MobType.SHEEP, EntitySheep.class, MinecraftVersion.B_1_6_6);
+        register(MobType.CHICKEN, EntityChicken.class, MinecraftVersion.B_1_6_6);
+        register(MobType.SQUID, EntitySquid.class, MinecraftVersion.B_1_6_6);
+        register(MobType.WOLF, EntityWolf.class, MinecraftVersion.B_1_6_6);
 
         //1.9
-        register(MobType.MOOSHROOM, EntityMooshroomCow.class);
-        register(MobType.VILLAGER, EntityVillager.class);
+        register(MobType.MOOSHROOM, EntityMooshroomCow.class, MinecraftVersion.B_1_9);
+        register(MobType.VILLAGER, EntityVillager.class, MinecraftVersion.B_1_9);
     }
 
-    private void register(MobType type, Class<? extends Entity> entityClazz) {
-        //TODO: game version depended registry
-        entities.put(type, entityClazz);
+    private void register(MobType type, Class<? extends Entity> entityClazz, MinecraftVersion version) {
+        if (R2BConfiguration.version.getProtocolVersion() >= version.getProtocolVersion()) {
+            entities.put(type, entityClazz);
+        }
     }
 
     public Class<? extends Entity> getEntityFromMobType(MobType type) {
