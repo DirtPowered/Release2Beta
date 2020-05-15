@@ -1,5 +1,5 @@
 general:
-  # Possible values: B_1_8_1, B_1_7_3, B_1_6_6
+  # Possible values: B_1_8_1, B_1_7_3, B_1_6_6, B_1_9
   beta_version: B_1_7_3
   # MOTD which will be displayed on server ping list
   # if 'beta_1_8_ping_passthrough' is not enabled

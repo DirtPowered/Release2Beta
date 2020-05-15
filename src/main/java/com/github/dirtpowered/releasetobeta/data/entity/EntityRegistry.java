@@ -24,19 +24,25 @@ package com.github.dirtpowered.releasetobeta.data.entity;
 
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntityChicken;
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntityCow;
+import com.github.dirtpowered.releasetobeta.data.entity.mob.EntityMooshroomCow;
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntityPig;
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntitySheep;
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntitySquid;
+import com.github.dirtpowered.releasetobeta.data.entity.mob.EntityVillager;
 import com.github.dirtpowered.releasetobeta.data.entity.mob.EntityWolf;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityBlaze;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityCaveSpider;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityCreeper;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityEnderDragon;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityEnderman;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityGhast;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityMagmaCube;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityPigZombie;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntitySilverfish;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntitySkeleton;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntitySlime;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntitySnowman;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntitySpider;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityZombie;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
@@ -53,6 +59,8 @@ public class EntityRegistry {
 
     private void registerEntities() {
         //monsters
+
+        //1.7
         register(MobType.SKELETON, EntitySkeleton.class);
         register(MobType.ZOMBIE, EntityZombie.class);
         register(MobType.SPIDER, EntitySpider.class);
@@ -61,9 +69,17 @@ public class EntityRegistry {
         register(MobType.CREEPER, EntityCreeper.class);
         register(MobType.SLIME, EntitySlime.class);
         register(MobType.GIANT_ZOMBIE, EntityZombie.class);
+
+        //1.8
         register(MobType.ENDERMAN, EntityEnderman.class);
         register(MobType.SILVERFISH, EntitySilverfish.class);
         register(MobType.CAVE_SPIDER, EntityCaveSpider.class);
+
+        //1.9
+        register(MobType.BLAZE, EntityBlaze.class);
+        register(MobType.ENDER_DRAGON, EntityEnderDragon.class);
+        register(MobType.MAGMA_CUBE, EntityMagmaCube.class);
+        register(MobType.SNOWMAN, EntitySnowman.class);
 
         //mobs
         register(MobType.PIG, EntityPig.class);
@@ -72,9 +88,14 @@ public class EntityRegistry {
         register(MobType.CHICKEN, EntityChicken.class);
         register(MobType.SQUID, EntitySquid.class);
         register(MobType.WOLF, EntityWolf.class);
+
+        //1.9
+        register(MobType.MOOSHROOM, EntityMooshroomCow.class);
+        register(MobType.VILLAGER, EntityVillager.class);
     }
 
     private void register(MobType type, Class<? extends Entity> entityClazz) {
+        //TODO: game version depended registry
         entities.put(type, entityClazz);
     }
 

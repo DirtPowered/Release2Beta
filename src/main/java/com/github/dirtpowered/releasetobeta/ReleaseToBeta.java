@@ -33,6 +33,7 @@ import com.github.dirtpowered.releasetobeta.data.mapping.SoundEffectMap;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import com.github.dirtpowered.releasetobeta.network.protocol.B_1_7;
 import com.github.dirtpowered.releasetobeta.network.protocol.B_1_8;
+import com.github.dirtpowered.releasetobeta.network.protocol.B_1_9;
 import com.github.dirtpowered.releasetobeta.network.server.ModernServer;
 import com.github.dirtpowered.releasetobeta.network.server.ping.LegacyPing.PingPassthroughThread;
 import com.github.dirtpowered.releasetobeta.network.session.SessionRegistry;
@@ -91,6 +92,9 @@ public class ReleaseToBeta implements Runnable {
                 break;
             case B_1_8_1:
                 new B_1_8(betaToModernTranslatorRegistry, modernToBetaTranslatorRegistry);
+                break;
+            case B_1_9:
+                new B_1_9(betaToModernTranslatorRegistry, modernToBetaTranslatorRegistry);
                 break;
         }
 

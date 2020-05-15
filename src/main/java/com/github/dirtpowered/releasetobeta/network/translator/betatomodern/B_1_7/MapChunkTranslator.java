@@ -141,6 +141,8 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         }
 
         session.getBlockStorage().cacheBlocks(chunk.getX(), chunk.getZ(), blockList.toArray(new DataBlock[0]));
+        blockList.clear();
+
         return new Chunk(storage, nibbleBlockLight, skylight ? nibbleSkyLight : null);
     }
 }
