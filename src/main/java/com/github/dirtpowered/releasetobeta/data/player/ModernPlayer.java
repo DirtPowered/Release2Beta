@@ -132,7 +132,7 @@ public class ModernPlayer implements PlayerAction {
         getModernSession().send(modernPacket);
     }
 
-    private Session getModernSession() {
+    public Session getModernSession() {
         return session.getMain().getSessionRegistry().getSession(clientId).getModernSession();
     }
 

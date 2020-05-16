@@ -25,8 +25,13 @@ package com.github.dirtpowered.releasetobeta.bootstrap.bukkit;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.bootstrap.AbstractBootstrap;
 import com.github.dirtpowered.releasetobeta.bootstrap.Platform;
+import com.github.dirtpowered.releasetobeta.bootstrap.bukkit.event.JoinEvent;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import com.github.dirtpowered.releasetobeta.logger.BukkitLogger;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -59,11 +64,26 @@ public class BukkitBootstrap extends JavaPlugin implements AbstractBootstrap {
         if (!getDataFolder().mkdir() && !getDataFolder().exists())
             logger.error("unable to create default plugin directory");
 
+        Bukkit.getPluginManager().registerEvent(
+                Event.Type.PLAYER_JOIN, new JoinEvent(this), Event.Priority.Normal, this
+        );
+
         server = new ReleaseToBeta(this);
     }
 
     @Override
     public void onDisable() {
         server.stop();
+    }
+
+    public void setAddress(Player player) {
+        for (ModernPlayer m : server.getServer().getServerConnection().getPlayerList().getPlayers()) {
+            if (m.getUsername().equals(player.getName())) {
+                String originalAddress = m.getModernSession().getLocalAddress().toString();
+                logger.info(player.getName() + " address: " + originalAddress);
+
+                //TODO: Reflection
+            }
+        }
     }
 }
