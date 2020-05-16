@@ -23,9 +23,11 @@
 package com.github.dirtpowered.releasetobeta.data.entity;
 
 import com.github.dirtpowered.betaprotocollib.data.WatchableObject;
+import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityCreeper;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.MetadataType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
@@ -38,7 +40,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MetadataTranslator {
 
-    public EntityMetadata[] toModernMetadata(Session modernSession, Entity e, List<WatchableObject> oldMetadata) {
+    public EntityMetadata[] toModernMetadata(ModernPlayer target, Session modernSession, Entity e, List<WatchableObject> oldMetadata) {
         MobType mobType = null;
 
         if (e != null)
@@ -68,8 +70,12 @@ public class MetadataTranslator {
                     } else if (mobType == MobType.CREEPER) {
                         //creeper fuse
                         Byte b = (Byte) value;
-                        if (e instanceof EntityCreeper)
-                            ((EntityCreeper) e).onPrime(modernSession);
+                        if (e instanceof EntityCreeper) {
+                            double dist = target.getLocation().distanceTo(e.getLocation());
+                            if (dist < Constants.SOUND_RANGE) {
+                                ((EntityCreeper) e).onPrime(modernSession);
+                            }
+                        }
 
                         metadataList.add(new EntityMetadata(12, MetadataType.INT, b.intValue()));
                     } else if (mobType == MobType.WOLF) {

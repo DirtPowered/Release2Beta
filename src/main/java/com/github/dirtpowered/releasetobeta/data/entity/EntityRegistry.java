@@ -97,7 +97,7 @@ public class EntityRegistry {
     }
 
     private void register(MobType type, Class<? extends Entity> entityClazz, MinecraftVersion version) {
-        if (R2BConfiguration.version.isNewerOrEqual(version)) {
+        if (version.isNewerOrEqual(R2BConfiguration.version)) {
             entities.put(type, entityClazz);
         }
     }

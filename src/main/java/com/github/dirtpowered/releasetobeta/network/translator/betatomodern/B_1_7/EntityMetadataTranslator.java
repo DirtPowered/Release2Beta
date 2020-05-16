@@ -37,7 +37,7 @@ public class EntityMetadataTranslator implements BetaToModern<EntityMetadataPack
         int entityId = packet.getEntityId();
         Entity e = session.getEntityCache().getEntityById(entityId);
 
-        EntityMetadata[] metadata = session.getMain().getServer().getMetadataTranslator().toModernMetadata(modernSession, e, packet.getMetadata());
+        EntityMetadata[] metadata = session.getMain().getServer().getMetadataTranslator().toModernMetadata(session.getPlayer(), modernSession, e, packet.getMetadata());
         modernSession.send(new ServerEntityMetadataPacket(entityId, metadata));
     }
 }

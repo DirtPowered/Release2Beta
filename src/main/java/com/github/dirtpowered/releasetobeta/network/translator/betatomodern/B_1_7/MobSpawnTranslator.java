@@ -61,7 +61,7 @@ public class MobSpawnTranslator implements BetaToModern<MobSpawnPacketData> {
             object.setLocation(x, y, z);
             session.getEntityCache().addEntity(entityId, object);
 
-            EntityMetadata[] metadata = session.getMain().getServer().getMetadataTranslator().toModernMetadata(modernSession, object, packet.getMetadata());
+            EntityMetadata[] metadata = session.getMain().getServer().getMetadataTranslator().toModernMetadata(session.getPlayer(), modernSession, object, packet.getMetadata());
 
             modernSession.send(new ServerSpawnMobPacket(entityId, uuid, type, x, y, z, yaw, pitch, yaw, 0, 0, 0, metadata));
 
