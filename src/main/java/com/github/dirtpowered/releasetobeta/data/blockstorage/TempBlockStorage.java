@@ -24,16 +24,16 @@ package com.github.dirtpowered.releasetobeta.data.blockstorage;
 
 import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
+import io.netty.util.collection.LongObjectHashMap;
+import io.netty.util.collection.LongObjectMap;
 import lombok.Getter;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class TempBlockStorage {
 
     @Getter
-    private Map<Long, DataBlock[]> blockStorageMap = new HashMap<>();
+    private LongObjectMap<DataBlock[]> blockStorageMap = new LongObjectHashMap<>();
     private int[] blocksToCache = new int[]{29, 33, 54};
 
     public void cacheBlocks(int chunkX, int chunkZ, DataBlock[] blocks) {
