@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
+package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.VehicleSpawnPacketData;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -31,6 +31,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.type.object.MinecartTy
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectData;
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ProjectileData;
+import com.github.steveice10.mc.protocol.data.game.entity.type.object.SplashPotionData;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -72,12 +73,6 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 break;
             case 60:
                 type = ObjectType.TIPPED_ARROW;
-                /*
-                 * https://wiki.vg/Object_Data
-                 * The entity ID of the shooter + 1
-                 *
-                 * Good job mojang ...
-                 **/
                 data = new ProjectileData(ownerId + 1);
                 break;
             case 50:
@@ -93,8 +88,6 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 break;
             case 90:
                 type = ObjectType.FISH_HOOK;
-                // Also... good job - throwerId is not sent by server
-                // TODO: get thrower from player location
                 data = new ProjectileData(session.getPlayer().getEntityId());
                 break;
             case 1:
@@ -105,6 +98,11 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 data = new ProjectileData(0);
                 isFireball = true;
                 break;
+            case 64:
+                type = ObjectType.DRAGON_FIREBALL;
+                data = new ProjectileData(0);
+                isFireball = true;
+                break;
             case 70:
                 type = ObjectType.FALLING_BLOCK;
                 data = new FallingBlockData(12, 0);
@@ -112,6 +110,25 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
             case 71:
                 type = ObjectType.FALLING_BLOCK;
                 data = new FallingBlockData(13, 0);
+                break;
+            case 74:
+                type = ObjectType.FALLING_BLOCK;
+                data = new FallingBlockData(122, 0);
+                break;
+            case 65:
+                type = ObjectType.ENDER_PEARL;
+                data = new ProjectileData(session.getPlayer().getEntityId());
+                break;
+            case 51:
+                type = ObjectType.ENDER_CRYSTAL;
+                break;
+            case 72:
+                type = ObjectType.EYE_OF_ENDER;
+                data = new ProjectileData(session.getPlayer().getEntityId());
+                break;
+            case 73:
+                type = ObjectType.POTION;
+                data = new SplashPotionData(0); //TODO: Splash potion data
                 break;
         }
 

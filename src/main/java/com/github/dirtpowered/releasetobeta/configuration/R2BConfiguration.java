@@ -37,7 +37,6 @@ public class R2BConfiguration {
     public static String motd;
     public static int maxPlayers;
     public static boolean skinFix;
-    public static boolean arrowFix;
     public static String remoteAddress;
     public static int remotePort;
     public static String bindAddress;
@@ -104,7 +103,6 @@ public class R2BConfiguration {
             resourcePackHash = config.getString("misc.resource_pack_hash");
             tabComplete = config.getBoolean("misc.tab_complete");
             skinFix = config.getBoolean("misc.skin_fix");
-            arrowFix = config.getBoolean("misc.arrows_fix");
             disableSprinting = config.getBoolean("misc.disable_sprinting");
             ver1_8PingPassthrough = config.getBoolean("misc.beta_1_8_ping_passthrough");
 

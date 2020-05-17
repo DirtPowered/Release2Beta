@@ -273,6 +273,10 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
                 blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
                 blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, remapMetadata(blockId, data))));
                 break;
+            case END_PORTAL:
+                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
+                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, remapMetadata(blockId, data))));
+                break;
         }
     }
 
