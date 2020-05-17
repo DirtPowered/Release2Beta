@@ -120,7 +120,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
                      */
 
                     /* If location is send more often than 1 tick - player starts to starve, drown faster */
-                    if ((System.currentTimeMillis() - player.getLastLocationUpdate()) >= 51) {
+                    if ((System.currentTimeMillis() - player.getLastLocationUpdate()) >= 51 && protocolState != ProtocolState.LOGIN) {
                         sendPacket(new PlayerPositionPacketData(0, -999.0D, 0, -999.0D, player.isOnGround()));
                     }
 
