@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 public class BukkitBootstrap extends JavaPlugin implements AbstractBootstrap {
     private static final Logger LOGGER = Logger.getLogger("Minecraft");
 
-    private ReleaseToBeta server;
+    private ReleaseToBeta main;
     private BukkitLogger logger;
 
     @Override
@@ -68,16 +68,16 @@ public class BukkitBootstrap extends JavaPlugin implements AbstractBootstrap {
                 Event.Type.PLAYER_JOIN, new JoinEvent(this), Event.Priority.Normal, this
         );
 
-        server = new ReleaseToBeta(this);
+        main = new ReleaseToBeta(this);
     }
 
     @Override
     public void onDisable() {
-        server.stop();
+        main.stop();
     }
 
     public void setAddress(Player player) {
-        ModernPlayer m = server.getPlayer(player.getName());
+        ModernPlayer m = main.getServer().getPlayer(player.getName());
 
         String originalAddress = m.getModernSession().getLocalAddress().toString();
         logger.info(player.getName() + " address: " + originalAddress);

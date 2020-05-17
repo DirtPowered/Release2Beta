@@ -26,11 +26,13 @@ import com.github.dirtpowered.betaprotocollib.data.WatchableObject;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityCreeper;
+import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityEnderDragon;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.MetadataType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.packetlib.Session;
 import lombok.NoArgsConstructor;
 
@@ -84,7 +86,7 @@ public class MetadataTranslator {
                         boolean hasSaddle = ((Byte) value).intValue() == 1;
 
                         metadataList.add(new EntityMetadata(13, MetadataType.BOOLEAN, hasSaddle));
-                    } else if (mobType == MobType.SLIME) {
+                    } else if (mobType == MobType.SLIME || mobType == MobType.MAGMA_CUBE) {
                         Byte b = (Byte) value;
 
                         metadataList.add(new EntityMetadata(12, MetadataType.INT, b.intValue()));
@@ -92,14 +94,35 @@ public class MetadataTranslator {
                         boolean isAggressive = ((Byte) value).intValue() == 1;
 
                         metadataList.add(new EntityMetadata(12, MetadataType.BOOLEAN, isAggressive));
+                    } else if (mobType == MobType.ENDERMAN) {
+                        int itemId = ((Byte) value).intValue();
+
+                        if (((Byte) value).intValue() > 0) {
+                            metadataList.add(new EntityMetadata(12, MetadataType.BLOCK_STATE, new BlockState(itemId, 0)));
+                        }
+                    } else if (mobType == MobType.BLAZE) {
+                        metadataList.add(new EntityMetadata(12, MetadataType.BYTE, value));
                     }
                 }
 
                 if (type == MetadataType.BYTE && index == 17) {
-                    if (mobType == MobType.CREEPER) {
-                        //is powered
-                        boolean isPowered = ((Byte) value).intValue() == 1;
-                        metadataList.add(new EntityMetadata(13, MetadataType.BOOLEAN, isPowered));
+                    if (mobType == MobType.CREEPER || mobType == MobType.ENDERMAN) {
+                        //is powered or enderman screaming
+                        boolean state = ((Byte) value).intValue() == 1;
+                        metadataList.add(new EntityMetadata(13, MetadataType.BOOLEAN, state));
+                    }
+                }
+
+                if (type == MetadataType.INT && index == 12) {
+                    //baby animals
+                    metadataList.add(new EntityMetadata(12, MetadataType.BOOLEAN, (int) value < 0));
+                }
+
+                if (type == MetadataType.INT && index == 16) {
+                    if (mobType == MobType.ENDER_DRAGON) {
+                        int health = (int) value;
+                        EntityEnderDragon enderDragon = (EntityEnderDragon) e;
+                        enderDragon.updateHealth(modernSession, health);
                     }
                 }
             }

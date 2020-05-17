@@ -123,4 +123,15 @@ public class ModernServer {
     public BufferedImage getServerIcon() {
         return serverIcon;
     }
+
+    public ModernPlayer getPlayer(String username) {
+        ModernPlayer m = null;
+        for (ModernPlayer player : serverConnection.getPlayerList().getPlayers()) {
+            if (player.getUsername().equals(username)) {
+                m = player;
+            }
+        }
+
+        return m;
+    }
 }

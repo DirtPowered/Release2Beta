@@ -30,7 +30,6 @@ import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.EntityEffectMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.SoundEffectMap;
-import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import com.github.dirtpowered.releasetobeta.network.protocol.B_1_7;
 import com.github.dirtpowered.releasetobeta.network.protocol.B_1_8;
@@ -134,16 +133,5 @@ public class ReleaseToBeta implements Runnable {
     //helper method
     public AbstractLogger getLogger() {
         return bootstrap.getAppLogger();
-    }
-
-    public ModernPlayer getPlayer(String username) {
-        ModernPlayer m = null;
-        for (ModernPlayer player : server.getServerConnection().getPlayerList().getPlayers()) {
-            if (player.getUsername().equals(username)) {
-                m = player;
-            }
-        }
-
-        return m;
     }
 }

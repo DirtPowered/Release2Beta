@@ -29,6 +29,7 @@ import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityDestroyPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -42,7 +43,7 @@ public class EntityDestroyTranslator implements BetaToModern<EntityDestroyPacket
         if (e != null) {
             if (e instanceof Mob) {
                 double dist = session.getPlayer().getLocation().distanceTo(e.getLocation());
-                if (dist < Constants.SOUND_RANGE) {
+                if (dist < Constants.SOUND_RANGE || e.getMobType() == MobType.ENDER_DRAGON) {
                     ((Mob) e).onDeath(modernSession);
                 }
             }

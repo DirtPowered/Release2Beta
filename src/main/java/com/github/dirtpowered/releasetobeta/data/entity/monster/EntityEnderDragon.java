@@ -24,12 +24,24 @@ package com.github.dirtpowered.releasetobeta.data.entity.monster;
 
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
+import com.github.steveice10.mc.protocol.data.game.BossBarAction;
+import com.github.steveice10.mc.protocol.data.game.BossBarColor;
+import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
+import com.github.steveice10.mc.protocol.data.message.Message;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerBossBarPacket;
 import com.github.steveice10.packetlib.Session;
 
+import java.util.UUID;
+
 public class EntityEnderDragon extends Entity implements Mob {
+    private static UUID uuid;
+
+    static {
+        uuid = UUID.randomUUID();
+    }
 
     public EntityEnderDragon(int entityId) {
         super(entityId, MobType.ENDER_DRAGON);
@@ -37,11 +49,29 @@ public class EntityEnderDragon extends Entity implements Mob {
 
     @Override
     public void onSpawn(Session session) {
+        BossBarAction action = BossBarAction.ADD;
+        Message message = Message.fromString("Ender Dragon");
+        float health = 0.005f;
+        BossBarColor color = BossBarColor.PINK;
+        BossBarDivision division = BossBarDivision.NONE;
 
+        session.send(new ServerBossBarPacket(uuid, action, message, health, color, division, false, true));
+    }
+
+    public void updateHealth(Session session, int health) {
+        float a = health * 1.0f / 200;
+        BossBarAction action = BossBarAction.UPDATE_HEALTH;
+
+        session.send(new ServerBossBarPacket(uuid, action, a));
+    }
+
+    private void destroyBossBar(Session session) {
+        session.send(new ServerBossBarPacket(uuid));
     }
 
     @Override
     public void onDeath(Session session) {
+        destroyBossBar(session);
         playSound(session, BuiltinSound.ENTITY_ENDERDRAGON_DEATH, SoundCategory.HOSTILE);
     }
 
