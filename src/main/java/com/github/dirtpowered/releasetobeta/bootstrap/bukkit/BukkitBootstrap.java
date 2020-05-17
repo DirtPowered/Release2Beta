@@ -77,13 +77,10 @@ public class BukkitBootstrap extends JavaPlugin implements AbstractBootstrap {
     }
 
     public void setAddress(Player player) {
-        for (ModernPlayer m : server.getServer().getServerConnection().getPlayerList().getPlayers()) {
-            if (m.getUsername().equals(player.getName())) {
-                String originalAddress = m.getModernSession().getLocalAddress().toString();
-                logger.info(player.getName() + " address: " + originalAddress);
+        ModernPlayer m = server.getPlayer(player.getName());
 
-                //TODO: Reflection
-            }
-        }
+        String originalAddress = m.getModernSession().getLocalAddress().toString();
+        logger.info(player.getName() + " address: " + originalAddress);
+        //TODO: Reflection
     }
 }

@@ -133,7 +133,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerChangeHeldItemTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerInteractEntityTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerPlaceBlockTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerPositionRotationTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerPositionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerRotationTranslator;
@@ -148,6 +147,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientPlayerStateTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientRequestTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.LoginStartTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_9.ClientPlayerPlaceBlockTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.BetaToModernTranslatorRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.ModernToBetaTranslatorRegistry;
 import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket;
@@ -178,6 +178,8 @@ public class B_1_9 {
     public B_1_9(BetaToModernTranslatorRegistry betaToModernTranslatorRegistry, ModernToBetaTranslatorRegistry modernToBetaTranslatorRegistry) {
         //1.9
         betaToModernTranslatorRegistry.registerTranslator(ExperienceUpdatePacketData.class, new ExperienceUpdateTranslator());
+
+        modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerPlaceBlockPacket.class, new ClientPlayerPlaceBlockTranslator());
 
         //1.8
         betaToModernTranslatorRegistry.registerTranslator(UpdateHealthPacketData.class, new UpdateHealthTranslator());
@@ -247,7 +249,6 @@ public class B_1_9 {
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerRotationPacket.class, new ClientPlayerRotationTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerSwingArmPacket.class, new ClientPlayerSwingArmTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerActionPacket.class, new ClientPlayerActionTranslator());
-        modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerPlaceBlockPacket.class, new ClientPlayerPlaceBlockTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientCloseWindowPacket.class, new ClientCloseWindowTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerInteractEntityPacket.class, new ClientPlayerInteractEntityTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerUseItemPacket.class, new ClientPlayerUseItemTranslator());

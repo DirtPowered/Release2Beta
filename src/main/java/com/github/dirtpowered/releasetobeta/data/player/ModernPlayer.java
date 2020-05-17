@@ -107,6 +107,7 @@ public class ModernPlayer implements PlayerAction {
         this.session = session;
 
         this.inventory = new PlayerInventory();
+        this.location = new Location(0, 0, 0);
         this.openedInventoryType = WindowType.GENERIC_INVENTORY;
     }
 
@@ -151,11 +152,29 @@ public class ModernPlayer implements PlayerAction {
     }
 
     @Override
-    public void onBlockPlace(Position pos, ItemStack itemstack) {
+    public void onBlockPlace(int face, int x, int y, int z, ItemStack itemstack) {
+        switch (face) {
+            case 1:
+                ++y;
+                break;
+            case 2:
+                --z;
+                break;
+            case 3:
+                ++z;
+                break;
+            case 4:
+                --x;
+                break;
+            case 5:
+                ++x;
+                break;
+        }
+
         int itemId = itemstack.getId();
 
         if (itemId == 323) {
-            sendPacket(new ServerOpenTileEntityEditorPacket(pos));
+            sendPacket(new ServerOpenTileEntityEditorPacket(new Position(x, y, z)));
         }
     }
 
