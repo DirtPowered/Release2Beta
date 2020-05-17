@@ -23,15 +23,16 @@
 package com.github.dirtpowered.releasetobeta.data.mapping;
 
 import com.github.dirtpowered.releasetobeta.data.mapping.model.BlockObject;
+import com.github.dirtpowered.releasetobeta.data.mapping.model.DataHolder;
 
-public class BlockMap extends Remapper<BlockObject> {
+public class BlockMap extends DataHolder<BlockObject> {
 
     public BlockMap() {
         //locked_chest -> chest
-        remap(95, new BlockObject(54, false));
+        add(95, new BlockObject(54, false));
         //brewing_stand -> brewing_stand_item
-        remap(117, new BlockObject(379, true));
+        add(117, new BlockObject(379, true));
         //cauldron to cauldron_item
-        remap(118, new BlockObject(380, true));
+        add(118, new BlockObject(380, true));
     }
 }

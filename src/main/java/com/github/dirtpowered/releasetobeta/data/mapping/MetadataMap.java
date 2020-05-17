@@ -23,36 +23,37 @@
 package com.github.dirtpowered.releasetobeta.data.mapping;
 
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
+import com.github.dirtpowered.releasetobeta.data.mapping.model.DataHolder;
 import com.github.dirtpowered.releasetobeta.data.mapping.model.DataObject;
 
-public class MetadataMap extends Remapper<DataObject[]> {
+public class MetadataMap extends DataHolder<DataObject[]> {
 
     public MetadataMap() {
-        remap(90, new DataObject[]{
+        add(90, new DataObject[]{
                 new DataObject(0, 2, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
         });
 
-        remap(18, new DataObject[]{
+        add(18, new DataObject[]{
                 new DataObject(4, 0, MinecraftVersion.B_1_8_1),
                 new DataObject(5, 1, MinecraftVersion.B_1_8_1),
                 new DataObject(6, 2, MinecraftVersion.B_1_8_1),
                 new DataObject(7, 3, MinecraftVersion.B_1_8_1),
         });
 
-        remap(106, new DataObject[]{
+        add(106, new DataObject[]{
                 new DataObject(1, 0, MinecraftVersion.B_1_8_1),
                 new DataObject(12, 0, MinecraftVersion.B_1_8_1),
         });
 
-        remap(29, new DataObject[]{
+        add(29, new DataObject[]{
                 new DataObject(7, 0, MinecraftVersion.B_1_8_1),
         });
 
-        remap(33, new DataObject[]{
+        add(33, new DataObject[]{
                 new DataObject(7, 0, MinecraftVersion.B_1_8_1),
         });
 
-        remap(355, new DataObject[]{
+        add(355, new DataObject[]{
                 new DataObject(-1, 14, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6, MinecraftVersion.B_1_9),
         });
     }

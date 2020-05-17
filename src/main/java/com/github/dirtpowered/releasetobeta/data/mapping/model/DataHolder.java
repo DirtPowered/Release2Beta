@@ -20,32 +20,24 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.data.mapping;
+package com.github.dirtpowered.releasetobeta.data.mapping.model;
 
-import com.github.dirtpowered.releasetobeta.data.mapping.model.DataHolder;
-import com.github.steveice10.mc.protocol.data.game.entity.Effect;
+import java.util.HashMap;
+import java.util.Map;
 
-public class EntityEffectMap extends DataHolder<Effect> {
+public abstract class DataHolder<T> {
 
-    public EntityEffectMap() {
-        add(1, Effect.SPEED);
-        add(2, Effect.SLOWNESS);
-        add(3, Effect.DIG_SPEED);
-        add(4, Effect.DIG_SLOWNESS);
-        add(5, Effect.DAMAGE_BOOST);
-        add(6, Effect.HEAL);
-        add(7, Effect.DAMAGE);
-        add(8, Effect.JUMP_BOOST);
-        add(9, Effect.CONFUSION);
-        add(10, Effect.REGENERATION);
-        add(11, Effect.RESISTANCE);
-        add(12, Effect.FIRE_RESISTANCE);
-        add(13, Effect.WATER_BREATHING);
-        add(14, Effect.INVISIBILITY);
-        add(15, Effect.BLINDNESS);
-        add(16, Effect.NIGHT_VISION);
-        add(17, Effect.HUNGER);
-        add(18, Effect.WEAKNESS);
-        add(19, Effect.POISON);
+    private Map<Integer, T> registry = new HashMap<>();
+
+    protected void add(int from, T to) {
+        registry.put(from, to);
+    }
+
+    public T getFromId(int id) {
+        return registry.getOrDefault(id, null);
+    }
+
+    public boolean exist(int id) {
+        return registry.containsKey(id);
     }
 }

@@ -23,6 +23,8 @@
 package com.github.dirtpowered.releasetobeta.utils;
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
@@ -97,5 +99,13 @@ public class Utils {
         Map<String, Tag> nbt = new HashMap<>();
         nbt.put("AttributeModifiers", new ListTag("AttributeModifiers", Collections.emptyList()));
         return new CompoundTag(StringUtils.EMPTY, nbt);
+    }
+
+    public static int fixDimension(int dimension) {
+        if (MinecraftVersion.B_1_9.isNewerOrEqual(R2BConfiguration.version)) {
+            return dimension;
+        }
+
+        return (dimension == -1 ? -1 : 0);
     }
 }

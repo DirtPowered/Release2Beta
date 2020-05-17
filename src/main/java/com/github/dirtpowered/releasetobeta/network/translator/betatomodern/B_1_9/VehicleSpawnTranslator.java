@@ -99,7 +99,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 isFireball = true;
                 break;
             case 64:
-                type = ObjectType.DRAGON_FIREBALL;
+                type = ObjectType.BLAZE_FIREBALL;
                 data = new ProjectileData(0);
                 isFireball = true;
                 break;

@@ -26,6 +26,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.RespawnPa
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.game.setting.Difficulty;
 import com.github.steveice10.mc.protocol.data.game.world.WorldType;
@@ -38,7 +39,7 @@ public class RespawnTranslator implements BetaToModern<RespawnPacketData> {
     public void translate(RespawnPacketData packet, BetaClientSession session, Session modernSession) {
         ModernPlayer player = session.getPlayer();
 
-        int dimension = packet.getDimension() == -1 ? -1 : 0;
+        int dimension = Utils.fixDimension(packet.getDimension());
         player.setDimension(dimension);
 
         modernSession.send(new ServerRespawnPacket(dimension, Difficulty.EASY, GameMode.SURVIVAL, WorldType.DEFAULT));
