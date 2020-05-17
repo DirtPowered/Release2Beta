@@ -20,18 +20,17 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.data.mapping;
+package com.github.dirtpowered.releasetobeta.data.mapping.model;
 
-import com.github.dirtpowered.releasetobeta.data.mapping.model.BlockObject;
+import lombok.Data;
 
-public class BlockMap extends Remapper<BlockObject> {
+@Data
+public class BlockObject {
+    private int to;
+    private boolean inInventory;
 
-    public BlockMap() {
-        //locked_chest -> chest
-        remap(95, new BlockObject(54, false));
-        //brewing_stand -> brewing_stand_item
-        remap(117, new BlockObject(379, true));
-        //cauldron to cauldron_item
-        remap(118, new BlockObject(380, true));
+    public BlockObject(int to, boolean inInventory) {
+        this.to = to;
+        this.inInventory = inInventory;
     }
 }

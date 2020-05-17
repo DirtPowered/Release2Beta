@@ -41,7 +41,7 @@ public class SetSlotTranslator implements BetaToModern<SetSlotPacketData> {
         PlayerInventory inventory = session.getPlayer().getInventory();
 
         if (itemStack != null) {
-            itemStack.setBlockId(session.remapBlock(itemStack.getBlockId()));
+            itemStack.setBlockId(session.remapBlock(itemStack.getBlockId(), true));
             itemStack.setData(session.remapMetadata(itemStack.getBlockId(), itemStack.getData()));
         }
 

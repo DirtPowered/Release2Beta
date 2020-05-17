@@ -21,8 +21,6 @@ misc:
   # Player nicknames autocompleting
   tab_complete: true
   skin_fix: false
-  # Renders snowballs instead
-  arrows_fix: false
   disable_sprinting: true
   # Displays MOTD from beta server
   beta_1_8_ping_passthrough: false

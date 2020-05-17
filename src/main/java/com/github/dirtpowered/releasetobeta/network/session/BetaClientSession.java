@@ -35,8 +35,9 @@ import com.github.dirtpowered.releasetobeta.data.blockstorage.TempBlockStorage;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.TileEntity;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
-import com.github.dirtpowered.releasetobeta.data.mapping.DataObject;
 import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
+import com.github.dirtpowered.releasetobeta.data.mapping.model.BlockObject;
+import com.github.dirtpowered.releasetobeta.data.mapping.model.DataObject;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.MapData.MapDataHandler;
@@ -280,10 +281,14 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         }
     }
 
-    public int remapBlock(int blockId) {
+    public int remapBlock(int blockId, boolean inInventory) {
         BlockMap b = main.getBlockMap();
         if (b.exist(blockId)) {
-            return b.getFromId(blockId);
+            BlockObject blockObject = b.getFromId(blockId);
+
+            if (!blockObject.isInInventory() || inInventory) {
+                return blockObject.getTo();
+            }
         }
 
         return blockId;

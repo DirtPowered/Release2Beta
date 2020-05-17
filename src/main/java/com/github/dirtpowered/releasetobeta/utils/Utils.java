@@ -54,7 +54,8 @@ public class Utils {
         for (BetaItemStack item : itemStacks) {
             ItemStack itemStack;
             if (item != null)
-                itemStack = new ItemStack(session.remapBlock(item.getBlockId()), item.getAmount(), session.remapMetadata(item.getBlockId(), item.getData()), removeItemAttributes());
+                itemStack = new ItemStack(session.remapBlock(item.getBlockId(), true),
+                        item.getAmount(), session.remapMetadata(item.getBlockId(), item.getData()), removeItemAttributes());
             else
                 itemStack = new ItemStack(0);
 

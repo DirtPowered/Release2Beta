@@ -63,7 +63,7 @@ public class SoundEffectTranslator implements BetaToModern<SoundEffectPacketData
 
             }));
         } else if (worldEffect instanceof ParticleEffect) {
-            modernSession.send(new ServerPlayEffectPacket(worldEffect, pos, new BreakBlockEffectData(new BlockState(session.remapBlock(data), 0))));
+            modernSession.send(new ServerPlayEffectPacket(worldEffect, pos, new BreakBlockEffectData(new BlockState(session.remapBlock(data, false), 0))));
         }
     }
 }

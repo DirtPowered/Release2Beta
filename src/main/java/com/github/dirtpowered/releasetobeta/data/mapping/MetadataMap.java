@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.data.mapping;
 
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
+import com.github.dirtpowered.releasetobeta.data.mapping.model.DataObject;
 
 public class MetadataMap extends Remapper<DataObject[]> {
 
