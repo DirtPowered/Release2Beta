@@ -260,24 +260,13 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         TileEntity tileEntity = TileEntity.getFromId(blockId);
         Position position = new Position(x, y, z);
 
-        switch (tileEntity) {
-            case CHEST:
-                if (R2BConfiguration.version == MinecraftVersion.B_1_7_3 || R2BConfiguration.version == MinecraftVersion.B_1_6_6) {
-                    blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, 2)));
-                }
-                break;
-            case MOB_SPAWNER:
-                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
-                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, data)));
-                break;
-            case BED:
-                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
-                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, remapMetadata(blockId, data))));
-                break;
-            case END_PORTAL:
-                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
-                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, remapMetadata(blockId, data))));
-                break;
+        if (tileEntity == TileEntity.CHEST) {
+            if (R2BConfiguration.version == MinecraftVersion.B_1_7_3 || R2BConfiguration.version == MinecraftVersion.B_1_6_6) {
+                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, 2)));
+            }
+        } else {
+            blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
+            blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, remapMetadata(blockId, data))));
         }
     }
 
