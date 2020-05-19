@@ -55,6 +55,7 @@ public class ItemConverter {
 
                 CompoundTag rootTag = new CompoundTag(StringUtils.EMPTY);
                 rootTag.put(new ListTag("ench", CompoundTag.class));
+                rootTag.put(new ListTag("AttributeModifiers", Collections.emptyList()));
 
                 ListTag compoundList = rootTag.get("ench");
                 CompoundTag valueHolder = new CompoundTag(StringUtils.EMPTY);
