@@ -32,6 +32,7 @@ public class R2BCommand extends Command {
 
     @Override
     public void execute(ModernPlayer sender, String[] args) {
-        sender.sendMessage(ChatUtils.colorize("&7This server is using ReleaseToBeta&8: &agithub.com/DirtPowered"));
+        sender.sendMessage(ChatUtils.colorize("&fThis server is using &bReleaseToBeta &fversion: &b"
+                + getClass().getPackage().getImplementationVersion()));
     }
 }

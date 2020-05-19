@@ -55,6 +55,7 @@
                             <addClasspath>true</addClasspath>
                             <mainClass>com.github.dirtpowered.releasetobeta.bootstrap.standalone.StandaloneBootstrap
                             </mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>
                 </configuration>
