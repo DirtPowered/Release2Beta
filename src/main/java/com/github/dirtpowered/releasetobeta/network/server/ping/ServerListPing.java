@@ -22,7 +22,7 @@
 
 package com.github.dirtpowered.releasetobeta.network.server.ping;
 
-import com.github.dirtpowered.releasetobeta.utils.ChatUtils;
+import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.message.ChatColor;
 import com.github.steveice10.mc.protocol.data.message.Message;

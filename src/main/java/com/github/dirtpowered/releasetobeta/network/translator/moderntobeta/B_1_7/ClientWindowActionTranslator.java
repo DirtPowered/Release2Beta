@@ -27,8 +27,8 @@ import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
-import com.github.dirtpowered.releasetobeta.utils.ChatUtils;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
+import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
+import com.github.dirtpowered.releasetobeta.utils.item.ItemConverter;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.window.ClickItemParam;
 import com.github.steveice10.mc.protocol.data.game.window.DropItemParam;
@@ -83,7 +83,7 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
                 return;
             }
 
-            betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) 0, Utils.itemStackToBetaItemStack(itemStack), usingShift));
+            betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) 0, ItemConverter.itemStackToBetaItemStack(itemStack), usingShift));
             inventory.setLastSlot(slot);
         });
     }

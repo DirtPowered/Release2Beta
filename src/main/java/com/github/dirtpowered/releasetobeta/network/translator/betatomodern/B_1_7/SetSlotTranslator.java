@@ -27,7 +27,8 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.SetSlotPa
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
+import com.github.dirtpowered.releasetobeta.utils.item.ItemConverter;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerSetSlotPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -39,6 +40,7 @@ public class SetSlotTranslator implements BetaToModern<SetSlotPacketData> {
         int itemSlot = packet.getItemSlot();
         BetaItemStack itemStack = packet.getItemStack();
         PlayerInventory inventory = session.getPlayer().getInventory();
+        ItemStack modernItemStack = ItemConverter.betaToModern(session, itemStack);
 
         if (itemStack != null) {
             itemStack.setBlockId(session.remapBlock(itemStack.getBlockId(), true));
@@ -46,11 +48,11 @@ public class SetSlotTranslator implements BetaToModern<SetSlotPacketData> {
         }
 
         if (itemSlot != -1) //item in hand index
-            inventory.setItem(itemSlot, Utils.betaItemStackToItemStack(itemStack));
+            inventory.setItem(itemSlot, modernItemStack);
 
         //Update armor bar
         session.getMain().getServer().updatePlayerProperties(modernSession, session.getPlayer());
 
-        modernSession.send(new ServerSetSlotPacket(windowId, itemSlot, Utils.betaItemStackToItemStack(itemStack)));
+        modernSession.send(new ServerSetSlotPacket(windowId, itemSlot, modernItemStack));
     }
 }

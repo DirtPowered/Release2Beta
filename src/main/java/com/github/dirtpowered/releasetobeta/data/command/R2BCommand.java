@@ -24,7 +24,7 @@ package com.github.dirtpowered.releasetobeta.data.command;
 
 import com.github.dirtpowered.releasetobeta.data.command.model.Command;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
-import com.github.dirtpowered.releasetobeta.utils.ChatUtils;
+import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

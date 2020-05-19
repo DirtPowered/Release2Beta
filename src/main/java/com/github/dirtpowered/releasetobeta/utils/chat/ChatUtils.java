@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.utils;
+package com.github.dirtpowered.releasetobeta.utils.chat;
 
 public class ChatUtils {
     private final static char COLOR_CHAR = '§';

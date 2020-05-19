@@ -28,7 +28,7 @@ import com.github.dirtpowered.releasetobeta.network.server.login.LoginHandler;
 import com.github.dirtpowered.releasetobeta.network.server.ping.ServerInfoListener;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
-import com.github.dirtpowered.releasetobeta.utils.Tickable;
+import com.github.dirtpowered.releasetobeta.utils.interfaces.Tickable;
 import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket;

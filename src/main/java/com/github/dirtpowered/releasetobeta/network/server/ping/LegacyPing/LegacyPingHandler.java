@@ -26,7 +26,7 @@ import com.github.dirtpowered.betaprotocollib.model.Packet;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.KickDisconnectPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.ServerListPingPacketData;
 import com.github.dirtpowered.releasetobeta.network.server.ping.LegacyPing.model.PingMessage;
-import com.github.dirtpowered.releasetobeta.utils.Callback;
+import com.github.dirtpowered.releasetobeta.utils.interfaces.Callback;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 

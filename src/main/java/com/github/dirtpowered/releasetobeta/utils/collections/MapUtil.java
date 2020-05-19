@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.utils;
+package com.github.dirtpowered.releasetobeta.utils.collections;
 
 import java.util.List;
 import java.util.Objects;

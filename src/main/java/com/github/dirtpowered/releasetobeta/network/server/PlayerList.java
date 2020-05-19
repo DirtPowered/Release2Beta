@@ -24,7 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.server;
 
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.MultiSession;
-import com.github.dirtpowered.releasetobeta.utils.MapUtil;
+import com.github.dirtpowered.releasetobeta.utils.collections.MapUtil;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;

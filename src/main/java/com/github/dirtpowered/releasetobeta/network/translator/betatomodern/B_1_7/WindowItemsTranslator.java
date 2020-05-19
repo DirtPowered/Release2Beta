@@ -27,7 +27,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.WindowIte
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
+import com.github.dirtpowered.releasetobeta.utils.item.ItemConverter;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
 import com.github.steveice10.packetlib.Session;
@@ -40,7 +40,7 @@ public class WindowItemsTranslator implements BetaToModern<WindowItemsPacketData
         BetaItemStack[] items = packet.getItemStacks();
         ModernPlayer player = session.getPlayer();
 
-        ItemStack[] itemStacks = Utils.convertItemStacks(session, items);
+        ItemStack[] itemStacks = ItemConverter.betaToModern(session, items);
 
         player.getInventory().setItems(itemStacks);
         modernSession.send(new ServerWindowItemsPacket(windowId, itemStacks));

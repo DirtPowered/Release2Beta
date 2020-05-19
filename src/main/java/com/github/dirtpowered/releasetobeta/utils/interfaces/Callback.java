@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.utils;
+package com.github.dirtpowered.releasetobeta.utils.interfaces;
 
-public interface Tickable {
-    void tick();
+public interface Callback<T> {
+    void onComplete(T result);
 }

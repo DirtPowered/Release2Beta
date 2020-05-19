@@ -22,50 +22,15 @@
 
 package com.github.dirtpowered.releasetobeta.utils;
 
-import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
-import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
-import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
-import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
-import com.github.steveice10.opennbt.tag.builtin.ListTag;
-import com.github.steveice10.opennbt.tag.builtin.Tag;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class Utils {
-    public static ItemStack betaItemStackToItemStack(BetaItemStack itemStack) {
-        return itemStack == null ? new ItemStack(0) : new ItemStack(itemStack.getBlockId(), itemStack.getAmount(), itemStack.getData(), removeItemAttributes());
-    }
-
-    public static BetaItemStack itemStackToBetaItemStack(ItemStack itemStack) {
-        return new BetaItemStack(itemStack.getId(), itemStack.getAmount(), itemStack.getData());
-    }
-
-    public static ItemStack[] convertItemStacks(BetaClientSession session, BetaItemStack[] itemStacks) {
-        List<ItemStack> list = new ArrayList<>();
-        for (BetaItemStack item : itemStacks) {
-            ItemStack itemStack;
-            if (item != null)
-                itemStack = new ItemStack(session.remapBlock(item.getBlockId(), true),
-                        item.getAmount(), session.remapMetadata(item.getBlockId(), item.getData()), removeItemAttributes());
-            else
-                itemStack = new ItemStack(0);
-
-            list.add(itemStack);
-        }
-        return list.toArray(new ItemStack[0]);
-    }
-
     public static double toModernPos(int pos) {
         return pos / 32.0D;
     }
@@ -93,12 +58,6 @@ public class Utils {
 
     public static UUID getOfflineUUID(String username) {
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes());
-    }
-
-    private static CompoundTag removeItemAttributes() {
-        Map<String, Tag> nbt = new HashMap<>();
-        nbt.put("AttributeModifiers", new ListTag("AttributeModifiers", Collections.emptyList()));
-        return new CompoundTag(StringUtils.EMPTY, nbt);
     }
 
     public static int fixDimension(int dimension) {

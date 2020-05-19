@@ -26,7 +26,7 @@ import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
-import com.github.dirtpowered.releasetobeta.utils.ChatUtils;
+import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.mc.protocol.ServerLoginHandler;
 import com.github.steveice10.packetlib.Session;
 import io.netty.bootstrap.Bootstrap;

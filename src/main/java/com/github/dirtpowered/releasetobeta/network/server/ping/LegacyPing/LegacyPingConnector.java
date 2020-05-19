@@ -26,7 +26,7 @@ import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
 import com.github.dirtpowered.releasetobeta.network.server.ping.LegacyPing.model.PingMessage;
-import com.github.dirtpowered.releasetobeta.utils.Callback;
+import com.github.dirtpowered.releasetobeta.utils.interfaces.Callback;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;

@@ -27,6 +27,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PickupSpa
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
+import com.github.dirtpowered.releasetobeta.utils.item.ItemConverter;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.MetadataType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectType;
@@ -59,7 +60,7 @@ public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData
                 //new EntityMetadata(3, MetadataType.BOOLEAN, true), //show custom name
                 new EntityMetadata(4, MetadataType.BOOLEAN, false), //silent
                 new EntityMetadata(5, MetadataType.BOOLEAN, false), //no gravity
-                new EntityMetadata(6, MetadataType.ITEM, Utils.betaItemStackToItemStack(itemStack))
+                new EntityMetadata(6, MetadataType.ITEM, ItemConverter.betaToModern(session, itemStack))
         ).toArray(new EntityMetadata[0]);
 
         modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, ObjectType.ITEM, x, y, z, 0, 0));
