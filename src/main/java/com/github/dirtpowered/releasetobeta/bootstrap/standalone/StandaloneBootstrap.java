@@ -68,6 +68,11 @@ public class StandaloneBootstrap implements AbstractBootstrap {
         return Platform.STANDALONE;
     }
 
+    @Override
+    public int getOnline() {
+        return server.getServer().getServerConnection().getPlayerList().getOnlineCount();
+    }
+
     private void addShutdownHook() {
         Thread stopThread = new Thread(() -> {
             logger.info("Stopping ...");

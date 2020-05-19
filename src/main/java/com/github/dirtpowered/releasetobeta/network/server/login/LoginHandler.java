@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.server.login;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.bootstrap.Platform;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -59,7 +60,7 @@ public class LoginHandler implements ServerLoginHandler {
 
                 this.lastLogin = System.currentTimeMillis();
 
-                if (main.getServer().getServerConnection().getPlayerList().getOnlineCount() + 1 > R2BConfiguration.maxPlayers) {
+                if (main.getBootstrap().getOnline() + 1 > R2BConfiguration.maxPlayers && main.getBootstrap().getPlatform() != Platform.BUKKIT) {
                     session.disconnect(ChatUtils.colorize(R2BConfiguration.serverFullMessage));
                     return;
                 }

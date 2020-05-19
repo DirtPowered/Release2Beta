@@ -25,6 +25,7 @@ misc:
   # Displays MOTD from beta server
   beta_1_8_ping_passthrough: false
 messages:
+  # Ignored if running on bukkit
   server_full_message: Server is full
   connection_throttle_kick_message: '&cConnection Throttled! Try again later'
 experimental:

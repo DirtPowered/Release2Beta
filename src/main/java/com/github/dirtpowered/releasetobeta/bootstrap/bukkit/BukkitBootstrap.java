@@ -58,6 +58,11 @@ public class BukkitBootstrap extends JavaPlugin implements AbstractBootstrap {
     }
 
     @Override
+    public int getOnline() {
+        return Bukkit.getOnlinePlayers().length;
+    }
+
+    @Override
     public void onEnable() {
         logger = new BukkitLogger(LOGGER);
 

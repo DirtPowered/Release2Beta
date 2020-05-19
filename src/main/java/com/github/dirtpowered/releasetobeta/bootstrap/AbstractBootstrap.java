@@ -32,6 +32,8 @@ public interface AbstractBootstrap {
 
     Platform getPlatform();
 
+    int getOnline();
+
     void onEnable();
 
     void onDisable();
