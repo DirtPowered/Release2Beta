@@ -71,12 +71,16 @@ public class EntityEnderDragon extends Entity implements Mob {
 
     @Override
     public void onDeath(Session session) {
-        destroyBossBar(session);
         playSound(session, BuiltinSound.ENTITY_ENDERDRAGON_DEATH, SoundCategory.HOSTILE);
     }
 
     @Override
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_ENDERDRAGON_HURT, SoundCategory.HOSTILE);
+    }
+
+    @Override
+    public void onDestroy(Session session) {
+        destroyBossBar(session);
     }
 }

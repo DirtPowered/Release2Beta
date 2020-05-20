@@ -57,6 +57,16 @@ public class EntityStatusTranslator implements BetaToModern<EntityStatusPacketDa
                 break;
             case 3:
                 entityStatus = EntityStatus.LIVING_DEATH;
+                Entity e = (session.getEntityCache().getEntityById(entityId));
+
+                if (e != null) {
+                    if (e instanceof Mob) {
+                        double dist = session.getPlayer().getLocation().distanceTo(e.getLocation());
+                        if (dist < Constants.SOUND_RANGE) {
+                            ((Mob) e).onDeath(modernSession);
+                        }
+                    }
+                }
                 break;
             case 6:
                 entityStatus = EntityStatus.TAMEABLE_TAMING_FAILED;

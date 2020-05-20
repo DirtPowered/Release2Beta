@@ -29,4 +29,7 @@ public interface Mob {
     void onDeath(Session session);
 
     void onDamage(Session session);
+
+    default void onDestroy(Session session) {
+    }
 }
