@@ -44,6 +44,8 @@ import com.github.steveice10.packetlib.Session;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.IntStream;
 
 public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
@@ -74,11 +76,17 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
                 chunk.fillData(data, skylight);
                 Chunk[] chunks = new Chunk[16];
-                for (int i = 0; i < 8; i++) { //8 chunks (max y = 128)
-                    chunks[i] = translateChunk(session, chunk, i * 16, skylight);
-                }
 
-                modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, chunks, null)));
+                CompletableFuture.supplyAsync(() -> {
+                    //8 chunks (max y = 128)
+                    IntStream.range(0, 8).forEach(i -> {
+                        chunks[i] = translateChunk(session, chunk, i * 16, skylight);
+                    });
+
+                    return chunks;
+                }, session.getMain().getScheduledExecutorService()).whenComplete((completedChunks, throwable) -> {
+                    modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, completedChunks, null)));
+                });
             } else if (R2BConfiguration.testMode) { //chunk structures (trees, block updates)
                 /*
                  * In modern minecraft there's no way to send chunk like this, so we'll use BlockChange packet
