@@ -29,6 +29,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerPos
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateProgressPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.api.plugin.event.player.PlayerJoinEvent;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.TempBlockStorage;
@@ -238,6 +239,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             main.getServer().getServerConnection().getPlayerList().addTabEntry(player);
             main.getServer().updatePlayerProperties(session, player);
             setLoggedIn(true);
+
+            main.getEventManager().fireEvent(new PlayerJoinEvent(player));
         }
     }
 
