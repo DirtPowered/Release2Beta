@@ -38,8 +38,8 @@ public class ClientSteerVehicleTranslator implements ModernToBeta<ClientSteerVeh
         boolean dismount = packet.getDismounting();
 
         if (dismount) {
-            modernSession.send(new ServerEntitySetPassengersPacket(player.getVehicleEntityId()));
             betaSession.sendPacket(new UseEntityPacketData(player.getEntityId(), player.getVehicleEntityId(), false));
+            modernSession.send(new ServerEntitySetPassengersPacket(player.getVehicleEntityId()));
         }
     }
 }
