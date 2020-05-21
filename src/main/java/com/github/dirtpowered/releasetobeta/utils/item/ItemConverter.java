@@ -43,6 +43,9 @@ public class ItemConverter {
         if (item == null)
             return new ItemStack(0);
 
+        item.setBlockId(session.remapBlock(item.getBlockId(), item.getData(), true));
+        item.setData(session.remapMetadata(item.getBlockId(), item.getData()));
+
         if (MinecraftVersion.B_1_9.isNewerOrEqual(R2BConfiguration.version) && item.hasNbt()) {
             com.mojang.nbt.CompoundTag itemTag = item.getNbt();
 
@@ -65,27 +68,14 @@ public class ItemConverter {
                 valueHolder.put(new ShortTag("lvl", enchantLevel));
 
                 compoundList.add(valueHolder);
-                return new ItemStack(
-                        session.remapBlock(
-                                item.getBlockId(), true
-                        ),
-
-                        item.getAmount(),
-                        session.remapMetadata(item.getBlockId(), item.getData()), rootTag
+                return new ItemStack(item.getBlockId(), item.getAmount(), item.getData(), rootTag
                 );
             } else {
                 //never happens (not sure)
                 return null;
             }
         } else {
-            return new ItemStack(
-                    session.remapBlock(
-                            item.getBlockId(), true
-                    ),
-
-                    item.getAmount(),
-                    session.remapMetadata(item.getBlockId(), item.getData()), removeItemAttributes()
-            );
+            return new ItemStack(item.getBlockId(), item.getAmount(), item.getData(), removeItemAttributes());
         }
     }
 

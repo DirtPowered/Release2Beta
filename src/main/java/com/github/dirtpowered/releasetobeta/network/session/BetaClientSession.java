@@ -220,7 +220,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     private void quitPlayer() {
-        session.disconnect(ChatUtils.colorize("&cunexpectedly disconnected by server"));
+        session.disconnect(ChatUtils.colorize("&cunexpectedly disconnected from server"));
         main.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
         initialPacketsQueue.clear();
         blockChangeQueue.clear();
@@ -270,12 +270,12 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         }
     }
 
-    public int remapBlock(int blockId, boolean inInventory) {
+    public int remapBlock(int blockId, int blockData, boolean inInventory) {
         BlockMap b = main.getBlockMap();
         if (b.exist(blockId)) {
             BlockObject blockObject = b.getFromId(blockId);
 
-            if (!blockObject.isInInventory() || inInventory) {
+            if (!blockObject.isInInventory() || inInventory && blockData == blockObject.getItemData()) {
                 return blockObject.getTo();
             }
         }

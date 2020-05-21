@@ -22,15 +22,13 @@
 
 package com.github.dirtpowered.releasetobeta.data.mapping.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class BlockObject {
+    private int itemData;
     private int to;
     private boolean inInventory;
-
-    public BlockObject(int to, boolean inInventory) {
-        this.to = to;
-        this.inInventory = inInventory;
-    }
 }

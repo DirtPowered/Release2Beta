@@ -28,8 +28,9 @@ import com.github.dirtpowered.releasetobeta.data.mapping.model.DataHolder;
 public class BlockMap extends DataHolder<BlockObject> {
 
     public BlockMap() {
-        add(95, new BlockObject(54, false)); //locked_chest -> chest
-        add(117, new BlockObject(379, true)); //brewing_stand -> brewing_stand_item
-        add(118, new BlockObject(380, true)); //cauldron to cauldron_item
+        add(95, new BlockObject(-1, 54, false)); //locked_chest -> chest
+        add(117, new BlockObject(-1, 379, true)); //brewing_stand -> brewing_stand_item
+        add(118, new BlockObject(-1, 380, true)); //cauldron to cauldron_item
+        add(44, new BlockObject(2, 126, true)); //beta wooden slab to modern wooden_slab
     }
 }
