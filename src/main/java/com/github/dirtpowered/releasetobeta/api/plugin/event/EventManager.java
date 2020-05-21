@@ -12,7 +12,11 @@ public class EventManager {
     private final Map<Class<? extends Event>, List<EventDispatcher>> events = new HashMap<>();
 
     public <T extends Event> void fireEvent(T event) {
-        events.get(event.getClass()).forEach(handler -> handler.fireEvent(event));
+        List<EventDispatcher> a = events.get(event.getClass());
+        if (a == null)
+            return;
+
+        a.forEach(handler -> handler.fireEvent(event));
     }
 
     public void registerListener(Listener listener) {
