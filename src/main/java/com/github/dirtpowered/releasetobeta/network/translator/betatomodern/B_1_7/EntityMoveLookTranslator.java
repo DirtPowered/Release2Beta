@@ -42,7 +42,7 @@ public class EntityMoveLookTranslator implements BetaToModern<EntityMoveLookPack
         float yaw = Utils.toModernYaw(packet.getYaw());
         float pitch = Utils.toModernPitch(packet.getPitch());
 
-        modernSession.send(new ServerEntityPositionRotationPacket(entityId, x, y, z, yaw, pitch, true));
+        modernSession.send(new ServerEntityPositionRotationPacket(entityId, x, y, z, yaw, pitch, y > -0.25D));
         modernSession.send(new ServerEntityHeadLookPacket(entityId, yaw));
     }
 }

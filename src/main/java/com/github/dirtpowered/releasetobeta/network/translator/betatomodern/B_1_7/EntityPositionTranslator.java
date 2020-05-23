@@ -38,6 +38,6 @@ public class EntityPositionTranslator implements BetaToModern<EntityPositionPack
         double y = Utils.toModernPos(packet.getY());
         double z = Utils.toModernPos(packet.getZ());
 
-        modernSession.send(new ServerEntityPositionPacket(entityId, x, y, z, true));
+        modernSession.send(new ServerEntityPositionPacket(entityId, x, y, z, y > -0.25D));
     }
 }
