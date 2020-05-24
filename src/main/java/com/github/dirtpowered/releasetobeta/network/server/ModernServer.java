@@ -37,7 +37,9 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityPropertiesPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerAbilitiesPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayBuiltinSoundPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerWorldBorderPacket;
 import com.github.steveice10.packetlib.Session;
 import lombok.Getter;
 
@@ -118,6 +120,15 @@ public class ModernServer {
         attributes.add(new Attribute(AttributeType.GENERIC_ATTACK_SPEED, 32.0D)); //disables 1.9+ pvp delay
 
         session.send(new ServerEntityPropertiesPacket(player.getEntityId(), attributes));
+    }
+
+    public void sendInitialPlayerAbilities(Session session) {
+        session.send(new ServerPlayerAbilitiesPacket(false, false, false, false, 0.05f, 0.1f));
+    }
+
+    public void sendWorldBorder(Session session) {
+        //default border size
+        session.send(new ServerWorldBorderPacket(0.0D, 0.0D, 6.0E07D, 6.0E07D, 0L, 29999984, 5, 15));
     }
 
     public BufferedImage getServerIcon() {

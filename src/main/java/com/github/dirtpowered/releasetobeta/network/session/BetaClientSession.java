@@ -238,6 +238,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             main.getLogger().info("[" + player.getUsername() + "] connected");
             main.getServer().getServerConnection().getPlayerList().addTabEntry(player);
             main.getServer().updatePlayerProperties(session, player);
+
+            main.getServer().sendInitialPlayerAbilities(session);
+            main.getServer().sendWorldBorder(session);
             setLoggedIn(true);
 
             main.getEventManager().fireEvent(new PlayerJoinEvent(player));
