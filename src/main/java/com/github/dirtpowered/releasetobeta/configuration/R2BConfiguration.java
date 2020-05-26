@@ -51,6 +51,7 @@ public class R2BConfiguration {
     public static String connectionThrottleKickMessage;
     public static int globalConnectionThrottle;
     public static boolean onlineMode;
+    public static int compressionThreshold;
 
     private ReleaseToBeta main;
 
@@ -98,6 +99,7 @@ public class R2BConfiguration {
             bindPort = config.getInt("connection.bind_port");
             globalConnectionThrottle = config.getInt("connection.global_connection_throttle");
             onlineMode = config.getBoolean("connection.online_mode");
+            compressionThreshold = config.getInt("compression_threshold");
 
             resourcePack = config.getString("misc.resource_pack_url");
             resourcePackHash = config.getString("misc.resource_pack_hash");
