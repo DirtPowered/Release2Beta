@@ -25,52 +25,33 @@ package com.github.dirtpowered.releasetobeta.network.server.ping;
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.message.ChatColor;
-import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.data.message.MessageStyle;
 import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.data.status.PlayerInfo;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
 import com.github.steveice10.mc.protocol.data.status.VersionInfo;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.awt.image.BufferedImage;
-import java.util.List;
 
-@NoArgsConstructor
+@Getter
+@Builder
 public class ServerListPing {
-    private Message motd;
+    private String motd;
     private GameProfile[] playerListSample;
-
-    @Setter
     private BufferedImage icon;
-
-    @Setter
     private int maxPlayers;
-
-    @Setter
     private int onlinePlayers;
-
-    @Setter
     private int protocolVersion;
-
-    @Setter
     private String versionString;
-
-    public void setMotd(String motd) {
-        this.motd = TextMessage.fromString(ChatUtils.colorize(motd))
-                .setStyle(new MessageStyle().setColor(ChatColor.RESET));
-    }
-
-    public void setPlayerListSample(List<GameProfile> playerListSample) {
-        this.playerListSample = playerListSample.toArray(new GameProfile[0]);
-    }
 
     public ServerStatusInfo get() {
         return new ServerStatusInfo(
                 new VersionInfo(versionString, protocolVersion),
                 new PlayerInfo(maxPlayers, onlinePlayers, playerListSample),
-                motd, icon
+                TextMessage.fromString(ChatUtils.colorize(motd)).setStyle(new MessageStyle().setColor(ChatColor.RESET)),
+                icon
         );
     }
 }

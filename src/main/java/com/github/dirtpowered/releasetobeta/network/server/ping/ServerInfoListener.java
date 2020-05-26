@@ -28,6 +28,7 @@ import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.network.server.ServerConnection;
 import com.github.dirtpowered.releasetobeta.network.server.ping.LegacyPing.model.PingMessage;
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
+import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
 import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoBuilder;
 import com.github.steveice10.packetlib.Session;
@@ -36,48 +37,56 @@ import org.apache.commons.lang3.StringUtils;
 public class ServerInfoListener implements ServerInfoBuilder {
 
     private ServerConnection serverConnection;
-    private ServerListPing serverListPing;
 
     public ServerInfoListener(ServerConnection serverConnection) {
         this.serverConnection = serverConnection;
-        serverListPing = new ServerListPing();
     }
 
     @Override
     public ServerStatusInfo buildInfo(Session session) {
-        serverListPing.setProtocolVersion(Constants.PING_PROTOCOL);
-        serverListPing.setVersionString(Constants.PING_VERSION_STRING);
-
-        serverListPing.setMaxPlayers(R2BConfiguration.maxPlayers);
-        serverListPing.setMotd(R2BConfiguration.motd);
-
-        int onlineCount = serverConnection.getMain().getBootstrap().getOnline();
-        serverListPing.setOnlinePlayers(onlineCount);
-
-        serverListPing.setPlayerListSample(serverConnection.getPlayerList().getProfiles().subList(0, onlineCount < 20 ? onlineCount : 20));
-        serverListPing.setIcon(serverConnection.getModernServer().getServerIcon());
-
         if (R2BConfiguration.ver1_8PingPassthrough && MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version)) {
             PingMessage pingMessage = serverConnection.getMain().getPingPassthroughThread().getPingMessage();
 
-            if (pingMessage == null) {
-                return serverListPing.get();
-            }
+            if (pingMessage == null)
+                return getOfflineMessage();
 
             if (System.currentTimeMillis() - serverConnection.getMain().getPingPassthroughThread().getLastStatusUpdate() < Constants.PING_INTERVAL + 1000) {
-                serverListPing.setMotd(pingMessage.getMotd());
-                serverListPing.setOnlinePlayers(pingMessage.getOnlinePlayers());
-                serverListPing.setMaxPlayers(pingMessage.getMaxPlayers());
+                return ServerListPing.builder()
+                        .protocolVersion(Constants.PING_PROTOCOL)
+                        .versionString(Constants.PING_VERSION_STRING)
+                        .maxPlayers(pingMessage.getMaxPlayers())
+                        .onlinePlayers(pingMessage.getOnlinePlayers())
+                        .motd(pingMessage.getMotd())
+                        .playerListSample(new GameProfile[0])
+                        .icon(serverConnection.getModernServer().getServerIcon())
+                        .build().get();
             } else {
-                serverListPing.setMotd(ChatUtils.colorize("&9Can't connect to remote server"));
-                serverListPing.setOnlinePlayers(0);
-                serverListPing.setMaxPlayers(0);
-
-                serverListPing.setProtocolVersion(-1);
-                serverListPing.setVersionString(StringUtils.EMPTY);
+                return getOfflineMessage();
             }
-        }
+        } else {
+            int onlineCount = serverConnection.getMain().getBootstrap().getOnline();
 
-        return serverListPing.get();
+            return ServerListPing.builder()
+                    .protocolVersion(Constants.PING_PROTOCOL)
+                    .versionString(Constants.PING_VERSION_STRING)
+                    .maxPlayers(R2BConfiguration.maxPlayers)
+                    .onlinePlayers(onlineCount)
+                    .motd(R2BConfiguration.motd)
+                    .playerListSample(serverConnection.getPlayerList().getProfiles().subList(0, onlineCount < 20 ? onlineCount : 20).toArray(new GameProfile[0]))
+                    .icon(serverConnection.getModernServer().getServerIcon())
+                    .build().get();
+        }
+    }
+
+    private ServerStatusInfo getOfflineMessage() {
+        return ServerListPing.builder()
+                .protocolVersion(-1)
+                .versionString(StringUtils.EMPTY)
+                .maxPlayers(0)
+                .onlinePlayers(0)
+                .motd(ChatUtils.colorize("&9Can't connect to remote server"))
+                .playerListSample(new GameProfile[0])
+                .icon(serverConnection.getModernServer().getServerIcon())
+                .build().get();
     }
 }
