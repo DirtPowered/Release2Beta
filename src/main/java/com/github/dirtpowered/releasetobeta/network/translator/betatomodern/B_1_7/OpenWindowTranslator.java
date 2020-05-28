@@ -26,8 +26,8 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.OpenWindo
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.mc.protocol.data.game.window.WindowType;
-import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerOpenWindowPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -38,7 +38,7 @@ public class OpenWindowTranslator implements BetaToModern<OpenWindowPacketData> 
         ModernPlayer player = session.getPlayer();
         int windowId = packet.getWindowId();
         int inventoryType = packet.getInventoryType();
-        String inventoryTitle = TextMessage.fromString(packet.getWindowTitle()).toJsonString();
+        String inventoryTitle = ChatUtils.toModernMessage(packet.getWindowTitle(), false).toJsonString();
         int slots = packet.getSlotsCount();
 
         WindowType windowType;

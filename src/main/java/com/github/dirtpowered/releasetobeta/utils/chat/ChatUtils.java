@@ -22,6 +22,11 @@
 
 package com.github.dirtpowered.releasetobeta.utils.chat;
 
+import com.github.steveice10.mc.protocol.data.message.ChatColor;
+import com.github.steveice10.mc.protocol.data.message.Message;
+import com.github.steveice10.mc.protocol.data.message.MessageStyle;
+import com.github.steveice10.mc.protocol.data.message.TextMessage;
+
 public class ChatUtils {
     private final static char COLOR_CHAR = '§';
     private final static char[] ALLOWED_CHARACTERS = new char[]{
@@ -68,5 +73,9 @@ public class ChatUtils {
 
     public static String colorize(String rawMessage) {
         return rawMessage.replaceAll("&", String.valueOf(COLOR_CHAR));
+    }
+
+    public static Message toModernMessage(String oldMessage, boolean colors) {
+        return TextMessage.fromString(colors ? ChatUtils.colorize(oldMessage) : oldMessage).setStyle(new MessageStyle().setColor(ChatColor.RESET));
     }
 }

@@ -24,9 +24,6 @@ package com.github.dirtpowered.releasetobeta.network.server.ping;
 
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.mc.auth.data.GameProfile;
-import com.github.steveice10.mc.protocol.data.message.ChatColor;
-import com.github.steveice10.mc.protocol.data.message.MessageStyle;
-import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.data.status.PlayerInfo;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
 import com.github.steveice10.mc.protocol.data.status.VersionInfo;
@@ -50,7 +47,7 @@ public class ServerListPing {
         return new ServerStatusInfo(
                 new VersionInfo(versionString, protocolVersion),
                 new PlayerInfo(maxPlayers, onlinePlayers, playerListSample),
-                TextMessage.fromString(ChatUtils.colorize(motd)).setStyle(new MessageStyle().setColor(ChatColor.RESET)),
+                ChatUtils.toModernMessage(motd, true),
                 icon
         );
     }
