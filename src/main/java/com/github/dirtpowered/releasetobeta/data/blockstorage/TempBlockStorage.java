@@ -28,7 +28,8 @@ import io.netty.util.collection.LongObjectHashMap;
 import io.netty.util.collection.LongObjectMap;
 import lombok.Getter;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TempBlockStorage {
 
@@ -37,15 +38,18 @@ public class TempBlockStorage {
     private int[] blocksToCache = new int[]{29, 33, 54};
 
     public void cacheBlocks(int chunkX, int chunkZ, DataBlock[] blocks) {
-        if (needsCaching(blocks)) {
-            long hashKey = coordsToLong(chunkX, chunkZ);
+        long hashKey = coordsToLong(chunkX, chunkZ);
+        List<DataBlock> list = new ArrayList<>();
 
-            blockStorageMap.put(hashKey, blocks);
+        for (DataBlock block : blocks) {
+            for (int itemId : blocksToCache) {
+                if (block.getBlockState().getId() == itemId) {
+                    list.add(block);
+
+                    blockStorageMap.put(hashKey, list.toArray(new DataBlock[0]));
+                }
+            }
         }
-    }
-
-    private boolean needsCaching(DataBlock[] blocks) {
-        return Arrays.stream(blocks).anyMatch(block -> Arrays.stream(blocksToCache).anyMatch(i -> block.getBlockState().getId() == i));
     }
 
     private long coordsToLong(int x, int z) {
