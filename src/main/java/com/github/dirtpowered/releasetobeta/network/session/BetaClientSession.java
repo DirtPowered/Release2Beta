@@ -262,9 +262,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         }
     }
 
-    public void queueBlockChange(int x, int y, int z, int blockId, int data) {
+    public void queueBlockChange(Position position, int blockId, int data) {
         TileEntity tileEntity = TileEntity.getFromId(blockId);
-        Position position = new Position(x, y, z);
 
         if (tileEntity == TileEntity.CHEST) {
             if (R2BConfiguration.version == MinecraftVersion.B_1_7_3 || R2BConfiguration.version == MinecraftVersion.B_1_6_6) {

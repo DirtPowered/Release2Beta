@@ -48,28 +48,30 @@ public class ItemConverter {
 
         if (MinecraftVersion.B_1_9.isNewerOrEqual(R2BConfiguration.version) && item.hasNbt()) {
             com.mojang.nbt.CompoundTag itemTag = item.getNbt();
-
             if (itemTag.contains("ench")) {
                 com.mojang.nbt.ListTag listTag = itemTag.getList("ench");
-                com.mojang.nbt.CompoundTag compoundTag = (com.mojang.nbt.CompoundTag) listTag.get(0);
-
-                short enchantLevel = compoundTag.getShort("lvl");
-                short enchantId = compoundTag.getShort("id");
+                System.out.println(listTag.size());
 
                 CompoundTag rootTag = new CompoundTag(StringUtils.EMPTY);
-                rootTag.put(new ListTag("ench", CompoundTag.class));
                 rootTag.put(new ListTag("AttributeModifiers", Collections.emptyList()));
+                rootTag.put(new ListTag("ench", CompoundTag.class));
 
-                ListTag compoundList = rootTag.get("ench");
-                CompoundTag valueHolder = new CompoundTag(StringUtils.EMPTY);
+                for (int i = 0; i < listTag.size(); i++) {
+                    com.mojang.nbt.CompoundTag compoundTag = (com.mojang.nbt.CompoundTag) listTag.get(i);
 
-                //seems that nothing really was changed in enchant ids since beta
-                valueHolder.put(new ShortTag("id", enchantId));
-                valueHolder.put(new ShortTag("lvl", enchantLevel));
+                    short enchantLevel = compoundTag.getShort("lvl");
+                    short enchantId = compoundTag.getShort("id");
 
-                compoundList.add(valueHolder);
-                return new ItemStack(item.getBlockId(), item.getAmount(), item.getData(), rootTag
-                );
+                    ListTag compoundList = rootTag.get("ench");
+                    CompoundTag valueHolder = new CompoundTag(StringUtils.EMPTY);
+
+                    //seems that nothing really was changed in enchant ids since beta
+                    valueHolder.put(new ShortTag("id", enchantId));
+                    valueHolder.put(new ShortTag("lvl", enchantLevel));
+
+                    compoundList.add(valueHolder);
+                }
+                return new ItemStack(item.getBlockId(), item.getAmount(), item.getData(), rootTag);
             } else {
                 //never happens (not sure)
                 return null;
