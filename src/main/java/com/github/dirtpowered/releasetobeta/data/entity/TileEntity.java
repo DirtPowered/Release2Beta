@@ -22,16 +22,32 @@
 
 package com.github.dirtpowered.releasetobeta.data.entity;
 
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
+import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
+import com.github.steveice10.opennbt.tag.builtin.IntTag;
+import com.github.steveice10.opennbt.tag.builtin.StringTag;
+import com.github.steveice10.opennbt.tag.builtin.Tag;
+import io.netty.util.internal.StringUtil;
+
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public enum TileEntity {
+    CHEST(54, "chest"),
+    MOB_SPAWNER(52, "default"),
+    BED(26, "default"),
+    END_PORTAL(119, "default"),
+    ENCHANTING_TABLE(116, "default");
 
-    CHEST(54), MOB_SPAWNER(52), BED(26), END_PORTAL(119), ENCHANTING_TABLE(116);
+    public final static String KEY_PREFIX = "minecraft:";
 
     private int blockId;
+    private String blockName;
 
-    TileEntity(int blockId) {
+    TileEntity(int blockId, String name) {
         this.blockId = blockId;
+        this.blockName = name;
     }
 
     public static boolean isTileEntity(int blockId) {
@@ -44,5 +60,16 @@ public enum TileEntity {
         return Arrays.stream(TileEntity.values()).filter(tileEntity -> {
             return tileEntity.blockId == blockId;
         }).findFirst().orElse(null);
+    }
+
+    public static CompoundTag getTileMeta(TileEntity tileEntity, Position position) {
+        Map<String, Tag> nbt = new HashMap<>();
+        nbt.put("id", new StringTag("id", KEY_PREFIX + tileEntity.blockName));
+
+        nbt.put("x", new IntTag("x", position.getX()));
+        nbt.put("y", new IntTag("y", position.getY()));
+        nbt.put("z", new IntTag("z", position.getZ()));
+
+        return new CompoundTag(StringUtil.EMPTY_STRING, nbt);
     }
 }

@@ -27,25 +27,22 @@ import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.DataBlock;
 import com.github.dirtpowered.releasetobeta.data.chunk.BetaChunk;
+import com.github.dirtpowered.releasetobeta.data.chunk.ModernChunk;
 import com.github.dirtpowered.releasetobeta.data.entity.TileEntity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.chunk.BlockStorage;
 import com.github.steveice10.mc.protocol.data.game.chunk.Chunk;
 import com.github.steveice10.mc.protocol.data.game.chunk.Column;
 import com.github.steveice10.mc.protocol.data.game.chunk.NibbleArray3d;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
-import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
-import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockChangePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
+import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.packetlib.Session;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.IntStream;
 
 public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
@@ -61,10 +58,6 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
         int xSize = packet.getXSize();
         int ySize = y + packet.getYSize();
-
-        ySize = ySize > 128 ? 128 : ySize;
-        y = y < 0 ? 0 : y;
-
         int zSize = packet.getZSize();
 
         int chunkX = x / 16;
@@ -72,35 +65,31 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
         try {
             if (y == 0) { //full chunks
-                BetaChunk chunk = new BetaChunk(chunkX, chunkZ);
+                BetaChunk chunk = new BetaChunk(chunkX, chunkZ, x, z);
+                List<CompoundTag> chunkTileEntities = new ArrayList<>();
 
                 chunk.fillData(data, skylight);
-                Chunk[] chunks = new Chunk[16];
+                ModernChunk[] chunks = new ModernChunk[16];
+                Chunk[] _chunks = new Chunk[16];
 
-                CompletableFuture.supplyAsync(() -> {
-                    //8 chunks (max y = 128)
-                    IntStream.range(0, 8).forEach(i -> {
-                        chunks[i] = translateChunk(session, chunk, i * 16, skylight);
-                    });
+                for (int i = 0; i < 8; i++) {
+                    chunks[i] = translateChunk(session, chunk, i * 16, skylight);
 
-                    return chunks;
-                }, session.getMain().getScheduledExecutorService()).whenComplete((completedChunks, throwable) -> {
-                    modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, completedChunks, null)));
-                });
-            } else if (R2BConfiguration.testMode) { //chunk structures (trees, block updates)
-                /*
-                 * In modern minecraft there's no way to send chunk like this, so we'll use BlockChange packet
-                 * It still needs some work (metadata is missing and indexes are wrong sometimes)
-                 * */
+                    chunkTileEntities.addAll(chunks[i].getChunkTileEntities());
+                    _chunks[i] = chunks[i].getChunk();
+                }
+
+                modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, _chunks, chunkTileEntities.toArray(new CompoundTag[0]))));
+            } else if (R2BConfiguration.testMode) {
+                //TODO: non-full chunks
+
                 for (int x1 = 0; x1 < xSize; x1++) {
                     for (int z1 = 0; z1 < zSize; z1++) {
                         for (int y1 = 0; y1 < ySize; y1++) {
                             int index = (x1 * xSize + z1) * ySize + y1;
                             int blockId = data[index];
 
-                            modernSession.send(new ServerBlockChangePacket(
-                                    new BlockChangeRecord(new Position(x + x1, y + y1, z + z1), new BlockState(blockId, 0)))
-                            );
+                            session.queueBlockChange(new Position(x + x1, y + y1, z + z1), blockId, 0);
                         }
                     }
                 }
@@ -110,48 +99,45 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         }
     }
 
-    private Chunk translateChunk(BetaClientSession session, BetaChunk chunk, int height, boolean skylight) {
+    private ModernChunk translateChunk(BetaClientSession session, BetaChunk chunk, int height, boolean skylight) {
         BlockStorage storage = new BlockStorage();
         NibbleArray3d nibbleBlockLight = new NibbleArray3d(4096);
         NibbleArray3d nibbleSkyLight = new NibbleArray3d(4096);
 
         List<DataBlock> blockList = new ArrayList<>();
+        List<CompoundTag> chunkTileEntities = new ArrayList<>();
 
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    int yh = y + height;
-                    int data = chunk.getMetadataAt(x, yh, z);
+                    int worldXPos = chunk.getRawX() + x;
+                    int worldYPos = y + height;
+                    int worldZPos = chunk.getRawZ() + z;
 
-                    int blockId = session.remapBlock(chunk.getTypeAt(x, yh, z), data, false);
+                    int data = chunk.getMetadataAt(x, worldYPos, z);
+
+                    int blockId = session.remapBlock(chunk.getTypeAt(x, worldYPos, z), data, false);
                     int blockData = session.remapMetadata(blockId, data);
-                    int blockLight = chunk.getBlockLightAt(x, yh, z);
-                    int skyLight = chunk.getSkyLightAt(x, yh, z);
 
                     if (TileEntity.isTileEntity(blockId)) {
-                        session.queueBlockChange(
-                                Utils.fromChunkPos(chunk.getX()) + x, y + height,
-                                Utils.fromChunkPos(chunk.getZ()) + z, blockId, blockData
-                        );
+                        Position position = new Position(worldXPos, worldYPos, worldZPos);
+                        chunkTileEntities.add(TileEntity.getTileMeta(TileEntity.getFromId(blockId), position));
+
+                        session.queueBlockChange(position, blockId, blockData);
                     }
 
                     BlockState blockState = new BlockState(blockId, blockData);
 
-                    blockList.add(new DataBlock(new Location(
-                            Utils.fromChunkPos(chunk.getX()) + x,
-                            y + height,
-                            Utils.fromChunkPos(chunk.getZ()) + z), blockState));
+                    blockList.add(new DataBlock(new Location(worldXPos, worldYPos, worldZPos), blockState));
 
                     storage.set(x, y, z, blockState);
-                    nibbleBlockLight.set(x, y, z, blockLight);
-                    nibbleSkyLight.set(x, y, z, skyLight);
+                    nibbleBlockLight.set(x, y, z, chunk.getBlockLightAt(x, worldYPos, z));
+                    nibbleSkyLight.set(x, y, z, chunk.getSkyLightAt(x, worldYPos, z));
                 }
             }
         }
 
         session.getBlockStorage().cacheBlocks(chunk.getX(), chunk.getZ(), blockList.toArray(new DataBlock[0]));
-        blockList.clear();
-
-        return new Chunk(storage, nibbleBlockLight, skylight ? nibbleSkyLight : null);
+        return new ModernChunk(new Chunk(storage, nibbleBlockLight, skylight ? nibbleSkyLight : null), chunkTileEntities);
     }
 }

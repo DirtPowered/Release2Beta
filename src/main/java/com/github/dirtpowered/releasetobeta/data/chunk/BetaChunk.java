@@ -32,11 +32,14 @@ public class BetaChunk {
     private NibbleArray skylight;
 
     @Getter
-    private int x, z;
+    private int x, z, rawX, rawZ;
 
-    public BetaChunk(int x, int z) {
+    public BetaChunk(int x, int z, int rawX, int rawZ) {
         this.x = x;
         this.z = z;
+
+        this.rawX = rawX;
+        this.rawZ = rawZ;
 
         this.types = new byte[Constants.MAX_CHUNK_SIZE];
         this.metadata = new NibbleArray(Constants.MAX_CHUNK_SIZE);
