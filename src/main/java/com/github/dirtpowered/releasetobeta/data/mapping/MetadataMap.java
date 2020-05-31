@@ -34,10 +34,10 @@ public class MetadataMap extends DataHolder<DataObject[]> {
         });
 
         add(18, new DataObject[]{
-                new DataObject(4, 0, MinecraftVersion.B_1_8_1),
-                new DataObject(5, 1, MinecraftVersion.B_1_8_1),
-                new DataObject(6, 2, MinecraftVersion.B_1_8_1),
-                new DataObject(7, 3, MinecraftVersion.B_1_8_1),
+                new DataObject(4, 0, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_9),
+                new DataObject(5, 1, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_9),
+                new DataObject(6, 2, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_9),
+                new DataObject(7, 3, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_9),
         });
 
         add(106, new DataObject[]{
@@ -46,11 +46,11 @@ public class MetadataMap extends DataHolder<DataObject[]> {
         });
 
         add(29, new DataObject[]{
-                new DataObject(7, 0, MinecraftVersion.B_1_8_1),
+                new DataObject(7, 0, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_9),
         });
 
         add(33, new DataObject[]{
-                new DataObject(7, 0, MinecraftVersion.B_1_8_1),
+                new DataObject(7, 0, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_9),
         });
 
         add(355, new DataObject[]{

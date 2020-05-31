@@ -50,7 +50,6 @@ public class ItemConverter {
             com.mojang.nbt.CompoundTag itemTag = item.getNbt();
             if (itemTag.contains("ench")) {
                 com.mojang.nbt.ListTag listTag = itemTag.getList("ench");
-                System.out.println(listTag.size());
 
                 CompoundTag rootTag = new CompoundTag(StringUtils.EMPTY);
                 rootTag.put(new ListTag("AttributeModifiers", Collections.emptyList()));
