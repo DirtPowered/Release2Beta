@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta;
 
 import com.github.dirtpowered.betaprotocollib.BetaLib;
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.releasetobeta.api.plugin.event.EventManager;
 import com.github.dirtpowered.releasetobeta.bootstrap.AbstractBootstrap;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
@@ -114,7 +115,7 @@ public class ReleaseToBeta implements Runnable {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Main Thread"));
         executor.scheduleAtFixedRate(this, 0L, 50L, TimeUnit.MILLISECONDS);
 
-        if (R2BConfiguration.ver1_8PingPassthrough) {
+        if (R2BConfiguration.ver1_8PingPassthrough && MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version)) {
             this.pingPassthroughThread = new PingPassthroughThread(this);
             scheduledExecutorService.scheduleAtFixedRate(pingPassthroughThread, 0L, Constants.PING_INTERVAL, TimeUnit.MILLISECONDS);
         }
