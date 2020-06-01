@@ -46,7 +46,7 @@ public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData
         UUID uuid = UUID.randomUUID();
 
         double x = Utils.toModernPos(packet.getX());
-        double y = Utils.toModernPos(packet.getY());
+        double y = Utils.toModernPos(packet.getY()) - 0.125D;
         double z = Utils.toModernPos(packet.getZ());
 
         BetaItemStack itemStack = packet.getItemStack();
