@@ -122,8 +122,9 @@ public class ModernServer {
         session.send(new ServerEntityPropertiesPacket(player.getEntityId(), attributes));
     }
 
-    public void sendInitialPlayerAbilities(Session session) {
-        session.send(new ServerPlayerAbilitiesPacket(false, false, false, false, 0.05f, 0.1f));
+    public void sendInitialPlayerAbilities(ModernPlayer player) {
+        boolean creative = player.getGamemode() == 1;
+        player.sendPacket(new ServerPlayerAbilitiesPacket(false, creative, creative, creative, 0.05f, 0.1f));
     }
 
     public void sendWorldBorder(Session session) {
