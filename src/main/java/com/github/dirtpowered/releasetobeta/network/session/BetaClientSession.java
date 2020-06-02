@@ -25,6 +25,7 @@ package com.github.dirtpowered.releasetobeta.network.session;
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.model.Packet;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapDataPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerLookMovePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerPositionPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateProgressPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
@@ -122,8 +123,10 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
                      */
 
                     /* If location is send more often than 1 tick - player starts to starve, drown faster */
-                    if ((System.currentTimeMillis() - player.getLastLocationUpdate()) >= 51 && protocolState != ProtocolState.LOGIN) {
+                    if ((System.currentTimeMillis() - player.getLastLocationUpdate()) >= 51 && protocolState != ProtocolState.LOGIN && !player.isInVehicle()) {
                         sendPacket(new PlayerPositionPacketData(0, -999.0D, 0, -999.0D, player.isOnGround()));
+                    } else if (player.isInVehicle()) {
+                        sendPacket(new PlayerLookMovePacketData(l.getX(), -999.0D, l.getZ(), -999.0D, l.getYaw(), l.getPitch(), player.isOnGround()));
                     }
 
                 if (!initialPacketsQueue.isEmpty()) {

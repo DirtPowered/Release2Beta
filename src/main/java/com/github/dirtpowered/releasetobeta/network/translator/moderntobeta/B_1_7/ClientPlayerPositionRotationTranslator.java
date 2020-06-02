@@ -47,11 +47,6 @@ public class ClientPlayerPositionRotationTranslator implements ModernToBeta<Clie
 
         boolean onGround = packet.isOnGround();
 
-        if (player.isInVehicle()) {
-            y = -999.0D;
-            stance = -999.0D;
-        }
-
         player.setLocation(new Location(x, y, z, yaw, pitch));
         player.setOnGround(onGround);
 
