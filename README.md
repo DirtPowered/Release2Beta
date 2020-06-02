@@ -22,7 +22,7 @@ Application that allows connecting to beta (1.7.3 and 1.8.1, 1.9-pre6) servers u
 - [x] Switching worlds 
 - [x] Signs
 - [x] Redstone, pistons
-- [ ] Minecart / Pig / Boat riding
+- [ ] Pig / Boat riding
 
 ## Bugs
 - [x] Chunk updates (trees, fire)
