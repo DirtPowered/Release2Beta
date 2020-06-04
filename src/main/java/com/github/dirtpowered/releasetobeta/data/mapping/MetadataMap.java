@@ -60,5 +60,14 @@ public class MetadataMap extends DataHolder<DataObject[]> {
         add(126, new DataObject[]{
                 new DataObject(2, 0, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6, MinecraftVersion.B_1_9),
         });
+
+        add(64, new DataObject[]{
+                new DataObject(15, 8, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
+                new DataObject(14, 8, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
+                new DataObject(13, 8, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
+                new DataObject(12, 8, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
+                new DataObject(3, 4, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
+                new DataObject(1, 6, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
+        });
     }
 }

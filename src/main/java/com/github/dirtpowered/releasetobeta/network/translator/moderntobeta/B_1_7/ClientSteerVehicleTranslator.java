@@ -38,7 +38,7 @@ public class ClientSteerVehicleTranslator implements ModernToBeta<ClientSteerVeh
         boolean dismount = packet.getDismounting();
 
         // Modern client sends this packet twice when leaving vehicle - we don't need that
-        if (dismount && System.currentTimeMillis() - player.getLastInteractAtEntity() >= 50L) {
+        if (dismount && System.currentTimeMillis() - player.getLastInteractAtEntity() >= 100L) {
             betaSession.sendPacket(new UseEntityPacketData(player.getEntityId(), player.getVehicleEntityId(), false));
             modernSession.send(new ServerEntitySetPassengersPacket(player.getVehicleEntityId()));
 
