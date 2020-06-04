@@ -35,10 +35,10 @@ import java.util.Map;
 
 public enum TileEntity {
     CHEST(54, "chest"),
-    MOB_SPAWNER(52, "default"),
-    BED(26, "default"),
-    END_PORTAL(119, "default"),
-    ENCHANTING_TABLE(116, "default");
+    MOB_SPAWNER(52, "mob_spawner"),
+    BED(26, "bed"),
+    END_PORTAL(119, "end_portal"),
+    ENCHANTING_TABLE(116, "enchanting_table");
 
     public final static String KEY_PREFIX = "minecraft:";
 

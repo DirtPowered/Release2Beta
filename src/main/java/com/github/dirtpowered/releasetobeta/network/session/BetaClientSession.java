@@ -22,7 +22,6 @@
 
 package com.github.dirtpowered.releasetobeta.network.session;
 
-import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.model.Packet;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapDataPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerLookMovePacketData;
@@ -35,7 +34,6 @@ import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.TempBlockStorage;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
-import com.github.dirtpowered.releasetobeta.data.entity.TileEntity;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.model.BlockObject;
@@ -266,16 +264,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     }
 
     public void queueBlockChange(Position position, int blockId, int data) {
-        TileEntity tileEntity = TileEntity.getFromId(blockId);
-
-        if (tileEntity == TileEntity.CHEST) {
-            if (R2BConfiguration.version == MinecraftVersion.B_1_7_3 || R2BConfiguration.version == MinecraftVersion.B_1_6_6) {
-                blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, 2)));
-            }
-        } else {
-            blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
-            blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, remapMetadata(blockId, data))));
-        }
+        blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
+        blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, remapMetadata(blockId, data))));
     }
 
     public int remapBlock(int blockId, int blockData, boolean inInventory) {
