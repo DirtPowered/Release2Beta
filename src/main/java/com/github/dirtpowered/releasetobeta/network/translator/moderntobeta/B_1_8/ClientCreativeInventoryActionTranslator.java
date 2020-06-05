@@ -34,13 +34,10 @@ public class ClientCreativeInventoryActionTranslator implements ModernToBeta<Cli
 
     @Override
     public void translate(ClientCreativeInventoryActionPacket packet, Session modernSession, BetaClientSession betaSession) {
-        betaSession.getMain().getScheduledExecutorService().execute(() -> {
+        ItemStack itemStack = packet.getClickedItem();
+        if (itemStack == null)
+            return;
 
-            ItemStack itemStack = packet.getClickedItem();
-            if (itemStack == null)
-                return;
-
-            betaSession.sendPacket(new CreativeItemGetPacketData((short) packet.getSlot(), ItemConverter.itemStackToBetaItemStack(itemStack)));
-        });
+        betaSession.sendPacket(new CreativeItemGetPacketData((short) packet.getSlot(), ItemConverter.itemStackToBetaItemStack(itemStack)));
     }
 }

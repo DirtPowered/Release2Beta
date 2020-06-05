@@ -43,48 +43,49 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
 
     @Override
     public void translate(ClientWindowActionPacket packet, Session modernSession, BetaClientSession betaSession) {
-        betaSession.getMain().getScheduledExecutorService().execute(() -> {
-            ModernPlayer player = betaSession.getPlayer();
-            PlayerInventory inventory = player.getInventory();
+        ModernPlayer player = betaSession.getPlayer();
+        PlayerInventory inventory = player.getInventory();
 
-            int windowId = packet.getWindowId();
-            int slot = packet.getSlot();
+        int windowId = packet.getWindowId();
+        int slot = packet.getSlot();
 
-            WindowActionParam actionParam = packet.getParam();
-            WindowAction inventoryAction = packet.getAction();
-            boolean leftClick = actionParam == ClickItemParam.LEFT_CLICK ||
-                    actionParam == SpreadItemParam.LEFT_MOUSE_ADD_SLOT ||
-                    actionParam == SpreadItemParam.LEFT_MOUSE_BEGIN_DRAG ||
-                    actionParam == SpreadItemParam.LEFT_MOUSE_END_DRAG;
+        WindowActionParam actionParam = packet.getParam();
+        WindowAction inventoryAction = packet.getAction();
+        boolean leftClick = actionParam == ClickItemParam.LEFT_CLICK ||
+                actionParam == SpreadItemParam.LEFT_MOUSE_ADD_SLOT ||
+                actionParam == SpreadItemParam.LEFT_MOUSE_BEGIN_DRAG ||
+                actionParam == SpreadItemParam.LEFT_MOUSE_END_DRAG;
 
-            boolean usingShift = inventoryAction == WindowAction.SHIFT_CLICK_ITEM;
-            boolean droppingUsingQ = actionParam == DropItemParam.DROP_FROM_SELECTED && inventoryAction == WindowAction.DROP_ITEM;
+        boolean usingShift = inventoryAction == WindowAction.SHIFT_CLICK_ITEM;
+        boolean droppingUsingQ = actionParam == DropItemParam.DROP_FROM_SELECTED && inventoryAction == WindowAction.DROP_ITEM;
 
-            int mouseClick = leftClick ? 0 : 1;
+        int mouseClick = leftClick ? 0 : 1;
 
-            boolean clickingOutside = slot == -999 && inventoryAction != WindowAction.SPREAD_ITEM;
+        boolean clickingOutside = slot == -999 && inventoryAction != WindowAction.SPREAD_ITEM;
 
-            if (clickingOutside) {
-                betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) 0, null, false));
-                inventory.setItem(inventory.getLastSlot(), new ItemStack(0));
+        if (clickingOutside) {
+            betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) 0, null, false));
+            inventory.setItem(inventory.getLastSlot(), new ItemStack(0));
 
-                //Update armor bar
-                betaSession.getMain().getServer().updatePlayerProperties(modernSession, player);
-                return;
-            }
+            //Update armor bar
+            betaSession.getMain().getServer().updatePlayerProperties(modernSession, player);
+            return;
+        }
 
-            ItemStack itemStack = packet.getClickedItem() == null ? player.getInventory().getItem(slot) : packet.getClickedItem();
+        ItemStack itemStack = packet.getClickedItem() == null ? (slot == -999 ? null : player.getInventory().getItem(slot)) : packet.getClickedItem();
 
-            if (player.getOpenedInventoryType() == WindowType.GENERIC_INVENTORY && slot == 45 || droppingUsingQ) {
-                player.closeInventory();
-                player.updateInventory();
+        if (player.getOpenedInventoryType() == WindowType.GENERIC_INVENTORY && slot == 45 || droppingUsingQ) {
+            player.closeInventory();
+            player.updateInventory();
 
-                player.sendMessage(ChatUtils.colorize("&cunsupported operation"));
-                return;
-            }
+            player.sendMessage(ChatUtils.colorize("&cunsupported operation"));
+            return;
+        }
 
-            betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) 0, ItemConverter.itemStackToBetaItemStack(itemStack), usingShift));
-            inventory.setLastSlot(slot);
-        });
+        if (itemStack == null)
+            return;
+
+        betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) 0, ItemConverter.itemStackToBetaItemStack(itemStack), usingShift));
+        inventory.setLastSlot(slot);
     }
 }

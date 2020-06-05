@@ -122,7 +122,7 @@ public class ServerConnection implements Tickable {
                         }
 
                         ServerQueuedPacket queuedPacket = new ServerQueuedPacket(event.getSession(), packet, packet instanceof LoginStartPacket);
-                        packetQueue.add(queuedPacket);
+                        translatePacket(queuedPacket);
                     }
                 });
             }
