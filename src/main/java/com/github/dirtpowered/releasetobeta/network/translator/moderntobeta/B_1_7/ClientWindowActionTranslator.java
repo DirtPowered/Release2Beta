@@ -72,7 +72,7 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
             return;
         }
 
-        ItemStack itemStack = packet.getClickedItem() == null ? (slot == -999 ? null : player.getInventory().getItem(slot)) : packet.getClickedItem();
+        ItemStack itemStack = packet.getClickedItem() == null ? (slot < 0 ? null : player.getInventory().getItem(slot)) : packet.getClickedItem();
 
         if (player.getOpenedInventoryType() == WindowType.GENERIC_INVENTORY && slot == 45 || droppingUsingQ) {
             player.closeInventory();
