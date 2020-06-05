@@ -27,7 +27,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBet
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientTabCompletePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerTabCompletePacket;
 import com.github.steveice10.packetlib.Session;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -47,9 +46,11 @@ public class ClientTabCompleteTranslator implements ModernToBeta<ClientTabComple
         }
 
         String[] matches;
-        String[] combined = ArrayUtils.addAll(commands, betaSession.combinedPlayerList());
 
-        matches = findWord(combined, clientCommands[clientCommands.length - 1]);
+        String lastArg = clientCommands[clientCommands.length - 1];
+        String[] combined = lastArg.startsWith("/") ? commands : betaSession.combinedPlayerList();
+
+        matches = findWord(combined, lastArg);
 
         modernSession.send(new ServerTabCompletePacket(matches));
     }
@@ -64,6 +65,8 @@ public class ClientTabCompleteTranslator implements ModernToBeta<ClientTabComple
         }
 
         strList.sort(String.CASE_INSENSITIVE_ORDER);
-        return strList.toArray(new String[0]);
+
+        return strList.size() == 0 ? possibleCompletions : strList.toArray(new String[0]);
+
     }
 }
