@@ -72,6 +72,15 @@ public class MetadataMap extends DataHolder<DataObject[]> {
                 new DataObject(1, 6, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
         });
 
+        add(71, new DataObject[]{
+                new DataObject(15, 8, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
+                new DataObject(14, 8, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
+                new DataObject(13, 8, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
+                new DataObject(12, 8, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
+                new DataObject(3, 4, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
+                new DataObject(1, 6, MinecraftVersion.B_1_7_3, MinecraftVersion.B_1_6_6),
+        });
+
         /*
          * Chest data in pre b1.8 is always 0, because chest (and nether portal) block face is calculated on client side
          * Below code fixes random turning chests into stone when using ViaVersion
