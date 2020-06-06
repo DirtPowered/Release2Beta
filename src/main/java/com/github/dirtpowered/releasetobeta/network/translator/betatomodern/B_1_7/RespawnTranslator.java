@@ -43,5 +43,6 @@ public class RespawnTranslator implements BetaToModern<RespawnPacketData> {
         player.setDimension(dimension);
 
         modernSession.send(new ServerRespawnPacket(dimension, Difficulty.EASY, GameMode.SURVIVAL, WorldType.DEFAULT));
+        session.getMain().getServer().sendInitialPlayerAbilities(player);
     }
 }

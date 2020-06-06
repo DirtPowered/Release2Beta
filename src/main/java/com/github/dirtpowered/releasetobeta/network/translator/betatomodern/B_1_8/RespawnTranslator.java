@@ -46,5 +46,6 @@ public class RespawnTranslator implements BetaToModern<RespawnPacketData> {
         Difficulty difficulty = session.getMain().getDifficultyMap().getFromId(packet.getDifficulty());
 
         modernSession.send(new ServerRespawnPacket(dimension, difficulty, gameMode, WorldType.DEFAULT));
+        session.getMain().getServer().sendInitialPlayerAbilities(player);
     }
 }
