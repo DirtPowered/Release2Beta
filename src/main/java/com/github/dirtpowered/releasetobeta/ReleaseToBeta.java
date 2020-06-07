@@ -124,7 +124,10 @@ public class ReleaseToBeta implements Runnable {
         }
 
         if (R2BConfiguration.metricsEnabled) {
-            getLogger().info("ReleaseToBeta collects data about");
+            getLogger().info("***********************************");
+            getLogger().info("ReleaseToBeta collects data and sends them to bstats");
+            getLogger().info("You can disable that by changing 'enable_metrics' from 'true' to 'false'");
+            getLogger().info("***********************************");
             new Metrics.R2BMetrics(this);
         }
 
