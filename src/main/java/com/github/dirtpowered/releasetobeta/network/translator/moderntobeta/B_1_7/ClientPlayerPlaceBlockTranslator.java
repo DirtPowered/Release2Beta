@@ -28,6 +28,7 @@ import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.data.MagicValues;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPlaceBlockPacket;
 import com.github.steveice10.packetlib.Session;
@@ -43,8 +44,15 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
         int z = pos.getZ();
 
         int face = MagicValues.value(Integer.class, packet.getFace());
+        ItemStack itemStack = player.getInventory().getItemInHand();
 
-        betaSession.sendPacket(new BlockPlacePacketData(x, y, z, face, new BetaItemStack())); //item-stack is ignored
-        player.onBlockPlace(face, x, y, z, player.getInventory().getItemInHand());
+        BlockPlacePacketData blockPlacePacketData = new BlockPlacePacketData(x, y, z, face, new BetaItemStack()); //item-stack is ignored
+
+        betaSession.sendPacket(blockPlacePacketData);
+
+        if (itemStack.getId() == 327 || itemStack.getId() == 326 || itemStack.getId() == 325)
+            betaSession.sendPacket(blockPlacePacketData);
+
+        player.onBlockPlace(face, x, y, z, itemStack);
     }
 }

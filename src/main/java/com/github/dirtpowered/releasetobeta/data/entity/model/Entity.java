@@ -41,16 +41,22 @@ public abstract class Entity {
         this.entityId = entityId;
         this.mobType = type;
         this.betaPlayer = false;
+
+        this.location = new Location(0, 0, 0);
     }
 
     public Entity(int entityId) {
         this.entityId = entityId;
         this.betaPlayer = false;
+
+        this.location = new Location(0, 0, 0);
     }
 
     public Entity(int entityId, boolean isBetaPlayer) {
         this.entityId = entityId;
         this.betaPlayer = isBetaPlayer;
+
+        this.location = new Location(0, 0, 0);
     }
 
     public abstract void onSpawn(Session session);
