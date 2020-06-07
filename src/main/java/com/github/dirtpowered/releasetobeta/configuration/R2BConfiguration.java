@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 public class R2BConfiguration {
     public static MinecraftVersion version;
@@ -52,6 +53,8 @@ public class R2BConfiguration {
     public static int globalConnectionThrottle;
     public static boolean onlineMode;
     public static int compressionThreshold;
+    public static boolean metricsEnabled;
+    public static String metricsUniqueId;
 
     private ReleaseToBeta main;
 
@@ -81,6 +84,10 @@ public class R2BConfiguration {
                 }
 
                 config.load();
+
+                //unique id for metrics
+                config.set("metrics.unique_id", UUID.randomUUID().toString());
+                config.saveWithComments();
             }
 
             try {
@@ -112,6 +119,10 @@ public class R2BConfiguration {
             connectionThrottleKickMessage = config.getString("messages.connection_throttle_kick_message");
 
             testMode = config.getBoolean("experimental.enable_chunk_updates");
+
+            //metrics
+            metricsEnabled = config.getBoolean("metrics.enable_metrics");
+            metricsUniqueId = config.getString("metrics.unique_id");
         } catch (Exception e) {
             main.getLogger().error("Error: " + e.getMessage());
         }

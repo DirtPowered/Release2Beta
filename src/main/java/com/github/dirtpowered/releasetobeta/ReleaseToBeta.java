@@ -123,6 +123,11 @@ public class ReleaseToBeta implements Runnable {
             scheduledExecutorService.scheduleAtFixedRate(pingPassthroughThread, 0L, Constants.PING_INTERVAL, TimeUnit.MILLISECONDS);
         }
 
+        if (R2BConfiguration.metricsEnabled) {
+            getLogger().info("ReleaseToBeta collects data about");
+            new Metrics.R2BMetrics(this);
+        }
+
         long endTime = System.nanoTime();
         getLogger().info("Ready for connections (" + ((endTime - startTime) / 1000000L) + "ms)");
     }

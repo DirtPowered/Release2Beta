@@ -33,3 +33,6 @@ messages:
 experimental:
   # Do not enable this unless you know what you're doing
   enable_chunk_updates: false
+metrics:
+  enable_metrics: true
+  unique_id: default
