@@ -36,6 +36,8 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.ClientPluginMessag
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientSettingsPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerAbilitiesPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerMovementPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientSteerBoatPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientVehicleMovePacket;
 import com.github.steveice10.mc.protocol.packet.login.client.LoginStartPacket;
 import com.github.steveice10.mc.protocol.packet.status.client.StatusPingPacket;
 import com.github.steveice10.mc.protocol.packet.status.client.StatusQueryPacket;
@@ -75,7 +77,9 @@ public class ServerConnection implements Tickable {
             ClientPlayerAbilitiesPacket.class,
             ClientSettingsPacket.class,
             StatusPingPacket.class,
-            ClientPluginMessagePacket.class
+            ClientPluginMessagePacket.class,
+            ClientSteerBoatPacket.class,
+            ClientVehicleMovePacket.class
     };
 
     ServerConnection(ModernServer modernServer) {
