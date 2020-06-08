@@ -22,8 +22,9 @@
 
 package com.github.dirtpowered.releasetobeta.data.player;
 
-import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
+import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
 import com.github.dirtpowered.releasetobeta.data.entity.model.PlayerAction;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -36,6 +37,8 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.game.window.WindowType;
+import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
+import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerResourcePackSendPacket;
@@ -48,7 +51,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class ModernPlayer implements PlayerAction {
+public class ModernPlayer extends Entity implements PlayerAction, Mob {
     private String username;
     private BetaClientSession session;
     private GameProfile gameProfile;
@@ -62,9 +65,6 @@ public class ModernPlayer implements PlayerAction {
     private String clientId;
 
     @Setter
-    private int entityId;
-
-    @Setter
     private boolean onGround;
 
     @Setter
@@ -72,9 +72,6 @@ public class ModernPlayer implements PlayerAction {
 
     @Setter
     private boolean sneaking;
-
-    @Setter
-    private Location location;
 
     @Setter
     private boolean inVehicle;
@@ -104,11 +101,13 @@ public class ModernPlayer implements PlayerAction {
     private long lastLocationUpdate;
 
     public ModernPlayer(BetaClientSession session) {
+        super(0); //will be changed later
+
         this.session = session;
 
         this.inventory = new PlayerInventory();
-        this.location = new Location(0, 0, 0);
         this.openedInventoryType = WindowType.GENERIC_INVENTORY;
+
     }
 
     public PlayerListEntry getTabEntry() {
@@ -194,5 +193,20 @@ public class ModernPlayer implements PlayerAction {
 
     public int getPing() {
         return getModernSession().getFlag("ping");
+    }
+
+    @Override
+    public void onSpawn(Session session) {
+
+    }
+
+    @Override
+    public void onDeath(Session session) {
+        playSound(session, BuiltinSound.ENTITY_PLAYER_DEATH, SoundCategory.PLAYER);
+    }
+
+    @Override
+    public void onDamage(Session session) {
+        playSound(session, BuiltinSound.ENTITY_PLAYER_HURT, SoundCategory.PLAYER);
     }
 }

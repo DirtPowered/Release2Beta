@@ -136,10 +136,10 @@ public class ModernServer {
         return serverIcon;
     }
 
-    public ModernPlayer getPlayer(String username) {
+    public ModernPlayer getPlayer(int entityId) {
         ModernPlayer m = null;
         for (ModernPlayer player : serverConnection.getPlayerList().getPlayers()) {
-            if (player.getUsername().equals(username)) {
+            if (player.getEntityId() == entityId) {
                 m = player;
             }
         }

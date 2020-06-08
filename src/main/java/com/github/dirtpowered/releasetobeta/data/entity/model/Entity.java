@@ -29,10 +29,14 @@ import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayBuiltinSoundPacket;
 import com.github.steveice10.packetlib.Session;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public abstract class Entity {
+
+    @Setter
     private int entityId;
+
     private MobType mobType;
     private boolean betaPlayer;
     private Location location;
@@ -63,6 +67,10 @@ public abstract class Entity {
 
     public void setLocation(double x, double y, double z) {
         this.location = new Location(x, y, z);
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     @Deprecated

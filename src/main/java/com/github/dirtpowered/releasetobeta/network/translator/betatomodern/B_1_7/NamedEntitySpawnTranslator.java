@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.NamedEntitySpawnPacketData;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -61,7 +62,14 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
             return;
         }
 
-        spawn(modernSession, entityId, uuid, x, y, z, yaw, pitch);
+        ModernPlayer player = session.getMain().getServer().getPlayer(entityId);
+
+        if (player != null) {
+            player.onSpawn(modernSession);
+            spawn(modernSession, entityId, uuid, x, y, z, yaw, pitch);
+
+            session.getEntityCache().addEntity(entityId, player);
+        }
     }
 
     private void spawn(Session session, int entityId, UUID uuid, double x, double y, double z, float yaw, float pitch) {
