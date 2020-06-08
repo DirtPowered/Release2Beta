@@ -39,6 +39,8 @@ public abstract class Entity {
 
     private MobType mobType;
     private boolean betaPlayer;
+
+    @Setter
     private Location location;
 
     public Entity(int entityId, MobType type) {
@@ -64,14 +66,6 @@ public abstract class Entity {
     }
 
     public abstract void onSpawn(Session session);
-
-    public void setLocation(double x, double y, double z) {
-        this.location = new Location(x, y, z);
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
 
     @Deprecated
     protected void playSound(Session session, BuiltinSound sound, SoundCategory category) {
