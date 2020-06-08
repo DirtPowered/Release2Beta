@@ -30,8 +30,9 @@ public class PlayerInventory {
     private ItemStack[] inventoryItems = new ItemStack[90];
 
     @Getter
-    private ItemStack[] armorItems = new ItemStack[9];
+    protected ItemStack[] armorItems = new ItemStack[9];
 
+    @Getter
     private int currentSlot;
 
     @Getter
@@ -44,11 +45,10 @@ public class PlayerInventory {
     }
 
     public void setItem(int i, ItemStack itemstack) {
-        ItemStack[] inv = this.inventoryItems;
         if (i > 4 && i < 9)
-            armorItems[i] = itemstack;
+            this.armorItems[i] = itemstack;
 
-        inv[i] = itemstack;
+        this.inventoryItems[i] = itemstack;
     }
 
     public ItemStack[] getItems() {
