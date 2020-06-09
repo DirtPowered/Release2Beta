@@ -6,7 +6,7 @@ Application that allows connecting to beta (1.7.3 and 1.8.1, 1.9-pre6) servers u
 
 ## What's working
 - [x] Server pinging from 1.12.2
-- [x] Connecting to b1.7.3, b1.8 and b1.9-pre6 servers
+- [x] Connecting to b1.6.6, b1.7.3, b1.8 and b1.9-pre6 servers
 - [x] Joining
 - [x] Player / Entity movement
 - [x] Sounds
@@ -22,13 +22,15 @@ Application that allows connecting to beta (1.7.3 and 1.8.1, 1.9-pre6) servers u
 - [x] Switching worlds 
 - [x] Signs
 - [x] Redstone, pistons
-- [ ] Pig / Boat riding
+- [ ] Boat controlling
 
 ## Bugs
-- [x] Chunk updates (trees, fire)
+- [x] non-full chunks
+- [x] Chest, Fence collision boxes
 
 ## What can't be done
 - [x] Detecting all beta players at join (b1.7 only)
+- [x] Biomes (needs some code on server side)
 
 ## Screenshots
-![ss](https://i.imgur.com/X3evGtw.png)
+![ss](https://i.imgur.com/ISkZoZf.png)
