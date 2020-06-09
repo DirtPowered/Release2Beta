@@ -66,13 +66,22 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
         if (clickingOutside) {
             betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) 0, null, false));
             inventory.setItem(inventory.getLastSlot(), new ItemStack(0));
-
-            //Update armor bar
-            betaSession.getMain().getServer().updatePlayerProperties(modernSession, player);
             return;
         }
 
         ItemStack itemStack = packet.getClickedItem() == null ? (slot < 0 ? null : player.getInventory().getItem(slot)) : packet.getClickedItem();
+
+        // update local inventory
+        if (slot > 0) {
+            if (packet.getClickedItem() != null) {
+                inventory.setItem(slot, new ItemStack(0));
+                inventory.setLastClickedItem(packet.getClickedItem());
+            } else {
+                inventory.setItem(slot, inventory.getLastClickedItem());
+            }
+
+            betaSession.getMain().getServer().updatePlayerProperties(modernSession, player);
+        }
 
         if (player.getOpenedInventoryType() == WindowType.GENERIC_INVENTORY && slot == 45 || droppingUsingQ) {
             player.closeInventory();

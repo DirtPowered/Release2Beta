@@ -39,9 +39,12 @@ public class PlayerInventory {
     @Setter
     private int lastSlot;
 
+    @Getter
+    @Setter
+    private ItemStack lastClickedItem;
+
     public ItemStack getItem(int i) {
-        ItemStack[] inv = this.inventoryItems;
-        return inv[i];
+        return this.inventoryItems[i];
     }
 
     public void setItem(int i, ItemStack itemstack) {
@@ -57,8 +60,7 @@ public class PlayerInventory {
 
     public void setItems(ItemStack[] items) {
         for (int i = 0; i < items.length; i++) {
-            ItemStack item = items[i];
-            setItem(i, item);
+            setItem(i, items[i]);
         }
     }
 
