@@ -41,7 +41,6 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityTel
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityVelocityPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.ExplosionPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.HandshakePacketData;
-import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.KeepAlivePacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.KickDisconnectPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.LoginPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapChunkPacketData;
@@ -88,7 +87,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.EntityVelocityTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.ExplosionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.HandshakeTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.KeepAliveTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.KickDisconnectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.LoginTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.MapChunkTranslator;
@@ -120,7 +118,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientCloseWindowTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientConfirmTransactionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientHandshakeTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientKeepAliveTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerChangeHeldItemTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerInteractEntityTranslator;
@@ -141,7 +138,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.registry.BetaToMo
 import com.github.dirtpowered.releasetobeta.network.translator.registry.ModernToBetaTranslatorRegistry;
 import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.client.ClientKeepAlivePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientRequestPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerActionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerChangeHeldItemPacket;
@@ -210,10 +206,8 @@ public class B_1_7 {
         betaToModernTranslatorRegistry.registerTranslator(SoundEffectPacketData.class, new SoundEffectTranslator());
         betaToModernTranslatorRegistry.registerTranslator(EntityLookPacketData.class, new EntityLookTranslator());
         betaToModernTranslatorRegistry.registerTranslator(StatisticsPacketData.class, new StatisticsTranslator());
-        betaToModernTranslatorRegistry.registerTranslator(KeepAlivePacketData.class, new KeepAliveTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(LoginStartPacket.class, new LoginStartTranslator());
-        modernToBetaTranslatorRegistry.registerTranslator(ClientKeepAlivePacket.class, new ClientKeepAliveTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientChatPacket.class, new ClientChatTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerChangeHeldItemPacket.class, new ClientPlayerChangeHeldItemTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerPositionPacket.class, new ClientPlayerPositionTranslator());
