@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerPositionPacketData;
+import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -44,6 +45,10 @@ public class ClientPlayerPositionTranslator implements ModernToBeta<ClientPlayer
         boolean onGround = packet.isOnGround();
 
         player.setLastLocationUpdate(System.currentTimeMillis());
+
+        Location l = player.getLocation();
+        player.setLocation(new Location(x, y, z, l.getYaw(), l.getPitch()));
+
         betaSession.sendPacket(new PlayerPositionPacketData(x, y, z, stance, onGround));
     }
 }

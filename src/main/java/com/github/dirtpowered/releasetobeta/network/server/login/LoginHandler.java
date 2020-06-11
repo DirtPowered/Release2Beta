@@ -37,9 +37,9 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import java.net.InetSocketAddress;
+import java.util.UUID;
 
 public class LoginHandler implements ServerLoginHandler {
     private ReleaseToBeta main;
@@ -65,14 +65,17 @@ public class LoginHandler implements ServerLoginHandler {
                     return;
                 }
 
-                createClientSession(RandomStringUtils.randomAlphabetic(8), session);
+                UUID uniqueId = UUID.randomUUID();
+                session.setFlag("uniqueId", uniqueId);
+
+                createClientSession(uniqueId, session);
             }
         } catch (InterruptedException e) {
             main.getLogger().error(e.getMessage());
         }
     }
 
-    private void createClientSession(String clientId, Session session) throws InterruptedException {
+    private void createClientSession(UUID clientId, Session session) throws InterruptedException {
         NioEventLoopGroup loopGroup = new NioEventLoopGroup();
 
         try {

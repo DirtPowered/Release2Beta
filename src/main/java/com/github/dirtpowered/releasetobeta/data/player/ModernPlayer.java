@@ -50,6 +50,8 @@ import com.github.steveice10.packetlib.packet.Packet;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 public class ModernPlayer extends Entity implements PlayerAction, Mob {
     private String username;
@@ -61,8 +63,7 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
     @Setter
     private long lastInteractAtEntity;
 
-    @Setter
-    private String clientId;
+    private UUID clientId;
 
     @Setter
     private boolean onGround;
@@ -100,10 +101,11 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
     @Setter
     private long lastLocationUpdate;
 
-    public ModernPlayer(BetaClientSession session) {
+    public ModernPlayer(BetaClientSession session, UUID clientId) {
         super(0); //will be changed later
 
         this.session = session;
+        this.clientId = clientId;
 
         this.inventory = new PlayerInventory();
         this.openedInventoryType = WindowType.GENERIC_INVENTORY;

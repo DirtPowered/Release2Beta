@@ -56,6 +56,7 @@ import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ServerConnection implements Tickable {
@@ -158,8 +159,10 @@ public class ServerConnection implements Tickable {
     private void translatePacket(ServerQueuedPacket queuedPacket) {
         ModernToBeta handler = main.getModernToBetaTranslatorRegistry().getByPacket(queuedPacket.packet);
         if (handler != null) {
-            BetaClientSession clientSession = main.getSessionRegistry().getClientSessionFromServerSession(queuedPacket.session);
-            if (clientSession != null) {
+            if (queuedPacket.session.getFlag("ready") != null) {
+                UUID uuid = queuedPacket.session.getFlag("uniqueId");
+                BetaClientSession clientSession = main.getSessionRegistry().getSession(uuid).getBetaClientSession();
+
                 handler.translate(queuedPacket.packet, queuedPacket.session, clientSession);
             } else {
                 if (queuedPacket.loginPacket && queuedPacket.session.isConnected()) {

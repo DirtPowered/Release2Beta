@@ -36,7 +36,7 @@ public class KickDisconnectTranslator implements BetaToModern<KickDisconnectPack
         String username = session.getPlayer().getUsername();
         String reason = packet.getDisconnectReason();
 
-        String n = username == null ? session.getClientId() : username;
+        String n = username == null ? session.getPlayer().getClientId().toString() : username;
         session.getMain().getLogger().warning("[" + n + "] kicked from server: " + reason);
 
         modernSession.send(new ServerDisconnectPacket(reason == null ? StringUtils.EMPTY : reason));

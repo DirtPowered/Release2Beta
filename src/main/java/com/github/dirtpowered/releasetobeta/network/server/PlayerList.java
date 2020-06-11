@@ -45,7 +45,7 @@ public class PlayerList {
     }
 
     public List<ModernPlayer> getPlayers() {
-        Map<String, MultiSession> sessionMap = serverConnection.getMain().getSessionRegistry().getSessions();
+        Map<UUID, MultiSession> sessionMap = serverConnection.getMain().getSessionRegistry().getSessions();
         List<MultiSession> players = new ArrayList<>(sessionMap.values());
 
         return MapUtil.transform(players, multiSession -> Objects.requireNonNull(multiSession).getBetaClientSession().getPlayer());

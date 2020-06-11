@@ -22,34 +22,25 @@
 
 package com.github.dirtpowered.releasetobeta.network.session;
 
-import com.github.steveice10.packetlib.Session;
 import lombok.Getter;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public class SessionRegistry {
-    private Map<String, MultiSession> sessions = new ConcurrentHashMap<>();
+    private Map<UUID, MultiSession> sessions = new ConcurrentHashMap<>();
 
-    void addSession(String clientId, MultiSession multiSession) {
+    void addSession(UUID clientId, MultiSession multiSession) {
         sessions.put(clientId, multiSession);
-
-        //Logger.info("[count={}/id={}] adding new session", sessions.size(), clientId);
     }
 
-    public void removeSession(String clientId) {
+    public void removeSession(UUID clientId) {
         sessions.remove(clientId);
-        //Logger.info("[count={}/id={}] removing session", sessions.size(), clientId);
     }
 
-    public MultiSession getSession(String clientId) {
+    public MultiSession getSession(UUID clientId) {
         return sessions.get(clientId);
-    }
-
-    public BetaClientSession getClientSessionFromServerSession(Session modernSession) {
-        return sessions.values().stream()
-                .filter(multiSession -> multiSession.getModernSession() == modernSession).findFirst()
-                .map(MultiSession::getBetaClientSession).orElse(null);
     }
 }

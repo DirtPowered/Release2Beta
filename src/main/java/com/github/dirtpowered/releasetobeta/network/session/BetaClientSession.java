@@ -64,86 +64,56 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
-    private final Channel channel;
+
     @Getter
     TempBlockStorage blockStorage;
-    private Session session;
-    private Deque<BlockChangeRecord> blockChangeQueue = new LinkedList<>();
-    private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
-    @Getter
-    private List<BetaPlayer> betaPlayers = new ArrayList<>();
+
+    private final Channel channel;
+
     @Getter
     private ReleaseToBeta main;
+
     @Getter
     @Setter
     private ProtocolState protocolState;
+
     @Getter
     private ModernPlayer player;
+
     @Getter
     @Setter
     private boolean loggedIn;
+
     @Getter
     private EntityCache entityCache;
-    @Getter
-    private String clientId;
+
     private boolean resourcepack;
     private int i;
     private MapDataHandler mapDataHandler;
     private UpdateProgressHandler updateProgressHandler;
+    @Getter
+    private List<BetaPlayer> betaPlayers;
+    private Session session;
+    private Deque<BlockChangeRecord> blockChangeQueue = new LinkedList<>();
+    private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
 
-    public BetaClientSession(ReleaseToBeta server, Channel channel, Session session, String clientId) {
+    public BetaClientSession(ReleaseToBeta server, Channel channel, Session session, UUID clientId) {
         this.main = server;
         this.channel = channel;
         this.protocolState = ProtocolState.LOGIN;
-        this.player = new ModernPlayer(this);
+        this.player = new ModernPlayer(this, clientId);
         this.session = session;
         this.entityCache = new EntityCache();
-        this.clientId = clientId;
         this.mapDataHandler = new MapDataHandler();
         this.updateProgressHandler = new UpdateProgressHandler();
+        this.betaPlayers = new ArrayList<>();
 
         //blockstorage
         this.blockStorage = new TempBlockStorage();
-    }
-
-    @Override
-    public void tick() {
-        if (channel.isActive())
-            if (player.getGameProfile() != null) {
-                Location l = player.getLocation();
-                if (l != null)
-                    /*
-                     * Beta client sending position every tick, without that 'hack' nether portals,
-                     * food eating, mob effects(potions?) will not work correctly.
-                     */
-
-                    /* If location is send more often than 1 tick - player starts to starve, drown faster */
-                    if ((System.currentTimeMillis() - player.getLastLocationUpdate()) >= 51 && protocolState != ProtocolState.LOGIN && !player.isInVehicle()) {
-                        sendPacket(new PlayerPositionPacketData(0, -999.0D, 0, -999.0D, player.isOnGround()));
-                    } else if (player.isInVehicle()) {
-                        sendPacket(new PlayerLookMovePacketData(l.getX(), -999.0D, l.getZ(), -999.0D, l.getYaw(), l.getPitch(), player.isOnGround()));
-                    }
-
-                if (!initialPacketsQueue.isEmpty()) {
-                    Packet p = initialPacketsQueue.poll();
-
-                    channel.writeAndFlush(p);
-                    return;
-                }
-            }
-
-        //wait 3 seconds to make sure client is ready to receive resourcepack packet
-        if (i > 20 * 3 && !resourcepack && !R2BConfiguration.resourcePack.isEmpty()) {
-            player.sendResourcePack();
-            resourcepack = true;
-        }
-
-        //sending block change packets immediately may cause problems, so delay it
-        poolTileEntityQueue();
-        i++;
     }
 
     @Override
@@ -167,15 +137,53 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
-        main.getLogger().warning("[" + clientId + "/" + player.getUsername() + "]" + " closed connection: " + cause.toString());
+        main.getLogger().warning("[" + player.getClientId() + "/" + player.getUsername() + "]" + " closed connection: " + cause.toString());
 
         cause.printStackTrace();
         context.close();
     }
 
+    @Override
+    public void tick() {
+        if (channel.isActive()) {
+            if (player.getGameProfile() != null) {
+                Location l = player.getLocation();
+                if (l != null)
+                    /*
+                     * Beta client sending position every tick, without that 'hack' nether portals,
+                     * food eating, mob effects(potions?) will not work correctly.
+                     */
+
+                    /* If location is send more often than 1 tick - player starts to starve, drown faster */
+                    if ((System.currentTimeMillis() - player.getLastLocationUpdate()) >= 51 && protocolState != ProtocolState.LOGIN && !player.isInVehicle()) {
+                        sendPacket(new PlayerPositionPacketData(0, -999.0D, 0, -999.0D, player.isOnGround()));
+                    } else if (player.isInVehicle()) {
+                        sendPacket(new PlayerLookMovePacketData(l.getX(), -999.0D, l.getZ(), -999.0D, l.getYaw(), l.getPitch(), player.isOnGround()));
+                    }
+
+                if (!initialPacketsQueue.isEmpty()) {
+                    Packet p = initialPacketsQueue.poll();
+
+                    channel.writeAndFlush(p);
+                    return;
+                }
+            }
+
+            //wait 3 seconds to make sure client is ready to receive resourcepack packet
+            if (i > 20 * 3 && !resourcepack && !R2BConfiguration.resourcePack.isEmpty()) {
+                player.sendResourcePack();
+                resourcepack = true;
+            }
+
+            //sending block change packets immediately may cause problems, so delay it
+            poolTileEntityQueue();
+            i++;
+        }
+    }
+
     private void createSession() {
-        main.getSessionRegistry().addSession(clientId, new MultiSession(this, session));
-        player.setClientId(clientId);
+        main.getSessionRegistry().addSession(player.getClientId(), new MultiSession(this, session));
+        session.setFlag("ready", true);
     }
 
     @SuppressWarnings("unchecked")
@@ -184,7 +192,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         if (handler != null && channel.isActive()) {
             handler.translate(packet, this, main.getSessionRegistry().getSession(player.getClientId()).getModernSession());
         } else {
-            main.getLogger().warning("[" + clientId + "/" + player.getUsername() + "]" + " missing 'BetaToModern' translator for: " + packet.getClass().getSimpleName());
+            main.getLogger().warning("[" + player.getClientId() + "/" + player.getUsername() + "]" + " missing 'BetaToModern' translator for: " + packet.getClass().getSimpleName());
         }
     }
 
