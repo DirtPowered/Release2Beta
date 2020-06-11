@@ -190,7 +190,10 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private void processPacket(Packet packet) {
         BetaToModern handler = main.getBetaToModernTranslatorRegistry().getByPacket(packet);
         if (handler != null && channel.isActive()) {
-            handler.translate(packet, this, main.getSessionRegistry().getSession(player.getClientId()).getModernSession());
+            Session session = main.getSessionRegistry().getSession(player.getClientId()).getModernSession();
+            if (session != null) {
+                handler.translate(packet, this, session);
+            }
         } else {
             main.getLogger().warning("[" + player.getClientId() + "/" + player.getUsername() + "]" + " missing 'BetaToModern' translator for: " + packet.getClass().getSimpleName());
         }

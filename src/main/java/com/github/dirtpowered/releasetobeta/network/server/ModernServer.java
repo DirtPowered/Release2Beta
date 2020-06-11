@@ -113,7 +113,7 @@ public class ModernServer {
 
         for (ItemStack item : items) {
             if (item != null)
-                aVal += ArmorItem.getArmorValueFromItemId(item.getId());
+                aVal += ArmorItem.getArmorValueFromItem(item);
         }
 
         attributes.add(new Attribute(AttributeType.GENERIC_ARMOR, aVal));
