@@ -61,6 +61,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ServerConnection implements Tickable {
     private final Queue<ServerQueuedPacket> packetQueue = new ConcurrentLinkedQueue<>();
+    private long lastCheck;
 
     @Getter
     ModernServer modernServer;
@@ -181,6 +182,8 @@ public class ServerConnection implements Tickable {
     public void tick() {
         handlePackets();
         playerList.updateInternalTabList();
+
+        fixInternalClientList();
     }
 
     void broadcastPacket(Packet packet) {
@@ -193,6 +196,22 @@ public class ServerConnection implements Tickable {
 
     public void shutdown() {
         server.close(true);
+    }
+
+    private void fixInternalClientList() {
+        if (System.currentTimeMillis() - lastCheck > 5000L) {
+            for (Session session : server.getSessions()) {
+                if (session.getFlag("ready") != null) { // client is connected to remote
+                    UUID uuid = session.getFlag("uniqueId");
+
+                    if (!main.getSessionRegistry().getSessions().containsKey(uuid)) {
+                        server.getSessions().remove(session);
+                    }
+                }
+            }
+
+            lastCheck = System.currentTimeMillis();
+        }
     }
 
     static class ServerQueuedPacket {
