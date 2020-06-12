@@ -32,6 +32,7 @@ import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.dirtpowered.releasetobeta.utils.interfaces.Callback;
 import com.github.steveice10.mc.auth.data.GameProfile;
+import com.github.steveice10.mc.protocol.data.game.MessageType;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -191,6 +192,10 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
 
     public void sendMessage(String message) {
         sendPacket(new ServerChatPacket(ChatUtils.toModernMessage(message, false)));
+    }
+
+    public void sendRawMessage(Message message, MessageType messageType) {
+        sendPacket(new ServerChatPacket(message, messageType));
     }
 
     public int getPing() {
