@@ -31,13 +31,12 @@ import com.github.steveice10.mc.auth.exception.profile.ProfileException;
 import com.github.steveice10.mc.auth.service.ProfileService;
 import com.github.steveice10.mc.auth.service.SessionService;
 
-import java.net.Proxy;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class ProfileCache {
-    private static final ProfileService PROFILE_SERVICE = new ProfileService(Proxy.NO_PROXY);
-    private static final SessionService SESSION_SERVICE = new SessionService(Proxy.NO_PROXY);
+    private static final ProfileService PROFILE_SERVICE = new ProfileService();
+    private static final SessionService SESSION_SERVICE = new SessionService();
     private AsyncLoadingCache<String, GameProfile> profileCache;
     private ReleaseToBeta main;
 
