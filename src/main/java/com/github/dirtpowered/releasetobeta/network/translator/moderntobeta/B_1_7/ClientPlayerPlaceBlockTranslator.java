@@ -23,15 +23,20 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockPlacePacketData;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.data.item.ItemFood;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.data.MagicValues;
+import com.github.steveice10.mc.protocol.data.game.MessageType;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
+import com.github.steveice10.mc.protocol.data.message.TextMessage;
+import com.github.steveice10.mc.protocol.data.message.TranslationMessage;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPlaceBlockPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerSetSlotPacket;
 import com.github.steveice10.packetlib.Session;
@@ -51,6 +56,10 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
         ItemStack itemStack = inventory.getItemInHand();
 
         BlockPlacePacketData blockPlacePacketData = new BlockPlacePacketData(x, y, z, face, new BetaItemStack()); //item-stack is ignored
+
+        int height = (R2BConfiguration.version == MinecraftVersion.B_1_8_1 ? 256 : 128);
+        if (y >= height - 2)
+            player.sendRawMessage(new TranslationMessage("build.tooHigh", TextMessage.fromString(String.valueOf(height))), MessageType.NOTIFICATION);
 
         betaSession.sendPacket(blockPlacePacketData);
 
