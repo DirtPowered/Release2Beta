@@ -49,4 +49,9 @@ public class EntitySnowman extends Entity implements Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_SNOWMAN_HURT, SoundCategory.HOSTILE);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        playSound(session, BuiltinSound.ENTITY_SNOWMAN_AMBIENT, SoundCategory.HOSTILE);
+    }
 }

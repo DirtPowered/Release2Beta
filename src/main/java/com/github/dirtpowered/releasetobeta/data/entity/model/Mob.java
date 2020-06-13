@@ -30,6 +30,8 @@ public interface Mob {
 
     void onDamage(Session session);
 
+    void onUpdate(Session session);
+
     default void onDestroy(Session session) {
     }
 }

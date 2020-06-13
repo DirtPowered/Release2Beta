@@ -49,4 +49,9 @@ public class EntityGhast extends Entity implements Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_GHAST_HURT, SoundCategory.HOSTILE);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        playSound(session, BuiltinSound.ENTITY_GHAST_AMBIENT, SoundCategory.HOSTILE);
+    }
 }

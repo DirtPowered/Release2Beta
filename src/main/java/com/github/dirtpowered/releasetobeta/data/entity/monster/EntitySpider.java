@@ -49,4 +49,9 @@ public class EntitySpider extends Entity implements Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_SPIDER_HURT, SoundCategory.HOSTILE);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        playSound(session, BuiltinSound.ENTITY_SPIDER_AMBIENT, SoundCategory.HOSTILE);
+    }
 }

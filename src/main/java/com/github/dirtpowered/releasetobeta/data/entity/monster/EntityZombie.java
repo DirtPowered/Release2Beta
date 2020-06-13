@@ -50,4 +50,9 @@ public class EntityZombie extends Entity implements Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_ZOMBIE_HURT, SoundCategory.HOSTILE);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        playSound(session, BuiltinSound.ENTITY_ZOMBIE_AMBIENT, SoundCategory.HOSTILE);
+    }
 }

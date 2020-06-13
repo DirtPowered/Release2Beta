@@ -23,6 +23,8 @@
 package com.github.dirtpowered.releasetobeta.data.entity.model;
 
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.data.Constants;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
@@ -30,6 +32,8 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayBu
 import com.github.steveice10.packetlib.Session;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Random;
 
 @Getter
 public abstract class Entity {
@@ -43,12 +47,15 @@ public abstract class Entity {
     @Setter
     private Location location;
 
+    private Random rand;
+
     public Entity(int entityId, MobType type) {
         this.entityId = entityId;
         this.mobType = type;
         this.betaPlayer = false;
 
         this.location = new Location(0, 0, 0);
+        this.rand = new Random();
     }
 
     public Entity(int entityId) {
@@ -56,6 +63,7 @@ public abstract class Entity {
         this.betaPlayer = false;
 
         this.location = new Location(0, 0, 0);
+        this.rand = new Random();
     }
 
     public Entity(int entityId, boolean isBetaPlayer) {
@@ -63,9 +71,23 @@ public abstract class Entity {
         this.betaPlayer = isBetaPlayer;
 
         this.location = new Location(0, 0, 0);
+        this.rand = new Random();
     }
 
     public abstract void onSpawn(Session session);
+
+    public void updateEntity(ModernPlayer player, Session session) {
+        if (rand.nextDouble() < 0.0074D) {
+            double dist = location.distanceTo(player.getLocation());
+            if (dist < Constants.SOUND_RANGE) {
+                if (this instanceof Mob && getMobType() != null) {
+                    Mob mob = (Mob) this;
+
+                    mob.onUpdate(session);
+                }
+            }
+        }
+    }
 
     @Deprecated
     protected void playSound(Session session, BuiltinSound sound, SoundCategory category) {

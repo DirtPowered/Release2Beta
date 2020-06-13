@@ -216,4 +216,9 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_PLAYER_HURT, SoundCategory.PLAYER);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        // do nothing
+    }
 }

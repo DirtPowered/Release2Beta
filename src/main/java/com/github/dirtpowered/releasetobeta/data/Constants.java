@@ -29,5 +29,5 @@ public class Constants {
     public final static String PING_VERSION_STRING = "ReleaseToBeta";
     public final static int PING_PROTOCOL = 340;
     public final static int PING_INTERVAL = 5000;
-    public final static double SOUND_RANGE = 15.0D;
+    public final static double SOUND_RANGE = 20.0D;
 }

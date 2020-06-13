@@ -34,6 +34,7 @@ import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.TempBlockStorage;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
+import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.model.BlockObject;
@@ -169,6 +170,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
                 player.sendResourcePack();
                 resourcepack = true;
             }
+
+            for (Entity entity : entityCache.getEntities().values())
+               entity.updateEntity(player, session);
 
             i++;
         }

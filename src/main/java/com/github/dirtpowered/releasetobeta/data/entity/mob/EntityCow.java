@@ -49,4 +49,9 @@ public class EntityCow extends Entity implements Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_COW_HURT, SoundCategory.AMBIENT);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        playSound(session, BuiltinSound.ENTITY_COW_AMBIENT, SoundCategory.AMBIENT);
+    }
 }

@@ -49,4 +49,9 @@ public class EntitySilverfish extends Entity implements Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_SILVERFISH_HURT, SoundCategory.HOSTILE);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        playSound(session, BuiltinSound.ENTITY_SILVERFISH_AMBIENT, SoundCategory.HOSTILE);
+    }
 }

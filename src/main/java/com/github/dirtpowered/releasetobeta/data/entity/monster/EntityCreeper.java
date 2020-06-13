@@ -53,4 +53,9 @@ public class EntityCreeper extends Entity implements Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_CREEPER_HURT, SoundCategory.HOSTILE);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        // do nothing
+    }
 }

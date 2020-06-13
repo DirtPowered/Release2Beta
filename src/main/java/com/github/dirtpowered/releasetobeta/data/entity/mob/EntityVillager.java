@@ -49,4 +49,9 @@ public class EntityVillager extends Entity implements Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_VILLAGER_HURT, SoundCategory.AMBIENT);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        playSound(session, BuiltinSound.ENTITY_VILLAGER_AMBIENT, SoundCategory.AMBIENT);
+    }
 }

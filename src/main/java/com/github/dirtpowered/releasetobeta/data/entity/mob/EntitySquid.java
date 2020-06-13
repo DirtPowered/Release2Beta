@@ -49,4 +49,9 @@ public class EntitySquid extends Entity implements Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_SQUID_HURT, SoundCategory.AMBIENT);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        playSound(session, BuiltinSound.ENTITY_SQUID_AMBIENT, SoundCategory.AMBIENT);
+    }
 }

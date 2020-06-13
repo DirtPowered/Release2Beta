@@ -49,4 +49,9 @@ public class EntityPig extends Entity implements Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_PIG_HURT, SoundCategory.AMBIENT);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        playSound(session, BuiltinSound.ENTITY_PIG_AMBIENT, SoundCategory.AMBIENT);
+    }
 }

@@ -49,4 +49,9 @@ public class EntityChicken extends Entity implements Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_CHICKEN_HURT, SoundCategory.AMBIENT);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        playSound(session, BuiltinSound.ENTITY_CHICKEN_AMBIENT, SoundCategory.AMBIENT);
+    }
 }

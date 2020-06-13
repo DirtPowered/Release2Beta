@@ -53,4 +53,9 @@ public class EntitySkeleton extends Entity implements Mob {
     public void onDamage(Session session) {
         playSound(session, BuiltinSound.ENTITY_SKELETON_HURT, SoundCategory.HOSTILE);
     }
+
+    @Override
+    public void onUpdate(Session session) {
+        playSound(session, BuiltinSound.ENTITY_SKELETON_AMBIENT, SoundCategory.HOSTILE);
+    }
 }
