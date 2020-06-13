@@ -32,11 +32,8 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerUpdate
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.opennbt.tag.builtin.IntTag;
 import com.github.steveice10.opennbt.tag.builtin.StringTag;
-import com.github.steveice10.opennbt.tag.builtin.Tag;
 import com.github.steveice10.packetlib.Session;
-
-import java.util.HashMap;
-import java.util.Map;
+import io.netty.util.internal.StringUtil;
 
 public class UpdateSignTranslator implements BetaToModern<UpdateSignPacketData> {
 
@@ -49,19 +46,17 @@ public class UpdateSignTranslator implements BetaToModern<UpdateSignPacketData> 
         Position pos = new Position(x, y, z);
         String[] lines = packet.getSignLines();
 
-        Map<String, Tag> nbt = new HashMap<>();
-        nbt.put("id", new StringTag("id", "minecraft:sign"));
+        CompoundTag tileTag = new CompoundTag(StringUtil.EMPTY_STRING);
+        tileTag.put(new StringTag("id", "minecraft:sign"));
 
-        nbt.put("x", new IntTag("x", x));
-        nbt.put("y", new IntTag("y", y));
-        nbt.put("z", new IntTag("z", z));
+        tileTag.put(new IntTag("x", pos.getX()));
+        tileTag.put(new IntTag("y", pos.getY()));
+        tileTag.put(new IntTag("z", pos.getZ()));
 
         for (int line = 0; line < 4; ++line) {
-            nbt.put("Text" + (line + 1), new StringTag("Text" + (line + 1),
-                    ChatUtils.toModernMessage(lines[line], false).toJsonString()));
+            tileTag.put(new StringTag("Text" + (line + 1), ChatUtils.toModernMessage(lines[line], false).toJsonString()));
         }
 
-        CompoundTag tag = new CompoundTag("", nbt);
-        modernSession.send(new ServerUpdateTileEntityPacket(pos, UpdatedTileType.SIGN, tag));
+        modernSession.send(new ServerUpdateTileEntityPacket(pos, UpdatedTileType.SIGN, tileTag));
     }
 }
