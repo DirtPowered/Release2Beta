@@ -29,7 +29,6 @@ import com.github.steveice10.opennbt.tag.builtin.StringTag;
 import com.github.steveice10.opennbt.tag.builtin.Tag;
 import io.netty.util.internal.StringUtil;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,15 +50,21 @@ public enum TileEntity {
     }
 
     public static boolean isTileEntity(int blockId) {
-        return Arrays.stream(values()).anyMatch(tileEntity -> {
-            return blockId == tileEntity.blockId;
-        });
+        for (TileEntity tileEntity : values()) {
+            if (blockId == tileEntity.blockId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static TileEntity getFromId(int blockId) {
-        return Arrays.stream(TileEntity.values()).filter(tileEntity -> {
-            return tileEntity.blockId == blockId;
-        }).findFirst().orElse(null);
+        for (TileEntity tileEntity : TileEntity.values()) {
+            if (tileEntity.blockId == blockId) {
+                return tileEntity;
+            }
+        }
+        return null;
     }
 
     public static CompoundTag getTileMeta(TileEntity tileEntity, Position position) {
