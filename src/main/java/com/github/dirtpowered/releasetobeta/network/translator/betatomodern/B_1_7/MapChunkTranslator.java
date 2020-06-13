@@ -28,7 +28,7 @@ import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.DataBlock;
 import com.github.dirtpowered.releasetobeta.data.chunk.BetaChunk;
 import com.github.dirtpowered.releasetobeta.data.chunk.ModernChunk;
-import com.github.dirtpowered.releasetobeta.data.entity.TileEntity;
+import com.github.dirtpowered.releasetobeta.data.entity.tile.TileEntity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.chunk.BlockStorage;
@@ -56,10 +56,6 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         int y = packet.getY();
         int z = packet.getZ();
 
-        int xSize = packet.getXSize();
-        int ySize = y + packet.getYSize();
-        int zSize = packet.getZSize();
-
         int chunkX = x / 16;
         int chunkZ = z / 16;
 
@@ -71,28 +67,15 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                 chunk.fillData(data, skylight);
                 ModernChunk[] chunks = new ModernChunk[16];
                 Chunk[] _chunks = new Chunk[16];
-
                 for (int i = 0; i < 8; i++) {
                     chunks[i] = translateChunk(session, chunk, i * 16, skylight);
 
                     chunkTileEntities.addAll(chunks[i].getChunkTileEntities());
                     _chunks[i] = chunks[i].getChunk();
                 }
-
                 modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, _chunks, chunkTileEntities.toArray(new CompoundTag[0]))));
             } else if (R2BConfiguration.testMode) {
                 //TODO: non-full chunks
-
-                for (int x1 = 0; x1 < xSize; x1++) {
-                    for (int z1 = 0; z1 < zSize; z1++) {
-                        for (int y1 = 0; y1 < ySize; y1++) {
-                            int index = (x1 * xSize + z1) * ySize + y1;
-                            int blockId = data[index];
-
-                            session.queueBlockChange(new Position(x + x1, y + y1, z + z1), blockId, 0);
-                        }
-                    }
-                }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             session.getMain().getLogger().warning("Chunk at [x=" + chunkX + " z=" + chunkZ + "] was skipped");
@@ -119,13 +102,6 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     int blockId = session.remapBlock(chunk.getTypeAt(x, worldYPos, z), data, false);
                     int blockData = session.remapMetadata(blockId, data);
 
-                    if (TileEntity.isTileEntity(blockId)) {
-                        Position position = new Position(worldXPos, worldYPos, worldZPos);
-                        chunkTileEntities.add(TileEntity.getTileMeta(TileEntity.getFromId(blockId), position));
-
-                        session.queueBlockChange(position, blockId, blockData);
-                    }
-
                     BlockState blockState = new BlockState(blockId, blockData);
 
                     blockList.add(new DataBlock(new Location(worldXPos, worldYPos, worldZPos), blockState));
@@ -133,6 +109,10 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     storage.set(x, y, z, blockState);
                     nibbleBlockLight.set(x, y, z, chunk.getBlockLightAt(x, worldYPos, z));
                     nibbleSkyLight.set(x, y, z, chunk.getSkyLightAt(x, worldYPos, z));
+
+
+                    if (TileEntity.containsId(blockId))
+                        chunkTileEntities.add(TileEntity.create(blockId).getNBT(new Position(worldXPos, worldYPos, worldZPos)));
                 }
             }
         }

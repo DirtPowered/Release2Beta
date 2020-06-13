@@ -30,12 +30,9 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.opennbt.tag.builtin.ListTag;
 import com.github.steveice10.opennbt.tag.builtin.ShortTag;
-import com.github.steveice10.opennbt.tag.builtin.Tag;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ItemConverter {
 
@@ -96,8 +93,8 @@ public class ItemConverter {
     }
 
     private static CompoundTag removeItemAttributes() {
-        Map<String, Tag> nbt = new HashMap<>();
-        nbt.put("AttributeModifiers", new ListTag("AttributeModifiers", Collections.emptyList()));
-        return new CompoundTag(StringUtils.EMPTY, nbt);
+        CompoundTag tag = new CompoundTag(StringUtils.EMPTY);
+        tag.put(new ListTag("AttributeModifiers", Collections.emptyList()));
+        return tag;
     }
 }

@@ -47,11 +47,7 @@ import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.dirtpowered.releasetobeta.utils.interfaces.Tickable;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
-import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
-import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
-import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPlayerListEntryPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockChangePacket;
 import com.github.steveice10.packetlib.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -62,7 +58,6 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -91,14 +86,14 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     @Getter
     private EntityCache entityCache;
 
+    @Getter
+    private List<BetaPlayer> betaPlayers;
+
     private boolean resourcepack;
     private int i;
     private MapDataHandler mapDataHandler;
     private UpdateProgressHandler updateProgressHandler;
-    @Getter
-    private List<BetaPlayer> betaPlayers;
     private Session session;
-    private Deque<BlockChangeRecord> blockChangeQueue = new LinkedList<>();
     private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session, UUID clientId) {
@@ -175,8 +170,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
                 resourcepack = true;
             }
 
-            //sending block change packets immediately may cause problems, so delay it
-            poolTileEntityQueue();
             i++;
         }
     }
@@ -236,7 +229,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         session.disconnect(ChatUtils.colorize("&cunexpectedly disconnected from server"));
         main.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
         initialPacketsQueue.clear();
-        blockChangeQueue.clear();
 
         entityCache.getEntities().clear();
         betaPlayers.clear();
@@ -257,26 +249,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
             main.getEventManager().fireEvent(new PlayerJoinEvent(player));
         }
-    }
-
-    private void poolTileEntityQueue() {
-        if (blockChangeQueue.isEmpty())
-            return;
-
-        int allowance = Math.min(2, blockChangeQueue.size());
-
-        for (int i = 0; i < allowance; i++) {
-            BlockChangeRecord block = blockChangeQueue.remove();
-            if (block == null)
-                return;
-
-            player.sendPacket(new ServerBlockChangePacket(block));
-        }
-    }
-
-    public void queueBlockChange(Position position, int blockId, int data) {
-        blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(0, 0)));
-        blockChangeQueue.add(new BlockChangeRecord(position, new BlockState(blockId, remapMetadata(blockId, data))));
     }
 
     public int remapBlock(int blockId, int blockData, boolean inInventory) {
