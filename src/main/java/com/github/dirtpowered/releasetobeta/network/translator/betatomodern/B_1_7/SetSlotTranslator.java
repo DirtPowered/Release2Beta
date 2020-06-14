@@ -43,8 +43,10 @@ public class SetSlotTranslator implements BetaToModern<SetSlotPacketData> {
         ItemStack modernItemStack = ItemConverter.betaToModern(session, itemStack);
 
         if (itemStack != null) {
-            itemStack.setBlockId(session.remapBlock(itemStack.getBlockId(), itemStack.getData(), true));
-            itemStack.setData(session.remapMetadata(itemStack.getBlockId(), itemStack.getData()));
+            int itemId = itemStack.getBlockId();
+
+            itemStack.setBlockId(session.remapBlock(itemId, itemStack.getData(), true));
+            itemStack.setData(session.remapMetadata(itemId, itemStack.getData(), itemId == 54));
         }
 
         if (itemSlot != -1) //item in hand index

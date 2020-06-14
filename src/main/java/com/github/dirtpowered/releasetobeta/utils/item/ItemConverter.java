@@ -40,8 +40,10 @@ public class ItemConverter {
         if (item == null)
             return new ItemStack(0);
 
-        item.setBlockId(session.remapBlock(item.getBlockId(), item.getData(), true));
-        item.setData(session.remapMetadata(item.getBlockId(), item.getData()));
+        int itemId = item.getBlockId();
+
+        item.setBlockId(session.remapBlock(itemId, item.getData(), true));
+        item.setData(session.remapMetadata(itemId, item.getData(), itemId == 54));
 
         if (MinecraftVersion.B_1_9.isNewerOrEqual(R2BConfiguration.version) && item.hasNbt()) {
             com.mojang.nbt.CompoundTag itemTag = item.getNbt();
