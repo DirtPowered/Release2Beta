@@ -40,6 +40,7 @@ import com.github.dirtpowered.releasetobeta.network.protocol.B_1_8;
 import com.github.dirtpowered.releasetobeta.network.protocol.B_1_9;
 import com.github.dirtpowered.releasetobeta.network.server.ModernServer;
 import com.github.dirtpowered.releasetobeta.network.server.ping.LegacyPing.PingPassthroughThread;
+import com.github.dirtpowered.releasetobeta.network.session.MultiSession;
 import com.github.dirtpowered.releasetobeta.network.session.SessionRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.internal.ClientResourcePackStatusTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.internal.ClientTabCompleteTranslator;
@@ -142,11 +143,18 @@ public class ReleaseToBeta implements Runnable {
 
     @Override
     public void run() {
-        sessionRegistry.getSessions().forEach((username, internalSession) -> {
-            internalSession.getBetaClientSession().tick();
-        });
+        try {
+            this.server.getServerConnection().tick();
 
-        this.server.getServerConnection().tick();
+            for (MultiSession session : sessionRegistry.getSessions().values()) {
+                session.getBetaClientSession().tick();
+            }
+        } catch (Throwable throwable) {
+            getLogger().error("Exception in tick loop (" + throwable.getMessage() + ")");
+            getLogger().error("Stopping server");
+
+            stop();
+        }
     }
 
     //helper method

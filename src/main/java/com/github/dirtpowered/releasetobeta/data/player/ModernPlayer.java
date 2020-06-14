@@ -132,10 +132,15 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
     }
 
     public void sendPacket(Packet modernPacket) {
-        getModernSession().send(modernPacket);
+        if (getModernSession() != null) {
+            getModernSession().send(modernPacket);
+        }
     }
 
     public Session getModernSession() {
+        if (!session.getMain().getSessionRegistry().getSessions().containsKey(clientId))
+            return null;
+
         return session.getMain().getSessionRegistry().getSession(clientId).getModernSession();
     }
 
@@ -199,7 +204,11 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
     }
 
     public int getPing() {
-        return getModernSession().getFlag("ping");
+        if (getModernSession() != null) {
+            return getModernSession().getFlag("ping");
+        }
+
+        return 0;
     }
 
     @Override
