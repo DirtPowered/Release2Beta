@@ -64,5 +64,6 @@ public class LoginTranslator implements BetaToModern<LoginPacketData> {
         player.setGamemode(packet.getGamemode());
         player.setWorldHeight(packet.getWorldHeight());
         player.setSeed(packet.getSeed());
+        session.joinPlayer();
     }
 }

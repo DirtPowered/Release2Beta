@@ -57,5 +57,6 @@ public class LoginTranslator implements BetaToModern<LoginPacketData> {
 
         player.setEntityId(entityId);
         player.setDimension(dimension);
+        session.joinPlayer();
     }
 }
