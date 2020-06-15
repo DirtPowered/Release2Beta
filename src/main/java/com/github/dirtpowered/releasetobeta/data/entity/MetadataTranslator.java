@@ -33,6 +33,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadat
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.MetadataType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntitySetPassengersPacket;
 import com.github.steveice10.packetlib.Session;
 import lombok.NoArgsConstructor;
 
@@ -57,13 +58,32 @@ public class MetadataTranslator {
 
             if (type == MetadataType.BYTE && index == 0) {
                 if (((Byte) value).intValue() == 0x04) { //entity mount
+                    if (e instanceof ModernPlayer) {
+                        ModernPlayer modernPlayer = (ModernPlayer) e;
+                        target.sendPacket(new ServerEntitySetPassengersPacket(modernPlayer.getVehicleEntityId(), e.getEntityId()));
+                    } else if (e instanceof BetaPlayer) {
+                        //TODO: Vehicle cache
+                    }
+                } else if (((Byte) value).intValue() == 0x00) {
+                    if (e instanceof ModernPlayer) {
+                        ModernPlayer modernPlayer = (ModernPlayer) e;
 
+                        if (!modernPlayer.isInVehicle()) { //entity un-mount
+                            if (modernPlayer.getVehicleEntityId() != -1) {
+                                target.sendPacket(new ServerEntitySetPassengersPacket(modernPlayer.getVehicleEntityId()));
+
+                                modernPlayer.setVehicleEntityId(-1);
+                            }
+                        }
+                    }
+
+                    metadataList.add(new EntityMetadata(0, MetadataType.BYTE, value));
                 } else {
                     metadataList.add(new EntityMetadata(0, MetadataType.BYTE, value));
                 }
             }
 
-            if (!(e instanceof BetaPlayer)) {
+            if ((!(e instanceof BetaPlayer)) && (!(e instanceof ModernPlayer))) {
 
                 if (type == MetadataType.BYTE && index == 16) {
                     //sheep color
