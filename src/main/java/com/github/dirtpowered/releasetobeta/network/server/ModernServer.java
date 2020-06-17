@@ -29,6 +29,7 @@ import com.github.dirtpowered.releasetobeta.data.command.model.Command;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
 import com.github.dirtpowered.releasetobeta.data.entity.MetadataTranslator;
 import com.github.dirtpowered.releasetobeta.data.item.ArmorItem;
+import com.github.dirtpowered.releasetobeta.data.location.MovementTranslator;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.data.skin.ProfileCache;
 import com.github.steveice10.mc.protocol.data.game.entity.attribute.Attribute;
@@ -61,6 +62,7 @@ public class ModernServer {
     private BufferedImage serverIcon;
 
     private MetadataTranslator metadataTranslator;
+    private MovementTranslator movementTranslator;
 
     public ModernServer(ReleaseToBeta main) {
         this.main = main;
@@ -74,6 +76,7 @@ public class ModernServer {
         this.commands = commandRegistry.getCommands().keySet().toArray(new String[0]);
 
         this.metadataTranslator = new MetadataTranslator();
+        this.movementTranslator = new MovementTranslator();
 
         try {
             this.serverIcon = ImageIO.read(new File("server-icon.png"));

@@ -37,9 +37,13 @@ public class ClientPlayerPositionTranslator implements ModernToBeta<ClientPlayer
     public void translate(ClientPlayerPositionPacket packet, Session modernSession, BetaClientSession betaSession) {
         ModernPlayer player = betaSession.getPlayer();
 
-        double x = packet.getX();
-        double y = packet.getY();
-        double z = packet.getZ();
+        Location location = betaSession.getMain().getServer().getMovementTranslator().translate(
+                betaSession.getBlockStorage(), packet.getX(), packet.getY(), packet.getZ()
+        );
+
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
         double stance = y + (player.isSneaking() ? Constants.PLAYER_STANCE_SNEAKING : Constants.PLAYER_STANCE);
 
         boolean onGround = packet.isOnGround();

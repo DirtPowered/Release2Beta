@@ -37,10 +37,14 @@ public class ClientPlayerPositionRotationTranslator implements ModernToBeta<Clie
     public void translate(ClientPlayerPositionRotationPacket packet, Session modernSession, BetaClientSession betaSession) {
         ModernPlayer player = betaSession.getPlayer();
 
-        double x = packet.getX();
-        double y = packet.getY() + (player.isSneaking() ? Constants.PLAYER_STANCE_SNEAKING : Constants.PLAYER_STANCE);
-        double z = packet.getZ();
-        double stance = packet.getY();
+        Location location = betaSession.getMain().getServer().getMovementTranslator().translate(
+                betaSession.getBlockStorage(), packet.getX(), packet.getY(), packet.getZ()
+        );
+
+        double x = location.getX();
+        double y = location.getY() + (player.isSneaking() ? Constants.PLAYER_STANCE_SNEAKING : Constants.PLAYER_STANCE);
+        double z = location.getZ();
+        double stance = location.getY();
 
         float yaw = (float) packet.getYaw();
         float pitch = (float) packet.getPitch();
