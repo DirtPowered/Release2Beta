@@ -36,6 +36,6 @@ public class UpdateHealthTranslator implements BetaToModern<UpdateHealthPacketDa
         float health = packet.getHealth();
         session.getPlayer().setHealth(health);
 
-        modernSession.send(new ServerPlayerHealthPacket(health, R2BConfiguration.disableSprinting ? 0 : 20, 0));
+        modernSession.send(new ServerPlayerHealthPacket(health, R2BConfiguration.disableSprinting ? 6 : 20, 0));
     }
 }

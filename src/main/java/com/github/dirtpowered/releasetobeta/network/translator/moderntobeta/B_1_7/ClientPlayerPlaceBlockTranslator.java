@@ -72,8 +72,10 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
 
         // b1.7.3 server sometimes fails to update current slot
         if (ItemFood.isFoodItem(itemStack.getId()) || itemStack.getId() == 323) {
-            ItemStack fixedItem = new ItemStack(itemStack.getId(), itemStack.getAmount() - 1, itemStack.getData());
-            modernSession.send(new ServerSetSlotPacket(0, inventory.getCurrentSlot(), fixedItem));
+            int currentSlot = inventory.getCurrentSlot();
+            inventory.decrement(currentSlot);
+
+            modernSession.send(new ServerSetSlotPacket(0, currentSlot, inventory.getItem(currentSlot)));
         }
 
         player.onBlockPlace(face, x, y, z, itemStack);
