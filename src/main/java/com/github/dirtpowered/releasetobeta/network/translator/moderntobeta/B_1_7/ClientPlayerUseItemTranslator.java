@@ -23,10 +23,16 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockPlacePacketData;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerUseItemPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerSetSlotPacket;
 import com.github.steveice10.packetlib.Session;
 
 public class ClientPlayerUseItemTranslator implements ModernToBeta<ClientPlayerUseItemPacket> {
@@ -42,5 +48,17 @@ public class ClientPlayerUseItemTranslator implements ModernToBeta<ClientPlayerU
     @Override
     public void translate(ClientPlayerUseItemPacket packet, Session modernSession, BetaClientSession betaSession) {
         betaSession.sendPacket(new BlockPlacePacketData(-1, -1, -1, -1, new BetaItemStack()));
+
+        ModernPlayer player = betaSession.getPlayer();
+        PlayerInventory inventory = player.getInventory();
+        ItemStack itemStack = inventory.getItemInHand();
+
+        // Updating item amount in beta is done client-side (modern client still do that, but not for arrows)
+        if (!MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version) && itemStack != null && itemStack.getId() == 261 /* bow */) {
+            int slot = inventory.removeItem(262 /* arrow */);
+            if (slot != -1) {
+                modernSession.send(new ServerSetSlotPacket(0, slot, inventory.getItem(slot)));
+            }
+        }
     }
 }

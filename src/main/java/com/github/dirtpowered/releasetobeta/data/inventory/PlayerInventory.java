@@ -44,6 +44,10 @@ public class PlayerInventory {
     @Setter
     private ItemStack lastClickedItem;
 
+    public PlayerInventory() {
+        currentSlot = 36;
+    }
+
     public ItemStack getItem(int i) {
         return this.inventoryItems[i];
     }
@@ -65,6 +69,34 @@ public class PlayerInventory {
         for (int i = 0; i < items.length; i++) {
             setItem(i, items[i]);
         }
+    }
+
+    public int removeItem(int itemId) {
+        int slotToUpdate = findItemSlot(itemId);
+        if (slotToUpdate > 0) {
+            ItemStack i = inventoryItems[slotToUpdate];
+            int amount = i.getAmount(); amount = --amount;
+
+            inventoryItems[slotToUpdate] = new ItemStack(i.getId(), amount, i.getData(), i.getNBT());
+
+            if (amount <= 0) {
+                inventoryItems[slotToUpdate] = null;
+            }
+
+            return slotToUpdate;
+        }
+
+        return -1;
+    }
+
+    private int findItemSlot(int itemId) {
+        for(int i = 0; i < inventoryItems.length; ++i) {
+            if (inventoryItems[i] != null && inventoryItems[i].getId() == itemId) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     public void decrement(int slot) {
