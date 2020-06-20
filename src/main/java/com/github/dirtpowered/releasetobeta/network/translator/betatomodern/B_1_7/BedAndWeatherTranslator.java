@@ -35,6 +35,7 @@ public class BedAndWeatherTranslator implements BetaToModern<BedAndWeatherPacket
     @Override
     public void translate(BedAndWeatherPacketData packet, BetaClientSession session, Session modernSession) {
         int state = packet.getWeatherState();
+
         ClientNotification notification;
         switch (state) {
             case 0:
@@ -49,6 +50,12 @@ public class BedAndWeatherTranslator implements BetaToModern<BedAndWeatherPacket
             default:
                 notification = ClientNotification.ENTER_CREDITS; //never happens, so...
                 break;
+        }
+
+        // ignore this packet in nether
+        if (session.getPlayer().getDimension() != 0) {
+            modernSession.send(new ServerNotifyClientPacket(ClientNotification.STOP_RAIN, new ThunderStrengthValue(0)));
+            return;
         }
 
         modernSession.send(new ServerNotifyClientPacket(notification, new ThunderStrengthValue(0)));
