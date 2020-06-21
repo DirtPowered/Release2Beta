@@ -20,39 +20,20 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.data.entity.mob;
+package com.github.dirtpowered.releasetobeta.data.entity.vehicle;
 
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
-import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Rideable;
-import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
-import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
-import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.packetlib.Session;
 
-public class EntityPig extends Entity implements Mob, Rideable {
+public class EntityMinecart extends Entity implements Rideable {
 
-    public EntityPig(int entityId) {
-        super(entityId, MobType.PIG);
+    public EntityMinecart(int entityId) {
+        super(entityId);
     }
 
     @Override
     public void onSpawn(Session session) {
-
-    }
-
-    @Override
-    public void onDeath(Session session) {
-        playSound(session, BuiltinSound.ENTITY_PIG_DEATH, SoundCategory.AMBIENT);
-    }
-
-    @Override
-    public void onDamage(Session session) {
-        playSound(session, BuiltinSound.ENTITY_PIG_HURT, SoundCategory.AMBIENT);
-    }
-
-    @Override
-    public void onUpdate(Session session) {
-        playSound(session, BuiltinSound.ENTITY_PIG_AMBIENT, SoundCategory.AMBIENT);
+        // do nothing
     }
 }

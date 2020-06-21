@@ -25,10 +25,12 @@ package com.github.dirtpowered.releasetobeta.data.entity;
 import com.github.dirtpowered.betaprotocollib.data.WatchableObject;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
+import com.github.dirtpowered.releasetobeta.data.entity.model.Rideable;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityCreeper;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityEnderDragon;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
+import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.MetadataType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
@@ -62,7 +64,17 @@ public class MetadataTranslator {
                         ModernPlayer modernPlayer = (ModernPlayer) e;
                         target.sendPacket(new ServerEntitySetPassengersPacket(modernPlayer.getVehicleEntityId(), e.getEntityId()));
                     } else if (e instanceof BetaPlayer) {
-                        //TODO: Vehicle cache
+                        Entity nearbyEntity = Utils.getNearestEntity(target.getSession().getEntityCache(), e.getLocation());
+
+                        if (nearbyEntity instanceof Rideable) {
+                            BetaPlayer betaPlayer = (BetaPlayer) e;
+
+                            int vehicleId = nearbyEntity.getEntityId();
+                            betaPlayer.setVehicleEntityId(vehicleId);
+                            betaPlayer.setInVehicle(true);
+
+                            target.sendPacket(new ServerEntitySetPassengersPacket(vehicleId, e.getEntityId()));
+                        }
                     }
                 } else if (((Byte) value).intValue() == 0x00) {
                     if (e instanceof ModernPlayer) {
@@ -74,6 +86,11 @@ public class MetadataTranslator {
 
                                 modernPlayer.setVehicleEntityId(-1);
                             }
+                        }
+                    } else if (e instanceof BetaPlayer) {
+                        BetaPlayer betaPlayer = (BetaPlayer) e;
+                        if (betaPlayer.isInVehicle()) {
+                            target.sendPacket(new ServerEntitySetPassengersPacket(betaPlayer.getVehicleEntityId()));
                         }
                     }
 

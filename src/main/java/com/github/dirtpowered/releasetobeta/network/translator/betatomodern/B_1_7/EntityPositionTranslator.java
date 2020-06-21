@@ -23,6 +23,8 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityPositionPacketData;
+import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -39,5 +41,11 @@ public class EntityPositionTranslator implements BetaToModern<EntityPositionPack
         double z = Utils.toModernPos(packet.getZ());
 
         modernSession.send(new ServerEntityPositionPacket(entityId, x, y, z, y > -0.25D));
+
+        Entity e = session.getEntityCache().getEntityById(packet.getEntityId());
+        if (e != null) {
+            Location l = e.getLocation();
+            e.setLocation(new Location(l.getX() + x, l.getY() + y, l.getZ() + z, l.getYaw(), l.getPitch()));
+        }
     }
 }

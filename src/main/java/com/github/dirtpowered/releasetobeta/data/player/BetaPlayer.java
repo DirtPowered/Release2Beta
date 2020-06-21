@@ -37,13 +37,20 @@ import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.packetlib.Session;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
+@Getter
 public class BetaPlayer extends Entity implements Mob {
-    @Getter
+
+    @Setter
+    private boolean inVehicle;
+
+    @Setter
+    private int vehicleEntityId;
+
     private String username;
-    @Getter
     private GameProfile gameProfile;
 
     public BetaPlayer(BetaClientSession session, String username, int entityId, Callback<BetaPlayer> callback) {

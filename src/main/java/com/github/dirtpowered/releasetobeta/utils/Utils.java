@@ -23,7 +23,11 @@
 package com.github.dirtpowered.releasetobeta.utils;
 
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
+import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.entity.DummyEntity;
+import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
+import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -54,6 +58,18 @@ public class Utils {
 
     public static UUID getOfflineUUID(String username) {
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes());
+    }
+
+    public static Entity getNearestEntity(EntityCache entityCache, Location location) {
+        Entity nearbyEntity = new DummyEntity(-1);
+
+        for (Entity entity : entityCache.getEntities().values()) {
+            if (!entity.isBetaPlayer() && entity.getLocation().distanceTo(location) < 2.5D) {
+                nearbyEntity = entity;
+            }
+        }
+
+        return nearbyEntity;
     }
 
     public static int fixDimension(int dimension) {

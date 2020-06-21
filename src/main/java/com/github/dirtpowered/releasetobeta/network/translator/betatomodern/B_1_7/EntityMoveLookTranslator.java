@@ -23,6 +23,8 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityMoveLookPacketData;
+import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -44,5 +46,11 @@ public class EntityMoveLookTranslator implements BetaToModern<EntityMoveLookPack
 
         modernSession.send(new ServerEntityPositionRotationPacket(entityId, x, y, z, yaw, pitch, y > -0.25D));
         modernSession.send(new ServerEntityHeadLookPacket(entityId, yaw));
+
+        Entity e = session.getEntityCache().getEntityById(packet.getEntityId());
+        if (e != null) {
+            Location l = e.getLocation();
+            e.setLocation(new Location(l.getX() + x, l.getY() + y, l.getZ() + z, yaw, pitch));
+        }
     }
 }

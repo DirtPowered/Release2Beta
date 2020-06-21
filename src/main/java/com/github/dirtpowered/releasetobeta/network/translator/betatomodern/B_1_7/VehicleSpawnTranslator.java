@@ -23,6 +23,9 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.VehicleSpawnPacketData;
+import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.data.entity.vehicle.EntityBoat;
+import com.github.dirtpowered.releasetobeta.data.entity.vehicle.EntityMinecart;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -113,6 +116,21 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 type = ObjectType.FALLING_BLOCK;
                 data = new FallingBlockData(13, 0);
                 break;
+        }
+
+        // cache vehicles
+        if (type == ObjectType.MINECART) {
+            EntityMinecart minecart = new EntityMinecart(entityId);
+            minecart.onSpawn(modernSession);
+
+            minecart.setLocation(new Location(x, y, z));
+            session.getEntityCache().addEntity(entityId, minecart);
+        } else if (type == ObjectType.BOAT) {
+            EntityBoat boat = new EntityBoat(entityId);
+            boat.onSpawn(modernSession);
+
+            boat.setLocation(new Location(x, y, z));
+            session.getEntityCache().addEntity(entityId, boat);
         }
 
         if (ownerId > 0 || isFireball) {

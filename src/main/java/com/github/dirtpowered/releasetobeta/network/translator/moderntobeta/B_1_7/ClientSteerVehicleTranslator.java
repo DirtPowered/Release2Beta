@@ -22,7 +22,6 @@
 
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
-import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerPositionPacketData;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UseEntityPacketData;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -44,15 +43,6 @@ public class ClientSteerVehicleTranslator implements ModernToBeta<ClientSteerVeh
             modernSession.send(new ServerEntitySetPassengersPacket(player.getVehicleEntityId()));
 
             player.setLastInteractAtEntity(System.currentTimeMillis());
-        } else if (!dismount) {
-            /*
-             * Controlling boats is far from perfect - it's almost unusable, but hey! It's working!
-             * TODO: Fix that
-             */
-            float sideways = packet.getSideways() / 62.93781f;
-            float forward = packet.getForward() / 62.93781f;
-
-            betaSession.sendPacket(new PlayerPositionPacketData(sideways, -999.0D, forward, -999.0D, player.isOnGround()));
         }
     }
 }

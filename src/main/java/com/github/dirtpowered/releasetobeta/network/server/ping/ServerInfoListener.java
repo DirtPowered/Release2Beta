@@ -64,15 +64,13 @@ public class ServerInfoListener implements ServerInfoBuilder {
                 return getOfflineMessage();
             }
         } else {
-            int onlineCount = serverConnection.getMain().getBootstrap().getOnline();
-
             return ServerListPing.builder()
                     .protocolVersion(Constants.PING_PROTOCOL)
                     .versionString(Constants.PING_VERSION_STRING)
                     .maxPlayers(R2BConfiguration.maxPlayers)
-                    .onlinePlayers(onlineCount)
+                    .onlinePlayers(serverConnection.getMain().getBootstrap().getOnline())
                     .motd(R2BConfiguration.motd)
-                    .playerListSample(serverConnection.getPlayerList().getProfiles().subList(0, onlineCount < 20 ? onlineCount : 20).toArray(new GameProfile[0]))
+                    .playerListSample(serverConnection.getPlayerList().getProfiles().toArray(new GameProfile[0]))
                     .icon(serverConnection.getModernServer().getServerIcon())
                     .build().get();
         }
