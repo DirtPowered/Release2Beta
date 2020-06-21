@@ -47,7 +47,10 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
         int z = pos.getZ();
 
         int face = MagicValues.value(Integer.class, packet.getFace());
+
         ItemStack itemStack = player.getInventory().getItemInHand();
+        if (itemStack == null)
+            return;
 
         BlockPlacePacketData blockPlacePacketData = new BlockPlacePacketData(x, y, z, face, ItemConverter.itemStackToBetaItemStack(itemStack));
 
