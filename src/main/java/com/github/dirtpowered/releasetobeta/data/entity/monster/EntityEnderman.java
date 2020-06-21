@@ -36,11 +36,6 @@ public class EntityEnderman extends Entity implements Mob {
     }
 
     @Override
-    public void onSpawn(Session session) {
-
-    }
-
-    @Override
     public void onDeath(Session session) {
         playSound(session, BuiltinSound.ENTITY_ENDERMEN_DEATH, SoundCategory.HOSTILE);
     }

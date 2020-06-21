@@ -36,11 +36,6 @@ public class EntitySilverfish extends Entity implements Mob {
     }
 
     @Override
-    public void onSpawn(Session session) {
-
-    }
-
-    @Override
     public void onDeath(Session session) {
         playSound(session, BuiltinSound.ENTITY_SILVERFISH_DEATH, SoundCategory.HOSTILE);
     }

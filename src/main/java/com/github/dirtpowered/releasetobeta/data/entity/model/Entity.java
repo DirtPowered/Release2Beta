@@ -74,7 +74,9 @@ public abstract class Entity {
         this.rand = new Random();
     }
 
-    public abstract void onSpawn(Session session);
+    public void onSpawn(Session session) {
+       //TODO: make use of it
+    }
 
     public void updateEntity(ModernPlayer player, Session session) {
         if (rand.nextDouble() < 0.0074D) {

@@ -35,11 +35,6 @@ public class EntityCreeper extends Entity implements Mob {
         super(entityId, MobType.CREEPER);
     }
 
-    @Override
-    public void onSpawn(Session session) {
-
-    }
-
     public void onPrime(Session session) {
         playSound(session, BuiltinSound.ENTITY_CREEPER_PRIMED, SoundCategory.HOSTILE);
     }

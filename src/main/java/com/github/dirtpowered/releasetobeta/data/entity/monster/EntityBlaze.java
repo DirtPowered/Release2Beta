@@ -36,11 +36,6 @@ public class EntityBlaze extends Entity implements Mob {
     }
 
     @Override
-    public void onSpawn(Session session) {
-
-    }
-
-    @Override
     public void onDeath(Session session) {
         playSound(session, BuiltinSound.ENTITY_BLAZE_DEATH, SoundCategory.HOSTILE);
     }

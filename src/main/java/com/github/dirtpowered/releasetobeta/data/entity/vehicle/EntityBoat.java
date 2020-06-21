@@ -24,16 +24,10 @@ package com.github.dirtpowered.releasetobeta.data.entity.vehicle;
 
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Rideable;
-import com.github.steveice10.packetlib.Session;
 
 public class EntityBoat extends Entity implements Rideable {
 
     public EntityBoat(int entityId) {
         super(entityId);
-    }
-
-    @Override
-    public void onSpawn(Session session) {
-        // do nothing
     }
 }

@@ -37,11 +37,6 @@ public class EntityPig extends Entity implements Mob, Rideable {
     }
 
     @Override
-    public void onSpawn(Session session) {
-
-    }
-
-    @Override
     public void onDeath(Session session) {
         playSound(session, BuiltinSound.ENTITY_PIG_DEATH, SoundCategory.AMBIENT);
     }

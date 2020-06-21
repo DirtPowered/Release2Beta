@@ -36,11 +36,6 @@ public class EntityVillager extends Entity implements Mob {
     }
 
     @Override
-    public void onSpawn(Session session) {
-
-    }
-
-    @Override
     public void onDeath(Session session) {
         playSound(session, BuiltinSound.ENTITY_VILLAGER_DEATH, SoundCategory.AMBIENT);
     }
