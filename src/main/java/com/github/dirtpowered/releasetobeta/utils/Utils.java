@@ -64,7 +64,7 @@ public class Utils {
         Entity nearbyEntity = new DummyEntity(-1);
 
         for (Entity entity : entityCache.getEntities().values()) {
-            if (!entity.isBetaPlayer() && entity.getLocation().distanceTo(location) < 2.5D) {
+            if (entity.getLocation().distanceTo(location) < 2.5D && entity.getLocation().distanceTo(location) != 0.0D /* exclude self */) {
                 nearbyEntity = entity;
             }
         }

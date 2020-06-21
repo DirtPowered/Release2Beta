@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.VehicleSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.vehicle.EntityBoat;
 import com.github.dirtpowered.releasetobeta.data.entity.vehicle.EntityMinecart;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -91,7 +92,14 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 break;
             case 90:
                 type = ObjectType.FISH_HOOK;
-                data = new ProjectileData(session.getPlayer().getEntityId());
+                Location bobberLocation = new Location(x, y, z);
+                Entity nearest = Utils.getNearestEntity(session.getEntityCache(), bobberLocation);
+
+                if (nearest.getEntityId() != -1) {
+                    data = new ProjectileData(nearest.getEntityId());
+                } else {
+                    data = new ProjectileData(session.getPlayer().getEntityId());
+                }
                 break;
             case 1:
                 type = ObjectType.BOAT;
