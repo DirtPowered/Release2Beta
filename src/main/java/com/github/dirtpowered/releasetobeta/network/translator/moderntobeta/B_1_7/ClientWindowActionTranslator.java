@@ -63,6 +63,14 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
 
         boolean clickingOutside = slot == -999 && inventoryAction != WindowAction.SPREAD_ITEM;
 
+        if (player.getOpenedInventoryType() == WindowType.GENERIC_INVENTORY && slot == 45 || droppingUsingQ) {
+            player.closeInventory();
+            player.updateInventory();
+
+            player.sendMessage(ChatUtils.colorize("&cunsupported operation"));
+            return;
+        }
+
         if (clickingOutside) {
             betaSession.sendPacket(new WindowClickPacketData(windowId, slot, mouseClick, (short) 0, null, false));
             inventory.setItem(inventory.getLastSlot(), new ItemStack(0));
@@ -81,14 +89,6 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
             }
 
             betaSession.getMain().getServer().updatePlayerProperties(modernSession, player);
-        }
-
-        if (player.getOpenedInventoryType() == WindowType.GENERIC_INVENTORY && slot == 45 || droppingUsingQ) {
-            player.closeInventory();
-            player.updateInventory();
-
-            player.sendMessage(ChatUtils.colorize("&cunsupported operation"));
-            return;
         }
 
         if (itemStack == null)
