@@ -29,6 +29,10 @@ import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import com.github.dirtpowered.releasetobeta.logger.DefaultLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.pmw.tinylog.Configurator;
+import org.pmw.tinylog.writers.FileWriter;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class StandaloneBootstrap implements AbstractBootstrap {
     private ReleaseToBeta server;
@@ -83,6 +87,10 @@ public class StandaloneBootstrap implements AbstractBootstrap {
     }
 
     private void initDefaultLogger() {
-        Configurator.currentConfig().formatPattern("[{level} {date:HH:mm:ss}] {message}").activate();
+        Configurator.currentConfig()
+                .addWriter(new FileWriter("logs/log-" + new SimpleDateFormat("dd-MM-HH:mm:ss")
+                .format(new Date()) + ".txt"))
+                .formatPattern("[{level} {date:HH:mm:ss}] {message}")
+                .activate();
     }
 }
