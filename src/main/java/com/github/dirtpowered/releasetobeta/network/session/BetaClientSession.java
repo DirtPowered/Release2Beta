@@ -45,6 +45,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.UpdateProgress.UpdateProgressHandler;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
+import com.github.dirtpowered.releasetobeta.utils.interfaces.Callback;
 import com.github.dirtpowered.releasetobeta.utils.interfaces.Tickable;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
@@ -96,8 +97,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private UpdateProgressHandler updateProgressHandler;
     private Session session;
     private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
+    private Callback<Boolean> connectionCallback;
 
-    public BetaClientSession(ReleaseToBeta server, Channel channel, Session session, UUID clientId) {
+    public BetaClientSession(ReleaseToBeta server, Channel channel, Session session, UUID clientId, Callback<Boolean> onConnect) {
         this.main = server;
         this.channel = channel;
         this.protocolState = ProtocolState.LOGIN;
@@ -108,8 +110,11 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         this.updateProgressHandler = new UpdateProgressHandler();
         this.betaPlayers = new ArrayList<>();
 
-        //blockstorage
+        // blockstorage
         this.blockStorage = new TempBlockStorage();
+
+        // connection callback
+        this.connectionCallback = onConnect;
     }
 
     @Override
@@ -181,6 +186,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private void createSession() {
         main.getSessionRegistry().addSession(player.getClientId(), new MultiSession(this, session));
         session.setFlag("ready", true);
+
+        connectionCallback.onComplete(true);
     }
 
     @SuppressWarnings("unchecked")

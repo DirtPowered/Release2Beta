@@ -26,6 +26,7 @@ import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.bootstrap.Platform;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.network.codec.PipelineFactory;
+import com.github.dirtpowered.releasetobeta.network.server.ServerConnection;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.mc.protocol.ServerLoginHandler;
@@ -92,7 +93,14 @@ public class LoginHandler implements ServerLoginHandler {
                 @Override
                 protected void initChannel(SocketChannel ch) {
                     ch.pipeline().addLast("mc_pipeline", new PipelineFactory(main));
-                    ch.pipeline().addLast("client_connection_handler", new BetaClientSession(main, ch, session, clientId));
+                    ch.pipeline().addLast("client_connection_handler", new BetaClientSession(main, ch, session, clientId, result -> {
+                        if (session.hasFlag("login_packet")) {
+                            main.getServer().getServerConnection().translatePacket(new ServerConnection.ServerQueuedPacket(session, session.getFlag("login_packet")));
+                        } else {
+                            session.disconnect("???");
+                            main.getSessionRegistry().removeSession(clientId);
+                        }
+                    }));
                 }
             });
 

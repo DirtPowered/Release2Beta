@@ -52,16 +52,13 @@ import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Arrays;
-import java.util.Queue;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ServerConnection implements Tickable {
-    private final Queue<ServerQueuedPacket> packetQueue = new ConcurrentLinkedQueue<>();
-    private long lastCheck;
 
     @Getter
     ModernServer modernServer;
@@ -113,13 +110,13 @@ public class ServerConnection implements Tickable {
 
                     @Override
                     public void disconnecting(DisconnectingEvent event) {
-                        //just to get more detailed stacktrace about all possible errors
-                        event.getCause().printStackTrace();
+                        getMain().getLogger().warning("[" + event.getSession().getLocalAddress() + "] " + event.getCause().getMessage());
                     }
 
                     @Override
                     public void packetReceived(PacketReceivedEvent event) {
                         Packet packet = event.getPacket();
+
                         if (packet instanceof StatusQueryPacket) {
                             main.getLogger().info(event.getSession().getLocalAddress() + " has pinged");
                             return;
@@ -127,7 +124,7 @@ public class ServerConnection implements Tickable {
                             return;
                         }
 
-                        ServerQueuedPacket queuedPacket = new ServerQueuedPacket(event.getSession(), packet, packet instanceof LoginStartPacket);
+                        ServerQueuedPacket queuedPacket = new ServerQueuedPacket(event.getSession(), packet);
                         translatePacket(queuedPacket);
                     }
                 });
@@ -146,28 +143,17 @@ public class ServerConnection implements Tickable {
         server.bind();
     }
 
-    private void handlePackets() {
-        while (!packetQueue.isEmpty()) {
-            ServerQueuedPacket queuedPacket = packetQueue.peek();
-            if (queuedPacket != null) {
-                packetQueue.poll();
-                translatePacket(queuedPacket);
-            }
-        }
-    }
-
     @SuppressWarnings("unchecked")
-    private void translatePacket(ServerQueuedPacket queuedPacket) {
+    public void translatePacket(ServerQueuedPacket queuedPacket) {
         ModernToBeta handler = main.getModernToBetaTranslatorRegistry().getByPacket(queuedPacket.packet);
         if (handler != null) {
             if (queuedPacket.session.getFlag("ready") != null) {
                 UUID uuid = queuedPacket.session.getFlag("uniqueId");
                 BetaClientSession clientSession = main.getSessionRegistry().getSession(uuid).getBetaClientSession();
-
                 handler.translate(queuedPacket.packet, queuedPacket.session, clientSession);
             } else {
-                if (queuedPacket.loginPacket && queuedPacket.session.isConnected()) {
-                    packetQueue.add(queuedPacket);
+                if (queuedPacket.packet instanceof LoginStartPacket && !queuedPacket.session.hasFlag("login_packet")) {
+                    queuedPacket.session.setFlag("login_packet", queuedPacket.packet);
                     return;
                 }
 
@@ -180,10 +166,7 @@ public class ServerConnection implements Tickable {
 
     @Override
     public void tick() {
-        handlePackets();
         playerList.updateInternalTabList();
-
-        fixInternalClientList();
     }
 
     void broadcastPacket(Packet packet) {
@@ -198,31 +181,9 @@ public class ServerConnection implements Tickable {
         server.close(true);
     }
 
-    private void fixInternalClientList() {
-        if (System.currentTimeMillis() - lastCheck > 5000L) {
-            for (Session session : server.getSessions()) {
-                if (session.getFlag("ready") != null) { // client is connected to remote
-                    UUID uuid = session.getFlag("uniqueId");
-
-                    if (!main.getSessionRegistry().getSessions().containsKey(uuid)) {
-                        server.getSessions().remove(session);
-                    }
-                }
-            }
-
-            lastCheck = System.currentTimeMillis();
-        }
-    }
-
-    static class ServerQueuedPacket {
+    @AllArgsConstructor
+    public static class ServerQueuedPacket {
         private final Session session;
         private final Packet packet;
-        private final boolean loginPacket;
-
-        ServerQueuedPacket(Session session, Packet packet, boolean loginPacket) {
-            this.session = session;
-            this.packet = packet;
-            this.loginPacket = loginPacket;
-        }
     }
 }
