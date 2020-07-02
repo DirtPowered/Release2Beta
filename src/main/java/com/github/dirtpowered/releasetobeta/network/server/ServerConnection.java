@@ -118,7 +118,7 @@ public class ServerConnection implements Tickable {
                         Packet packet = event.getPacket();
 
                         if (packet instanceof StatusQueryPacket) {
-                            main.getLogger().info(event.getSession().getLocalAddress() + " has pinged");
+                            if (R2BConfiguration.logPings) main.getLogger().info(event.getSession().getLocalAddress() + " has pinged");
                             return;
                         } else if (packet instanceof HandshakePacket) {
                             return;

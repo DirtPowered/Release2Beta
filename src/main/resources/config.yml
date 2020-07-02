@@ -30,6 +30,7 @@ messages:
   # Ignored if running on bukkit
   server_full_message: Server is full
   connection_throttle_kick_message: '&cConnection Throttled! Try again later'
+  log_pings: true
 experimental:
   # Do not enable this unless you know what you're doing
   enable_chunk_updates: false

@@ -55,6 +55,7 @@ public class R2BConfiguration {
     public static int compressionThreshold;
     public static boolean metricsEnabled;
     public static String metricsUniqueId;
+    public static boolean logPings;
 
     private ReleaseToBeta main;
 
@@ -106,7 +107,7 @@ public class R2BConfiguration {
             bindPort = config.getInt("connection.bind_port");
             globalConnectionThrottle = config.getInt("connection.global_connection_throttle");
             onlineMode = config.getBoolean("connection.online_mode");
-            compressionThreshold = config.getInt("compression_threshold");
+            compressionThreshold = config.getInt("connection.compression_threshold");
 
             resourcePack = config.getString("misc.resource_pack_url");
             resourcePackHash = config.getString("misc.resource_pack_hash");
@@ -117,6 +118,7 @@ public class R2BConfiguration {
 
             serverFullMessage = config.getString("messages.server_full_message");
             connectionThrottleKickMessage = config.getString("messages.connection_throttle_kick_message");
+            logPings = config.getBoolean("messages.log_pings");
 
             testMode = config.getBoolean("experimental.enable_chunk_updates");
 
