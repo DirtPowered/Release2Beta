@@ -34,9 +34,10 @@ public class ExperienceOrbTranslator implements BetaToModern<ExperienceOrbPacket
     @Override
     public void translate(ExperienceOrbPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
-        int x = (int) Utils.toModernPos(packet.getX());
-        int y = (int) Utils.toModernPos(packet.getY());
-        int z = (int) Utils.toModernPos(packet.getZ());
+
+        double x = Utils.toModernPos(packet.getX());
+        double y = Utils.toModernPos(packet.getY()) - 0.125D;
+        double z = Utils.toModernPos(packet.getZ());
 
         int count = packet.getCount();
 
