@@ -44,7 +44,9 @@ public class AttachEntityTranslator implements BetaToModern<AttachEntityPacketDa
         boolean inVehicle = entityId != -1;
         player.setInVehicle(inVehicle);
 
-        modernSession.send(new ServerEntityAttachPacket(entityId, passenger));
+        // ID of the entity holding the lead. Set to -1 to detach.
+        // https://wiki.vg/Protocol#Attach_Entity
+        modernSession.send(new ServerEntityAttachPacket(entityId, -1));
 
         if (inVehicle) {
             player.setVehicleEntityId(entityId);
