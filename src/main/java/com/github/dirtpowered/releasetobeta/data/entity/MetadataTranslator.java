@@ -135,7 +135,7 @@ public class MetadataTranslator {
                         int itemId = ((Byte) value).intValue();
 
                         if (((Byte) value).intValue() > 0) {
-                            metadataList.add(new EntityMetadata(12, MetadataType.BLOCK_STATE, new BlockState(itemId, 0)));
+                            metadataList.add(new EntityMetadata(12, MetadataType.BLOCK_STATE, new BlockState(0 /* 1 = 16 */, itemId)));
                         }
                     } else if (mobType == MobType.BLAZE) {
                         metadataList.add(new EntityMetadata(12, MetadataType.BYTE, value));
