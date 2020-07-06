@@ -26,6 +26,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityDes
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityDestroyPacket;
@@ -46,6 +47,12 @@ public class EntityDestroyTranslator implements BetaToModern<EntityDestroyPacket
             if (e.isBetaPlayer()) {
                 session.removeBetaTabEntry((BetaPlayer) e);
             }
+        }
+
+        ModernPlayer player = session.getPlayer();
+        if (session.getEntityCache().getEntities().containsKey(player.getVehicleEntityId())) {
+            player.setInVehicle(false);
+            player.setVehicleEntityId(-1);
         }
 
         session.getEntityCache().removeEntity(entityId);
