@@ -47,12 +47,12 @@ public class EntityDestroyTranslator implements BetaToModern<EntityDestroyPacket
             if (e.isBetaPlayer()) {
                 session.removeBetaTabEntry((BetaPlayer) e);
             }
-        }
 
-        ModernPlayer player = session.getPlayer();
-        if (session.getEntityCache().getEntities().containsKey(player.getVehicleEntityId())) {
-            player.setInVehicle(false);
-            player.setVehicleEntityId(-1);
+            ModernPlayer player = session.getPlayer();
+            if (entityId == player.getVehicleEntityId()) {
+                player.setInVehicle(false);
+                player.setVehicleEntityId(-1);
+            }
         }
 
         session.getEntityCache().removeEntity(entityId);
