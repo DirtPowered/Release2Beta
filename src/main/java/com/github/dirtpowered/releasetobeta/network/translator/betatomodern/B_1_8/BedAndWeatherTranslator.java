@@ -28,6 +28,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModer
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.game.world.notify.ClientNotification;
 import com.github.steveice10.mc.protocol.data.game.world.notify.ClientNotificationValue;
+import com.github.steveice10.mc.protocol.data.game.world.notify.EnterCreditsValue;
 import com.github.steveice10.mc.protocol.data.game.world.notify.ThunderStrengthValue;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerNotifyClientPacket;
 import com.github.steveice10.packetlib.Session;
@@ -56,9 +57,11 @@ public class BedAndWeatherTranslator implements BetaToModern<BedAndWeatherPacket
                 break;
             case 4:
                 notification = ClientNotification.ENTER_CREDITS;
+                value = EnterCreditsValue.FIRST_TIME;
                 break;
             default:
                 notification = ClientNotification.ENTER_CREDITS;
+                value = EnterCreditsValue.FIRST_TIME;
                 break;
         }
 
