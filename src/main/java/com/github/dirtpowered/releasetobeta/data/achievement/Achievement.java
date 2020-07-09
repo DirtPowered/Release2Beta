@@ -26,6 +26,7 @@ import lombok.Getter;
 
 @Getter
 public enum Achievement {
+    // 1.6.6-1.7.3
     OPEN_INVENTORY(0),
     MINE_WOOD(1),
     BUILD_WORKBENCH(2),
@@ -41,7 +42,19 @@ public enum Achievement {
     BUILD_SWORD(12),
     KILL_ENEMY(13),
     KILL_COW(14),
-    FLY_PIG(15);
+    FLY_PIG(15),
+    // 1.8-1.9pre6
+    SNIPE_SKELETON(16),
+    DIAMONDS(17),
+    PORTAL(18),
+    GHAST(19),
+    BLAZ_EROD(20),
+    POTION(21),
+    THE_END(22),
+    THE_END_2(23),
+    ENCHANTMENTS(24),
+    OVER_KILL(25),
+    BOOKCASE(26);
 
     public static final int ACHIEVEMENT_OFFSET = 5242880;
     private int statId;
