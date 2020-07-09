@@ -112,7 +112,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.UpdateSignTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.UpdateTimeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.WindowItemsTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.AnimationTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.BedAndWeatherTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.EntityEffectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.ExperienceOrbTranslator;
@@ -122,6 +121,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.RemoveEntityEffectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.RespawnTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.UpdateHealthTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9.AnimationTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9.ExperienceUpdateTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9.OpenWindowTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9.SetSlotTranslator;
@@ -183,6 +183,7 @@ public class B_1_9 {
         betaToModernTranslatorRegistry.registerTranslator(OpenWindowPacketData.class, new OpenWindowTranslator());
         betaToModernTranslatorRegistry.registerTranslator(WindowItemsPacketData.class, new WindowItemsTranslator());
         betaToModernTranslatorRegistry.registerTranslator(SetSlotPacketData.class, new SetSlotTranslator());
+        betaToModernTranslatorRegistry.registerTranslator(AnimationPacketData.class, new AnimationTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerPlaceBlockPacket.class, new ClientPlayerPlaceBlockTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientEnchantItemPacket.class, new ClientEnchantItemTranslator());
@@ -194,7 +195,6 @@ public class B_1_9 {
         betaToModernTranslatorRegistry.registerTranslator(BedAndWeatherPacketData.class, new BedAndWeatherTranslator());
         betaToModernTranslatorRegistry.registerTranslator(ExperienceOrbPacketData.class, new ExperienceOrbTranslator());
         betaToModernTranslatorRegistry.registerTranslator(PlayerListItemPacketData.class, new PlayerListItemTranslator());
-        betaToModernTranslatorRegistry.registerTranslator(AnimationPacketData.class, new AnimationTranslator());
         betaToModernTranslatorRegistry.registerTranslator(KeepAlivePacketData.class, new KeepAliveTranslator());
         betaToModernTranslatorRegistry.registerTranslator(EntityEffectPacketData.class, new EntityEffectTranslator());
         betaToModernTranslatorRegistry.registerTranslator(RemoveEntityEffectPacketData.class, new RemoveEntityEffectTranslator());

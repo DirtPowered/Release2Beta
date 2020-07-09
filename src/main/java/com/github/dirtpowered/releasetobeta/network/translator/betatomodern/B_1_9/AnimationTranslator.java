@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
+package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.AnimationPacketData;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -36,7 +36,7 @@ public class AnimationTranslator implements BetaToModern<AnimationPacketData> {
         int entityId = packet.getEntityId();
         int animation = packet.getAnimate();
         Animation modernAnimation;
-
+        System.out.println(animation);
         switch (animation) {
             case 1:
                 modernAnimation = Animation.SWING_ARM;
@@ -46,6 +46,15 @@ public class AnimationTranslator implements BetaToModern<AnimationPacketData> {
                 break;
             case 3:
                 modernAnimation = Animation.LEAVE_BED;
+                break;
+            case 5:
+                modernAnimation = Animation.EAT_FOOD;
+                break;
+            case 6:
+                modernAnimation = Animation.CRITICAL_HIT;
+                break;
+            case 7:
+                modernAnimation = Animation.ENCHANTMENT_CRITICAL_HIT;
                 break;
             default:
                 modernAnimation = Animation.SWING_ARM;
