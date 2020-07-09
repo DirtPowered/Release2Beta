@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.data.entity.monster;
 
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
+import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.mc.protocol.data.game.BossBarAction;
 import com.github.steveice10.mc.protocol.data.game.BossBarColor;
 import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
@@ -50,7 +51,7 @@ public class EntityEnderDragon extends Entity implements Mob {
     @Override
     public void onSpawn(Session session) {
         BossBarAction action = BossBarAction.ADD;
-        Message message = Message.fromString("Ender Dragon");
+        Message message = ChatUtils.toModernMessage("&dBoss health", true);
         float health = 0.005f;
         BossBarColor color = BossBarColor.PINK;
         BossBarDivision division = BossBarDivision.NONE;
