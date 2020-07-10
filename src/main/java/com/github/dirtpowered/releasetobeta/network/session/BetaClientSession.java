@@ -59,9 +59,9 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
 
@@ -95,7 +95,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private MapDataHandler mapDataHandler;
     private UpdateProgressHandler updateProgressHandler;
     private Session session;
-    private List<Packet> initialPackets = new LinkedList<>();
+    private List<Packet> initialPackets = new CopyOnWriteArrayList<>();
     private Callback<Boolean> connectionCallback;
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session, UUID clientId, Callback<Boolean> onConnect) {
@@ -124,6 +124,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         createSession();
+
+        if (!initialPackets.isEmpty()) initialPackets.forEach(channel::writeAndFlush);
         super.channelActive(ctx);
     }
 
@@ -160,11 +162,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
                     } else if (player.isInVehicle()) {
                         sendPacket(new PlayerLookMovePacketData(l.getX(), -999.0D, l.getZ(), -999.0D, l.getYaw(), l.getPitch(), player.isOnGround()));
                     }
-
-                if (!initialPackets.isEmpty()) {
-                    initialPackets.forEach(channel::writeAndFlush);
-                    return;
-                }
             }
 
             //wait 3 seconds to make sure client is ready to receive resourcepack packet
