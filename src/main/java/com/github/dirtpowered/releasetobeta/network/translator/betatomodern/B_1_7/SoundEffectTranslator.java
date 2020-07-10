@@ -26,7 +26,6 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.SoundEffe
 import com.github.dirtpowered.releasetobeta.data.mapping.SoundEffectMap;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.data.game.world.effect.BreakBlockEffectData;
@@ -42,7 +41,6 @@ public class SoundEffectTranslator implements BetaToModern<SoundEffectPacketData
 
     @Override
     public void translate(SoundEffectPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(session.getMain().getLogger(), packet);
         SoundEffectMap soundEffectMap = session.getMain().getSoundEffectMap();
 
         int id = packet.getSoundType();

@@ -54,52 +54,26 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Getter
+@Setter
 public class ModernPlayer extends Entity implements PlayerAction, Mob {
     private String username;
     private BetaClientSession session;
     private GameProfile gameProfile;
     private PlayerInventory inventory;
     private WindowType openedInventoryType;
-
-    @Setter
     private long lastInteractAtEntity;
-
     private UUID clientId;
-
-    @Setter
     private boolean onGround;
-
-    @Setter
     private int dimension;
-
-    @Setter
     private boolean sneaking;
-
-    @Setter
     private boolean inVehicle;
-
-    @Setter
     private int vehicleEntityId;
-
-    @Setter
     private int difficulty;
-
-    @Setter
     private int gamemode;
-
-    @Setter
     private int worldHeight;
-
-    @Setter
     private long seed;
-
-    @Setter
     private boolean sprinting;
-
-    @Setter
     private float health;
-
-    @Setter
     private long lastLocationUpdate;
 
     public ModernPlayer(BetaClientSession session, UUID clientId) {
@@ -209,11 +183,6 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
         }
 
         return 0;
-    }
-
-    @Override
-    public void onSpawn(Session session) {
-
     }
 
     @Override

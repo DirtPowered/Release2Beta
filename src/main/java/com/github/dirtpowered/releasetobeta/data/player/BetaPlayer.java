@@ -34,7 +34,6 @@ import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
-import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.packetlib.Session;
 import lombok.Getter;
 import lombok.Setter;
@@ -69,17 +68,11 @@ public class BetaPlayer extends Entity implements Mob {
     }
 
     public PlayerListEntry getTabEntry() {
-        return new PlayerListEntry(gameProfile, GameMode.SURVIVAL, 0,
-                Message.fromString(ChatUtils.colorize("&9[BETA] &r" + username)));
+        return new PlayerListEntry(gameProfile, GameMode.SURVIVAL, 0, ChatUtils.toModernMessage("&9[BETA] &r" + username, true));
     }
 
     public UUID getUUID() {
         return gameProfile.getId();
-    }
-
-    @Override
-    public void onSpawn(Session session) {
-
     }
 
     @Override

@@ -36,7 +36,7 @@ public class AnimationTranslator implements BetaToModern<AnimationPacketData> {
         int entityId = packet.getEntityId();
         int animation = packet.getAnimate();
         Animation modernAnimation;
-        System.out.println(animation);
+
         switch (animation) {
             case 1:
                 modernAnimation = Animation.SWING_ARM;

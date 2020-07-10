@@ -26,7 +26,6 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.AttachEnt
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityAttachPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntitySetPassengersPacket;
 import com.github.steveice10.packetlib.Session;
@@ -35,7 +34,6 @@ public class AttachEntityTranslator implements BetaToModern<AttachEntityPacketDa
 
     @Override
     public void translate(AttachEntityPacketData packet, BetaClientSession session, Session modernSession) {
-        Utils.debug(session.getMain().getLogger(), packet);
         ModernPlayer player = session.getPlayer();
 
         int entityId = packet.getVehicleEntityId();
