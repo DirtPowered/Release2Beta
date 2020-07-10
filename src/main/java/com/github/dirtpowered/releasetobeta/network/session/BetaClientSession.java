@@ -59,10 +59,9 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
 
@@ -96,7 +95,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private MapDataHandler mapDataHandler;
     private UpdateProgressHandler updateProgressHandler;
     private Session session;
-    private Deque<Packet> initialPacketsQueue = new LinkedBlockingDeque<>();
+    private List<Packet> initialPackets = new LinkedList<>();
     private Callback<Boolean> connectionCallback;
 
     public BetaClientSession(ReleaseToBeta server, Channel channel, Session session, UUID clientId, Callback<Boolean> onConnect) {
@@ -162,10 +161,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
                         sendPacket(new PlayerLookMovePacketData(l.getX(), -999.0D, l.getZ(), -999.0D, l.getYaw(), l.getPitch(), player.isOnGround()));
                     }
 
-                if (!initialPacketsQueue.isEmpty()) {
-                    Packet p = initialPacketsQueue.poll();
-
-                    channel.writeAndFlush(p);
+                if (!initialPackets.isEmpty()) {
+                    initialPackets.forEach(channel::writeAndFlush);
                     return;
                 }
             }
@@ -227,7 +224,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         if (channel.isActive())
             channel.writeAndFlush(packet);
         else {
-            initialPacketsQueue.add(packet);
+            initialPackets.add(packet);
         }
     }
 
@@ -239,7 +236,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private void quitPlayer() {
         session.disconnect(ChatUtils.colorize("&cunexpectedly disconnected from server"));
         main.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
-        initialPacketsQueue.clear();
+        initialPackets.clear();
 
         entityCache.getEntities().clear();
         betaPlayers.clear();
