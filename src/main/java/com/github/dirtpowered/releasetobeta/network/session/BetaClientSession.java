@@ -29,7 +29,6 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerPos
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateProgressPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
-import com.github.dirtpowered.releasetobeta.api.plugin.event.player.PlayerJoinEvent;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.TempBlockStorage;
@@ -37,6 +36,7 @@ import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
+import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
 import com.github.dirtpowered.releasetobeta.data.mapping.model.BlockObject;
 import com.github.dirtpowered.releasetobeta.data.mapping.model.DataObject;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
@@ -251,8 +251,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             main.getServer().sendInitialPlayerAbilities(player);
             main.getServer().sendWorldBorder(session);
             setLoggedIn(true);
-
-            main.getEventManager().fireEvent(new PlayerJoinEvent(player));
         }
     }
 
@@ -266,6 +264,12 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             }
         }
 
+        // debugging
+        if (inInventory) {
+            DataConverter.getNewItemId(blockId, blockData);
+        } else {
+            DataConverter.getNewBlockId(blockId, blockData);
+        }
         return blockId;
     }
 
