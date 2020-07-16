@@ -50,16 +50,9 @@ public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData
         double z = Utils.toModernPos(packet.getZ());
 
         BetaItemStack itemStack = packet.getItemStack();
-        int itemId = itemStack.getBlockId();
-
-        itemStack.setBlockId(session.remapBlock(itemId, itemStack.getData(), true));
-        itemStack.setData((session.remapMetadata(itemId, itemStack.getData(), itemId == 54)));
 
         EntityMetadata[] metadata = Arrays.asList(
-                //new EntityMetadata(0, MetadataType.BYTE, (byte)0x40/* glowing */), //entity status
                 new EntityMetadata(1, MetadataType.INT, 300), //air time
-                //new EntityMetadata(2, MetadataType.STRING, "yoo!"), //custom name
-                //new EntityMetadata(3, MetadataType.BOOLEAN, true), //show custom name
                 new EntityMetadata(4, MetadataType.BOOLEAN, false), //silent
                 new EntityMetadata(5, MetadataType.BOOLEAN, false), //no gravity
                 new EntityMetadata(6, MetadataType.ITEM, ItemConverter.betaToModern(session, itemStack))
@@ -67,7 +60,5 @@ public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData
 
         modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, ObjectType.ITEM, x, y, z, 0, 0));
         modernSession.send(new ServerEntityMetadataPacket(entityId, metadata));
-
-        //TODO: send velocity
     }
 }

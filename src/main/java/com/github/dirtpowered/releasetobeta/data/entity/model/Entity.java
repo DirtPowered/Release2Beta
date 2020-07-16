@@ -75,7 +75,7 @@ public abstract class Entity {
     }
 
     public void onSpawn(Session session) {
-       //TODO: make use of it
+        //TODO: make use of it
     }
 
     public void updateEntity(ModernPlayer player, Session session) {

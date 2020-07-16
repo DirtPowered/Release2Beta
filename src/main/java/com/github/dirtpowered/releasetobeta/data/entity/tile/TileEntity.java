@@ -38,7 +38,6 @@ import java.util.Map;
 public abstract class TileEntity {
     private static final Map<Integer, Class<? extends TileEntity>> tileEntities = new HashMap<>();
     private final static String KEY_PREFIX = "minecraft:";
-    private final String minecraftKey;
 
     static {
         register(26, TileEntityBed.class, MinecraftVersion.B_1_6_6);
@@ -47,6 +46,8 @@ public abstract class TileEntity {
         register(116, TileEntityEnchantingTable.class, MinecraftVersion.B_1_9);
         register(119, TileEntityEndPortal.class, MinecraftVersion.B_1_9);
     }
+
+    private final String minecraftKey;
 
     TileEntity(String minecraftKey) {
         this.minecraftKey = KEY_PREFIX + minecraftKey;
@@ -66,16 +67,6 @@ public abstract class TileEntity {
         return null;
     }
 
-    public CompoundTag getNBT(Position position) {
-        CompoundTag tileTag = new CompoundTag(StringUtil.EMPTY_STRING);
-        tileTag.put(new StringTag("id", getMinecraftKey()));
-
-        tileTag.put(new IntTag("x", position.getX()));
-        tileTag.put(new IntTag("y", position.getY()));
-        tileTag.put(new IntTag("z", position.getZ()));
-        return tileTag;
-    }
-
     public static boolean containsId(int id) {
         return tileEntities.containsKey(id);
     }
@@ -84,5 +75,15 @@ public abstract class TileEntity {
         if (version.isNewerOrEqual(R2BConfiguration.version)) {
             tileEntities.put(id, entityClazz);
         }
+    }
+
+    public CompoundTag getNBT(Position position) {
+        CompoundTag tileTag = new CompoundTag(StringUtil.EMPTY_STRING);
+        tileTag.put(new StringTag("id", getMinecraftKey()));
+
+        tileTag.put(new IntTag("x", position.getX()));
+        tileTag.put(new IntTag("y", position.getY()));
+        tileTag.put(new IntTag("z", position.getZ()));
+        return tileTag;
     }
 }

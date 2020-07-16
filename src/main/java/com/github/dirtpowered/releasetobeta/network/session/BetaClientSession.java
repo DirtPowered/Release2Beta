@@ -34,11 +34,7 @@ import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.TempBlockStorage;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
-import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
-import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
-import com.github.dirtpowered.releasetobeta.data.mapping.model.BlockObject;
-import com.github.dirtpowered.releasetobeta.data.mapping.model.DataObject;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.MapData.MapDataHandler;
@@ -58,18 +54,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
 
+    private final Channel channel;
     @Getter
     TempBlockStorage blockStorage;
-
-    private final Channel channel;
-
     @Getter
     private ReleaseToBeta main;
 
@@ -171,7 +164,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             }
 
             for (Entity entity : entityCache.getEntities().values())
-               entity.updateEntity(player, session);
+                entity.updateEntity(player, session);
 
             i++;
         }
@@ -254,46 +247,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         }
     }
 
-    public int remapBlock(int blockId, int blockData, boolean inInventory) {
-        BlockMap b = main.getBlockMap();
-        if (b.exist(blockId)) {
-            BlockObject blockObject = b.getFromId(blockId);
-
-            if (!blockObject.isInInventory() || inInventory && blockData == blockObject.getItemData()) {
-                return blockObject.getTo();
-            }
-        }
-
-        // debugging
-        if (inInventory) {
-            DataConverter.getNewItemId(blockId, blockData);
-        } else {
-            DataConverter.getNewBlockId(blockId, blockData);
-        }
-        return blockId;
-    }
-
-    public int remapMetadata(int blockId, int rawData) {
-        return remapMetadata(blockId, rawData, false);
-    }
-
-    public int remapMetadata(int blockId, int rawData, boolean custom) {
-        if (blockId == 0 || custom) //skip air
-            return 0;
-
-        MetadataMap m = main.getMetadataMap();
-        if (m.exist(blockId)) {
-            DataObject[] dataObjects = m.getFromId(blockId);
-            for (DataObject dataObject : dataObjects) {
-                if (dataObject.getFrom() == rawData || dataObject.getFrom() == -1) {
-                    if (Arrays.asList(dataObject.getMinecraftVersion()).contains(R2BConfiguration.version)) {
-                        return dataObject.getTo();
-                    }
-                }
-            }
-        }
-
-        return rawData;
+    public int convertBlockData(int blockId, int blockData, boolean inInventory) {
+        return inInventory ? DataConverter.getNewItemId(blockId, blockData) : DataConverter.getNewBlockId(blockId, blockData);
     }
 
     public String[] combinedPlayerList() {

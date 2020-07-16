@@ -75,7 +75,8 @@ public class PlayerInventory {
         int slotToUpdate = findItemSlot(itemId);
         if (slotToUpdate > 0) {
             ItemStack i = inventoryItems[slotToUpdate];
-            int amount = i.getAmount(); amount = --amount;
+            int amount = i.getAmount();
+            amount = --amount;
 
             inventoryItems[slotToUpdate] = new ItemStack(i.getId(), amount, i.getData(), i.getNBT());
 
@@ -90,7 +91,7 @@ public class PlayerInventory {
     }
 
     private int findItemSlot(int itemId) {
-        for(int i = 0; i < inventoryItems.length; ++i) {
+        for (int i = 0; i < inventoryItems.length; ++i) {
             if (inventoryItems[i] != null && inventoryItems[i].getId() == itemId) {
                 return i;
             }

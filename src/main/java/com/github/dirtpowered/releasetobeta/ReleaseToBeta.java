@@ -27,10 +27,8 @@ import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.releasetobeta.bootstrap.AbstractBootstrap;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.Constants;
-import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.DifficultyMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.EntityEffectMap;
-import com.github.dirtpowered.releasetobeta.data.mapping.MetadataMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.MobTypeMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.SoundEffectMap;
 import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
@@ -63,8 +61,6 @@ public class ReleaseToBeta implements Runnable {
     private SoundEffectMap soundEffectMap;
     private EntityEffectMap entityEffectMap;
     private MobTypeMap mobTypeMap;
-    private BlockMap blockMap;
-    private MetadataMap metadataMap;
     private DifficultyMap difficultyMap;
     private ModernServer server;
     private PingPassthroughThread pingPassthroughThread;
@@ -83,8 +79,6 @@ public class ReleaseToBeta implements Runnable {
         this.betaToModernTranslatorRegistry = new BetaToModernTranslatorRegistry();
         this.modernToBetaTranslatorRegistry = new ModernToBetaTranslatorRegistry();
         this.soundEffectMap = new SoundEffectMap();
-        this.blockMap = new BlockMap();
-        this.metadataMap = new MetadataMap();
         this.difficultyMap = new DifficultyMap();
         this.entityEffectMap = new EntityEffectMap();
         this.mobTypeMap = new MobTypeMap();

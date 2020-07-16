@@ -23,13 +23,10 @@
 package com.github.dirtpowered.releasetobeta.utils.item;
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
-import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
-import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.opennbt.tag.builtin.ListTag;
-import com.github.steveice10.opennbt.tag.builtin.ShortTag;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
@@ -40,12 +37,10 @@ public class ItemConverter {
         if (item == null)
             return new ItemStack(0);
 
-        int itemId = item.getBlockId();
+        int internalItemId = session.convertBlockData(item.getBlockId(), item.getData(), true);
 
-        item.setBlockId(session.remapBlock(itemId, item.getData(), true));
-        item.setData(session.remapMetadata(itemId, item.getData(), itemId == 54));
-
-        if (MinecraftVersion.B_1_9.isNewerOrEqual(R2BConfiguration.version) && item.hasNbt()) {
+        /*if (MinecraftVersion.B_1_9.isNewerOrEqual(R2BConfiguration.version) && item.hasNbt()) {
+            //TODO: translate enchants to new format
             com.mojang.nbt.CompoundTag itemTag = item.getNbt();
             if (itemTag.contains("ench")) {
                 com.mojang.nbt.ListTag listTag = itemTag.getList("ench");
@@ -74,12 +69,13 @@ public class ItemConverter {
                 //never happens (not sure)
                 return null;
             }
-        } else {
-            return new ItemStack(item.getBlockId(), item.getAmount(), item.getData(), removeItemAttributes());
-        }
+        } else {*/
+        return new ItemStack(internalItemId, item.getAmount(), 0, removeItemAttributes());
+        //}
     }
 
     public static BetaItemStack itemStackToBetaItemStack(ItemStack itemStack) {
+        //TODO: InternalId to LegacyId
         return new BetaItemStack(itemStack.getId(), itemStack.getAmount(), itemStack.getData());
     }
 
@@ -98,5 +94,10 @@ public class ItemConverter {
         CompoundTag tag = new CompoundTag(StringUtils.EMPTY);
         tag.put(new ListTag("AttributeModifiers", Collections.emptyList()));
         return tag;
+    }
+
+    public static boolean isDamageable() {
+        //TODO: finish it
+        return false;
     }
 }

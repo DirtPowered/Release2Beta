@@ -39,9 +39,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DataConverter {
-    private ReleaseToBeta main;
+    //TODO: find a better way to store IDs and use BiMap
     private static Map<Integer, Integer> oldToNewBlocksMap = new HashMap<>();
     private static Map<Integer, Integer> oldToNewItemsMap = new HashMap<>();
+    private ReleaseToBeta main;
 
     public DataConverter(ReleaseToBeta releaseToBeta) {
         this.main = releaseToBeta;
@@ -49,8 +50,28 @@ public class DataConverter {
         loadMappings();
     }
 
+    public static int getNewBlockId(int blockId, int data) {
+        int sum = (blockId * 16) + data;
+        if (oldToNewBlocksMap.containsKey(sum)) {
+            return oldToNewBlocksMap.get(sum);
+        } else {
+            System.out.println("missing mapping for block " + blockId + ":" + data);
+            return 1; //stone
+        }
+    }
+
+    public static int getNewItemId(int itemId, int data) {
+        int sum = (itemId * 16) + data;
+        if (oldToNewItemsMap.containsKey(sum)) {
+            return oldToNewItemsMap.get(sum);
+        } else {
+            System.out.println("missing mapping for item " + itemId + ":" + data);
+            return 1; //stone
+        }
+    }
+
     private void loadMappings() {
-        main.getLogger().info("loading '1.16.1 -> legacy' mappings");
+        main.getLogger().info("loading 'legacy <-> 1.16.1' mappings");
 
         File f;
         try {
@@ -112,26 +133,6 @@ public class DataConverter {
             main.getLogger().info("loaded " + count + " items and blocks");
         } catch (IOException e) {
             main.getLogger().error("unable to parse mappings.json");
-        }
-    }
-
-    public static int getNewBlockId(int blockId, int data) {
-        int sum = (blockId * 16) + data;
-        if (oldToNewBlocksMap.containsKey(sum)) {
-            return oldToNewBlocksMap.get(sum);
-        } else {
-            System.out.println("missing mapping for block " + blockId + ":" + data);
-            return 1; //stone
-        }
-    }
-
-    public static int getNewItemId(int itemId, int data) {
-        int sum = (itemId * 16) + data;
-        if (oldToNewItemsMap.containsKey(sum)) {
-            return oldToNewItemsMap.get(sum);
-        } else {
-            System.out.println("missing mapping for item " + itemId + ":" + data);
-            return 1; //stone
         }
     }
 

@@ -50,15 +50,15 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
         for (int index = 0; index < size; ++index) {
             short coord = coordinateArray[index];
 
-            byte metadata = metadataArray[index];
-            int block = session.remapBlock(blockArray[index] & 255, metadata, false);
+            int internalBlockId = session.convertBlockData(blockArray[index] & 255, metadataArray[index], false);
 
             int blockX = (chunkX << 4) + (coord >> 12 & 15);
             int blockY = coord & 255;
             int blockZ = (chunkZ << 4) + (coord >> 8 & 15);
 
             records.add(new BlockChangeRecord(
-                    new Position(blockX, blockY, blockZ), new BlockState(block, session.remapMetadata(block, metadata))));
+                    new Position(blockX, blockY, blockZ), new BlockState(internalBlockId, 0))
+            );
         }
 
         modernSession.send(new ServerMultiBlockChangePacket(records.toArray(new BlockChangeRecord[0])));

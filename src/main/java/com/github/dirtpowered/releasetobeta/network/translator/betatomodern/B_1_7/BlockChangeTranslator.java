@@ -39,10 +39,11 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
         int y = packet.getYPosition();
         int z = packet.getZPosition();
 
-        int blockData = packet.getMetadata();
-        int blockId = session.remapBlock(packet.getType(), blockData, false);
+        int internalBlockId = session.convertBlockData(packet.getType(), packet.getMetadata(), false);
 
-        modernSession.send(new ServerBlockChangePacket(new BlockChangeRecord(new Position(x, y, z),
-                new BlockState(blockId, session.remapMetadata(blockId, blockData)))));
+        modernSession.send(
+                new ServerBlockChangePacket(new BlockChangeRecord(new Position(x, y, z),
+                        new BlockState(internalBlockId, 0)))
+        );
     }
 }

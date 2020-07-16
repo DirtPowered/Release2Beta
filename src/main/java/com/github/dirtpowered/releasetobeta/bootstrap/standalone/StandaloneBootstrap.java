@@ -89,7 +89,7 @@ public class StandaloneBootstrap implements AbstractBootstrap {
     private void initDefaultLogger() {
         Configurator.currentConfig()
                 .addWriter(new FileWriter("logs/log-" + new SimpleDateFormat("dd-MM-HH:mm:ss")
-                .format(new Date()) + ".txt"))
+                        .format(new Date()) + ".txt"))
                 .formatPattern("[{level} {date:HH:mm:ss}] {message}")
                 .activate();
     }

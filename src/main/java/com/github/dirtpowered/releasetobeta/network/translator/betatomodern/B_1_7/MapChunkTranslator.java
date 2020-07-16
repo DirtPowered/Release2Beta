@@ -97,22 +97,22 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     int worldYPos = y + height;
                     int worldZPos = chunk.getRawZ() + z;
 
-                    int data = chunk.getMetadataAt(x, worldYPos, z);
+                    int legacyId = chunk.getTypeAt(x, worldYPos, z);
+                    int legacyData = chunk.getMetadataAt(x, worldYPos, z);
 
-                    int blockId = session.remapBlock(chunk.getTypeAt(x, worldYPos, z), data, false);
-                    int blockData = session.remapMetadata(blockId, data);
+                    int internalBlockId = session.convertBlockData(legacyId, legacyData, false);
 
-                    BlockState blockState = new BlockState(blockId, blockData);
-
-                    blockList.add(new DataBlock(new Location(worldXPos, worldYPos, worldZPos), blockState));
+                    BlockState blockState = new BlockState(internalBlockId, 0);
+                    blockList.add(new DataBlock(new Location(worldXPos, worldYPos, worldZPos), new BlockState(legacyId, legacyData))); //TODO: Remove BlockState
 
                     storage.set(x, y, z, blockState);
                     nibbleBlockLight.set(x, y, z, chunk.getBlockLightAt(x, worldYPos, z));
                     nibbleSkyLight.set(x, y, z, chunk.getSkyLightAt(x, worldYPos, z));
 
 
-                    if (TileEntity.containsId(blockId))
-                        chunkTileEntities.add(TileEntity.create(blockId).getNBT(new Position(worldXPos, worldYPos, worldZPos)));
+                    if (TileEntity.containsId(legacyId)) {
+                        chunkTileEntities.add(TileEntity.create(legacyId).getNBT(new Position(worldXPos, worldYPos, worldZPos)));
+                    }
                 }
             }
         }
