@@ -31,6 +31,7 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.BlockValueType;
+import com.github.steveice10.mc.protocol.data.game.world.block.value.ChestValue;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.ChestValueType;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.GenericBlockValue;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.NoteBlockValueType;
@@ -104,7 +105,11 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
             }
 
             modernSession.send(new ServerPlayBuiltinSoundPacket(builtinSound, SoundCategory.BLOCK, x, y, z, 1.33f, pitch));
-            modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, new GenericBlockValue(pitch), blockId));
+            if (type == ChestValueType.VIEWING_PLAYER_COUNT) {
+                modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, new ChestValue(pitch /* 0/1 */), blockId));
+            } else {
+                modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, new GenericBlockValue(pitch), blockId));
+            }
         }
     }
 }
