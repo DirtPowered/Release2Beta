@@ -23,21 +23,14 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.MapData;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapDataPacketData;
-import com.github.steveice10.mc.protocol.data.game.world.map.MapData;
-import com.github.steveice10.mc.protocol.data.game.world.map.MapIcon;
-import com.github.steveice10.mc.protocol.data.game.world.map.MapIconType;
-import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerMapDataPacket;
 import com.github.steveice10.packetlib.Session;
-import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@NoArgsConstructor
 public class MapDataHandler {
-    private byte[] colors = new byte[128 * 128];
+    //private byte[] colors = new byte[128 * 128];
 
+    //TODO: Update to new format
     public void translateMapData(MapDataPacketData data, Session session) {
+        /*
         List<MapIcon> icons = new ArrayList<>();
         int mapId = data.getMapId();
         byte[] buffer = data.getData();
@@ -51,7 +44,7 @@ public class MapDataHandler {
                 colors[(index + startY) * 128 + startX] = buffer[index + 3];
             }
 
-            session.send(new ServerMapDataPacket(mapId, (byte) 4, false, new MapIcon[0], new MapData(128, 128, 0, 0, colors)));
+            session.send(new ServerMapDataPacket(mapId, (byte) 4, false, false, new MapIcon[0], new MapData(128, 128, 0, 0, colors)));
         } else if (buffer[0] == 1) {
             //updating cursor
             for (int locIndex = 0; locIndex < (buffer.length - 1) / 3; ++locIndex) {
@@ -59,9 +52,9 @@ public class MapDataHandler {
                 byte centerZ = buffer[locIndex * 3 + 3];
                 byte iconRotation = (byte) (buffer[locIndex * 3 + 1] / 16);
 
-                icons.add(new MapIcon(centerX, centerZ, MapIconType.WHITE_ARROW, iconRotation));
-                session.send(new ServerMapDataPacket(mapId, (byte) 4, false, icons.toArray(new MapIcon[0]), null));
+                icons.add(new MapIcon(centerX, centerZ, MapIconType.WHITE_ARROW, iconRotation, ChatUtils.toModernMessage("Map " + mapId, false)));
+                session.send(new ServerMapDataPacket(mapId, (byte) 4, false, false, icons.toArray(new MapIcon[0])));
             }
-        }
+        } */
     }
 }

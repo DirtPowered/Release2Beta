@@ -151,7 +151,7 @@ public class ServerConnection implements Tickable {
             if (queuedPacket.session.getFlag("ready") != null) {
                 UUID uuid = queuedPacket.session.getFlag("uniqueId");
                 BetaClientSession clientSession = main.getSessionRegistry().getSession(uuid).getBetaClientSession();
-                handler.translate(queuedPacket.packet, queuedPacket.session, clientSession);
+                handler.translate(main, queuedPacket.packet, queuedPacket.session, clientSession);
             } else {
                 if (queuedPacket.packet instanceof LoginStartPacket && !queuedPacket.session.hasFlag("login_packet")) {
                     queuedPacket.session.setFlag("login_packet", queuedPacket.packet);

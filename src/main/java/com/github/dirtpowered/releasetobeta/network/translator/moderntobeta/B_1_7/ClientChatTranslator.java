@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.ChatPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
@@ -33,15 +34,15 @@ import com.github.steveice10.packetlib.Session;
 public class ClientChatTranslator implements ModernToBeta<ClientChatPacket> {
 
     @Override
-    public void translate(ClientChatPacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientChatPacket packet, Session modernSession, BetaClientSession betaSession) {
         ModernPlayer player = betaSession.getPlayer();
         String message = ChatUtils.replaceIllegal(packet.getMessage());
 
         if (!message.startsWith("/"))
-            betaSession.getMain().getLogger().info("[CHAT] " + player.getUsername() + ": " + message);
+            main.getLogger().info("[CHAT] " + player.getUsername() + ": " + message);
         else {
-            if (betaSession.getMain().getServer().executeCommand(player, message)) {
-                betaSession.getMain().getLogger().info("[COMMAND] " + player.getUsername() + ": " + message);
+            if (main.getServer().executeCommand(player, message)) {
+                main.getLogger().info("[COMMAND] " + player.getUsername() + ": " + message);
                 return;
             }
         }

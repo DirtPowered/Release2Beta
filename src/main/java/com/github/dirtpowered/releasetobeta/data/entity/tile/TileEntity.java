@@ -37,7 +37,7 @@ import java.util.Map;
 @Data
 public abstract class TileEntity {
     private static final Map<Integer, Class<? extends TileEntity>> tileEntities = new HashMap<>();
-    private final static String KEY_PREFIX = "minecraft:";
+    private final static String NAMESPACE = "minecraft:";
 
     static {
         register(26, TileEntityBed.class, MinecraftVersion.B_1_6_6);
@@ -47,10 +47,10 @@ public abstract class TileEntity {
         register(119, TileEntityEndPortal.class, MinecraftVersion.B_1_9);
     }
 
-    private final String minecraftKey;
+    private final String namespaceKey;
 
-    TileEntity(String minecraftKey) {
-        this.minecraftKey = KEY_PREFIX + minecraftKey;
+    TileEntity(String namespaceKey) {
+        this.namespaceKey = NAMESPACE + namespaceKey;
     }
 
     public static TileEntity create(int id) {
@@ -79,7 +79,7 @@ public abstract class TileEntity {
 
     public CompoundTag getNBT(Position position) {
         CompoundTag tileTag = new CompoundTag(StringUtil.EMPTY_STRING);
-        tileTag.put(new StringTag("id", getMinecraftKey()));
+        tileTag.put(new StringTag("id", getNamespaceKey()));
 
         tileTag.put(new IntTag("x", position.getX()));
         tileTag.put(new IntTag("y", position.getY()));

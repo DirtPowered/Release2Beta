@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.data.entity.monster;
 
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
+import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
 import com.github.steveice10.mc.protocol.data.game.entity.EquipmentSlot;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
@@ -40,7 +41,7 @@ public class EntitySkeleton extends Entity implements Mob {
 
     @Override
     public void onSpawn(Session session) {
-        ItemStack itemStack = new ItemStack(261, 1, 0);
+        ItemStack itemStack = new ItemStack(DataConverter.getNewItemId(261, 0), 1);
         session.send(new ServerEntityEquipmentPacket(getEntityId(), EquipmentSlot.MAIN_HAND, itemStack));
     }
 

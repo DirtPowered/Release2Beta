@@ -28,6 +28,7 @@ import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Rideable;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityCreeper;
 import com.github.dirtpowered.releasetobeta.data.entity.monster.EntityEnderDragon;
+import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -37,12 +38,10 @@ import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntitySetPassengersPacket;
 import com.github.steveice10.packetlib.Session;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
 public class MetadataTranslator {
 
     public EntityMetadata[] toModernMetadata(ModernPlayer target, Session modernSession, Entity e, List<WatchableObject> oldMetadata) {
@@ -62,7 +61,7 @@ public class MetadataTranslator {
                 if (((Byte) value).intValue() == 0x04) { //entity mount
                     if (e instanceof ModernPlayer) {
                         ModernPlayer modernPlayer = (ModernPlayer) e;
-                        target.sendPacket(new ServerEntitySetPassengersPacket(modernPlayer.getVehicleEntityId(), e.getEntityId()));
+                        target.sendPacket(new ServerEntitySetPassengersPacket(modernPlayer.getVehicleEntityId(), new int[]{e.getEntityId()}));
                     } else if (e instanceof BetaPlayer) {
                         Entity nearbyEntity = Utils.getNearestEntity(target.getSession().getEntityCache(), e.getLocation());
 
@@ -73,7 +72,7 @@ public class MetadataTranslator {
                             betaPlayer.setVehicleEntityId(vehicleId);
                             betaPlayer.setInVehicle(true);
 
-                            target.sendPacket(new ServerEntitySetPassengersPacket(vehicleId, e.getEntityId()));
+                            target.sendPacket(new ServerEntitySetPassengersPacket(vehicleId, new int[]{e.getEntityId()}));
                         }
                     }
                 } else if (((Byte) value).intValue() == 0x00) {
@@ -82,7 +81,7 @@ public class MetadataTranslator {
 
                         if (!modernPlayer.isInVehicle()) { //entity un-mount
                             if (modernPlayer.getVehicleEntityId() != -1) {
-                                target.sendPacket(new ServerEntitySetPassengersPacket(modernPlayer.getVehicleEntityId()));
+                                target.sendPacket(new ServerEntitySetPassengersPacket(modernPlayer.getVehicleEntityId(), new int[0]));
 
                                 modernPlayer.setVehicleEntityId(-1);
                             }
@@ -90,7 +89,7 @@ public class MetadataTranslator {
                     } else if (e instanceof BetaPlayer) {
                         BetaPlayer betaPlayer = (BetaPlayer) e;
                         if (betaPlayer.isInVehicle()) {
-                            target.sendPacket(new ServerEntitySetPassengersPacket(betaPlayer.getVehicleEntityId()));
+                            target.sendPacket(new ServerEntitySetPassengersPacket(betaPlayer.getVehicleEntityId(), new int[0]));
                         }
                     }
 
@@ -105,7 +104,7 @@ public class MetadataTranslator {
                 if (type == MetadataType.BYTE && index == 16) {
                     //sheep color
                     if (mobType == MobType.SHEEP) {
-                        metadataList.add(new EntityMetadata(13, MetadataType.BYTE, value));
+                        metadataList.add(new EntityMetadata(16, MetadataType.BYTE, value));
                     } else if (mobType == MobType.CREEPER) {
                         //creeper fuse
                         Byte b = (Byte) value;
@@ -116,29 +115,29 @@ public class MetadataTranslator {
                             }
                         }
 
-                        metadataList.add(new EntityMetadata(12, MetadataType.INT, b.intValue()));
+                        metadataList.add(new EntityMetadata(15, MetadataType.INT, b.intValue()));
                     } else if (mobType == MobType.WOLF) {
-                        metadataList.add(new EntityMetadata(13, MetadataType.BYTE, value));
+                        metadataList.add(new EntityMetadata(16, MetadataType.BYTE, value));
                     } else if (mobType == MobType.PIG) {
                         boolean hasSaddle = ((Byte) value).intValue() == 1;
 
-                        metadataList.add(new EntityMetadata(13, MetadataType.BOOLEAN, hasSaddle));
+                        metadataList.add(new EntityMetadata(16, MetadataType.BOOLEAN, hasSaddle));
                     } else if (mobType == MobType.SLIME || mobType == MobType.MAGMA_CUBE) {
                         Byte b = (Byte) value;
 
-                        metadataList.add(new EntityMetadata(12, MetadataType.INT, b.intValue()));
+                        metadataList.add(new EntityMetadata(15, MetadataType.INT, b.intValue()));
                     } else if (mobType == MobType.GHAST) {
                         boolean isAggressive = ((Byte) value).intValue() == 1;
 
-                        metadataList.add(new EntityMetadata(12, MetadataType.BOOLEAN, isAggressive));
+                        metadataList.add(new EntityMetadata(15, MetadataType.BOOLEAN, isAggressive));
                     } else if (mobType == MobType.ENDERMAN) {
                         int itemId = ((Byte) value).intValue();
 
                         if (((Byte) value).intValue() > 0) {
-                            metadataList.add(new EntityMetadata(12, MetadataType.BLOCK_STATE, new BlockState(0 /* 1 = 16 */, itemId)));
+                            metadataList.add(new EntityMetadata(15, MetadataType.BLOCK_STATE, new BlockState(DataConverter.getNewItemId(itemId, 0))));
                         }
                     } else if (mobType == MobType.BLAZE) {
-                        metadataList.add(new EntityMetadata(12, MetadataType.BYTE, value));
+                        metadataList.add(new EntityMetadata(15, MetadataType.BYTE, value));
                     }
                 }
 
@@ -146,13 +145,13 @@ public class MetadataTranslator {
                     if (mobType == MobType.CREEPER || mobType == MobType.ENDERMAN) {
                         //is powered or enderman screaming
                         boolean state = ((Byte) value).intValue() == 1;
-                        metadataList.add(new EntityMetadata(13, MetadataType.BOOLEAN, state));
+                        metadataList.add(new EntityMetadata(16, MetadataType.BOOLEAN, state));
                     }
                 }
 
-                if (type == MetadataType.INT && index == 12) {
+                if (type == MetadataType.INT && index == 15) {
                     //baby animals
-                    metadataList.add(new EntityMetadata(12, MetadataType.BOOLEAN, (int) value < 0));
+                    metadataList.add(new EntityMetadata(15, MetadataType.BOOLEAN, (int) value < 0));
                 }
 
                 if (type == MetadataType.INT && index == 16) {

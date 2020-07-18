@@ -23,13 +23,11 @@
 package com.github.dirtpowered.releasetobeta.data.command;
 
 import com.github.dirtpowered.releasetobeta.data.command.model.Command;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
 import java.util.HashMap;
 
-@Getter
-@NoArgsConstructor
+@Data
 public class CommandRegistry {
     private HashMap<String, Command> commands = new HashMap<>();
 

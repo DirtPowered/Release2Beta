@@ -36,8 +36,4 @@ public abstract class DataHolder<T> {
     public T getFromId(int id) {
         return registry.getOrDefault(id, null);
     }
-
-    public boolean exist(int id) {
-        return registry.containsKey(id);
-    }
 }

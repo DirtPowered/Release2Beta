@@ -74,6 +74,7 @@ public class ReleaseToBeta implements Runnable {
 
         new R2BConfiguration(this).loadConfiguration(bootstrap.getConfigPath()); //load config
 
+        this.dataConverter = new DataConverter(this);
         this.scheduledExecutorService = Executors.newScheduledThreadPool(32);
         this.sessionRegistry = new SessionRegistry();
         this.betaToModernTranslatorRegistry = new BetaToModernTranslatorRegistry();
@@ -83,7 +84,6 @@ public class ReleaseToBeta implements Runnable {
         this.entityEffectMap = new EntityEffectMap();
         this.mobTypeMap = new MobTypeMap();
         this.server = new ModernServer(this);
-        this.dataConverter = new DataConverter(this);
 
         BetaLib.inject(R2BConfiguration.version);
 
@@ -145,6 +145,8 @@ public class ReleaseToBeta implements Runnable {
             }
         } catch (Throwable throwable) {
             getLogger().error("Exception in tick loop (" + throwable.getMessage() + ")");
+            getLogger().error("Details:");
+            throwable.printStackTrace();
             getLogger().error("Stopping server");
 
             stop();

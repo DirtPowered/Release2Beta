@@ -56,7 +56,7 @@ public class MovementTranslator {
         for (int y = minY; y < maxY + 1; y++) {
             for (int x = minX; x < maxX + 1; x++) {
                 for (int z = minZ; z < maxZ + 1; z++) {
-                    int blockId = blockCache.getCachedBlockAt(new Location(x, y, z)).getBlockState().getId();
+                    int blockId = blockCache.getCachedBlockAt(new Location(x, y, z)).getLegacyBlock().getKey();
 
                     if (items.containsKey(blockId)) {
                         return correctPosition(x, y, z, boundingBox, items.get(blockId));

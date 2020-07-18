@@ -83,8 +83,7 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
         this.clientId = clientId;
 
         this.inventory = new PlayerInventory();
-        this.openedInventoryType = WindowType.GENERIC_INVENTORY;
-
+        this.openedInventoryType = WindowType.GENERIC_3X3;
     }
 
     public PlayerListEntry getTabEntry() {
@@ -161,7 +160,7 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
 
     @Override
     public void onInventoryClose() {
-        this.openedInventoryType = WindowType.GENERIC_INVENTORY;
+        this.openedInventoryType = WindowType.GENERIC_3X3;
     }
 
     @Override

@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.ChatPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.lang.ServerMessages;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -33,7 +34,7 @@ import com.github.steveice10.packetlib.Session;
 public class ChatTranslator implements BetaToModern<ChatPacketData> {
 
     @Override
-    public void translate(ChatPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, ChatPacketData packet, BetaClientSession session, Session modernSession) {
         ServerMessages.RichMessage message = ServerMessages.translate(packet.getMessage());
         if (message.isHotbar()) {
             modernSession.send(new ServerChatPacket(message.getMessage(), MessageType.NOTIFICATION));

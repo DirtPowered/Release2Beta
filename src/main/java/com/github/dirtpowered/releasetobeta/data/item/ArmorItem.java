@@ -63,7 +63,8 @@ public enum ArmorItem {
     public static double getArmorValueFromItem(ItemStack itemStack) {
         for (ArmorItem armorItem : values()) {
             if (itemStack.getId() == armorItem.itemId) {
-                return (armorItem.maxDurability - itemStack.getData()) * armorItem.armorValue / armorItem.maxDurability;
+                //TODO: use isDamageable
+                //return (armorItem.maxDurability - itemStack.getData()) * armorItem.armorValue / armorItem.maxDurability;
             }
         }
 

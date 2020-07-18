@@ -32,21 +32,21 @@ import com.github.steveice10.packetlib.Session;
 public class EntitySnowman extends Entity implements Mob {
 
     public EntitySnowman(int entityId) {
-        super(entityId, MobType.SNOWMAN);
+        super(entityId, MobType.SNOW_GOLEM);
     }
 
     @Override
     public void onDeath(Session session) {
-        playSound(session, BuiltinSound.ENTITY_SNOWMAN_DEATH, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_SNOW_GOLEM_DEATH, SoundCategory.HOSTILE);
     }
 
     @Override
     public void onDamage(Session session) {
-        playSound(session, BuiltinSound.ENTITY_SNOWMAN_HURT, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_SNOW_GOLEM_HURT, SoundCategory.HOSTILE);
     }
 
     @Override
     public void onUpdate(Session session) {
-        playSound(session, BuiltinSound.ENTITY_SNOWMAN_AMBIENT, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_SNOW_GOLEM_AMBIENT, SoundCategory.HOSTILE);
     }
 }

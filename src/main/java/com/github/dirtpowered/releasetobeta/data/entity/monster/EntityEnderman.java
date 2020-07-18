@@ -37,16 +37,16 @@ public class EntityEnderman extends Entity implements Mob {
 
     @Override
     public void onDeath(Session session) {
-        playSound(session, BuiltinSound.ENTITY_ENDERMEN_DEATH, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_ENDERMAN_DEATH, SoundCategory.HOSTILE);
     }
 
     @Override
     public void onDamage(Session session) {
-        playSound(session, BuiltinSound.ENTITY_ENDERMEN_HURT, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_ENDERMAN_HURT, SoundCategory.HOSTILE);
     }
 
     @Override
     public void onUpdate(Session session) {
-        playSound(session, BuiltinSound.ENTITY_ENDERMEN_AMBIENT, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_ENDERMAN_AMBIENT, SoundCategory.HOSTILE);
     }
 }

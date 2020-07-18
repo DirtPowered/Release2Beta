@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.RespawnPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
@@ -36,7 +37,7 @@ import java.util.Collections;
 public class ClientRequestTranslator implements ModernToBeta<ClientRequestPacket> {
 
     @Override
-    public void translate(ClientRequestPacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientRequestPacket packet, Session modernSession, BetaClientSession betaSession) {
         ClientRequest request = packet.getRequest();
 
         switch (request) {

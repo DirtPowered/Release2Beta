@@ -42,7 +42,7 @@ public class ProfileCache {
 
     public ProfileCache(ReleaseToBeta main) {
         this.main = main;
-        profileCache = Caffeine.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.HOURS).buildAsync(k -> fetchProfile(k));
+        profileCache = Caffeine.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.HOURS).buildAsync(this::fetchProfile);
     }
 
     public CompletableFuture<GameProfile> getSkin(String username) {

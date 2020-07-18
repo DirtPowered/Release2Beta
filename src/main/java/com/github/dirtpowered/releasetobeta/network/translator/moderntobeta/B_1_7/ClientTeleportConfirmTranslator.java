@@ -22,6 +22,7 @@
 
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientTeleportConfirmPacket;
@@ -30,7 +31,7 @@ import com.github.steveice10.packetlib.Session;
 public class ClientTeleportConfirmTranslator implements ModernToBeta<ClientTeleportConfirmPacket> {
 
     @Override
-    public void translate(ClientTeleportConfirmPacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientTeleportConfirmPacket packet, Session modernSession, BetaClientSession betaSession) {
         //TODO: make us of it
     }
 }

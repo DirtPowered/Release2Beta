@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayNoteblockPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.DataBlock;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -43,7 +44,7 @@ import com.github.steveice10.packetlib.Session;
 public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacketData> {
 
     @Override
-    public void translate(PlayNoteblockPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, PlayNoteblockPacketData packet, BetaClientSession session, Session modernSession) {
         int x = packet.getX();
         int y = packet.getY();
         int z = packet.getZ();
@@ -59,7 +60,7 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
         if (dist < Constants.SOUND_RANGE) {
             DataBlock b = session.getBlockStorage().getCachedBlockAt(l);
 
-            int blockId = b.getBlockState().getId();
+            int blockId = b.getLegacyBlock().getKey();
             switch (packet.getInstrumentType()) {
                 case 0:
                     if (blockId == 33 || blockId == 29) {
@@ -67,7 +68,7 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
                         type = PistonValueType.PUSHING;
                         pitch = 0;
                     } else {
-                        builtinSound = BuiltinSound.BLOCK_NOTE_HARP;
+                        builtinSound = BuiltinSound.BLOCK_NOTE_BLOCK_HARP;
                         type = NoteBlockValueType.HARP;
                     }
                     break;
@@ -80,24 +81,24 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
                         type = PistonValueType.PULLING;
                         pitch = 0;
                     } else {
-                        builtinSound = BuiltinSound.BLOCK_NOTE_BASEDRUM;
+                        builtinSound = BuiltinSound.BLOCK_NOTE_BLOCK_BASEDRUM;
                         type = NoteBlockValueType.BASS_DRUM;
                     }
                     break;
                 case 2:
-                    builtinSound = BuiltinSound.BLOCK_NOTE_SNARE;
+                    builtinSound = BuiltinSound.BLOCK_NOTE_BLOCK_SNARE;
                     type = NoteBlockValueType.SNARE_DRUM;
                     break;
                 case 3:
-                    builtinSound = BuiltinSound.BLOCK_NOTE_HAT;
+                    builtinSound = BuiltinSound.BLOCK_NOTE_BLOCK_HAT;
                     type = NoteBlockValueType.HI_HAT;
                     break;
                 case 4:
-                    builtinSound = BuiltinSound.BLOCK_NOTE_BASS;
+                    builtinSound = BuiltinSound.BLOCK_NOTE_BLOCK_BASS;
                     type = NoteBlockValueType.DOUBLE_BASS;
                     break;
                 default:
-                    builtinSound = BuiltinSound.BLOCK_NOTE_HARP;
+                    builtinSound = BuiltinSound.BLOCK_NOTE_BLOCK_HARP;
                     type = NoteBlockValueType.HARP;
                     break;
             }

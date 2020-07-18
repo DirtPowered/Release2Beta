@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.LoginPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
@@ -32,13 +33,14 @@ import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.game.setting.Difficulty;
 import com.github.steveice10.mc.protocol.data.game.world.WorldType;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDifficultyPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
 import com.github.steveice10.packetlib.Session;
 
 public class LoginTranslator implements BetaToModern<LoginPacketData> {
 
     @Override
-    public void translate(LoginPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, LoginPacketData packet, BetaClientSession session, Session modernSession) {
         ModernPlayer player = session.getPlayer();
         int entityId = packet.getEntityId();
         int dimension = Utils.fixDimension(packet.getDimension());
@@ -49,11 +51,15 @@ public class LoginTranslator implements BetaToModern<LoginPacketData> {
                 false,
                 GameMode.SURVIVAL,
                 dimension,
-                Difficulty.EASY,
+                0,
                 R2BConfiguration.maxPlayers,
                 WorldType.DEFAULT,
-                false
+                16,
+                false,
+                true
         ));
+
+        modernSession.send(new ServerDifficultyPacket(Difficulty.EASY, true));
 
         player.setEntityId(entityId);
         player.setDimension(dimension);

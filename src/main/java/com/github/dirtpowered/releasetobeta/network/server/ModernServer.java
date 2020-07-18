@@ -30,6 +30,7 @@ import com.github.dirtpowered.releasetobeta.data.entity.EntityRegistry;
 import com.github.dirtpowered.releasetobeta.data.entity.MetadataTranslator;
 import com.github.dirtpowered.releasetobeta.data.item.ArmorItem;
 import com.github.dirtpowered.releasetobeta.data.location.MovementTranslator;
+import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.data.skin.ProfileCache;
 import com.github.steveice10.mc.protocol.data.game.entity.attribute.Attribute;
@@ -133,6 +134,10 @@ public class ModernServer {
     public void sendWorldBorder(Session session) {
         //default border size
         session.send(new ServerWorldBorderPacket(0.0D, 0.0D, 6.0E07D, 6.0E07D, 0L, 29999984, 5, 15));
+    }
+
+    public int convertBlockData(int blockId, int blockData, boolean inInventory) {
+        return inInventory ? DataConverter.getNewItemId(blockId, blockData) : DataConverter.getNewBlockId(blockId, blockData);
     }
 
     public BufferedImage getServerIcon() {

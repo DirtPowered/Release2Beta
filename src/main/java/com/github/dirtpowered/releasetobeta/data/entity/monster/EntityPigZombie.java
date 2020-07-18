@@ -37,16 +37,16 @@ public class EntityPigZombie extends Entity implements Mob {
 
     @Override
     public void onDeath(Session session) {
-        playSound(session, BuiltinSound.ENTITY_ZOMBIE_PIG_DEATH, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_ZOMBIE_PIGMAN_DEATH, SoundCategory.HOSTILE);
     }
 
     @Override
     public void onDamage(Session session) {
-        playSound(session, BuiltinSound.ENTITY_ZOMBIE_PIG_HURT, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_ZOMBIE_PIGMAN_HURT, SoundCategory.HOSTILE);
     }
 
     @Override
     public void onUpdate(Session session) {
-        playSound(session, BuiltinSound.ENTITY_ZOMBIE_PIG_AMBIENT, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_ZOMBIE_PIGMAN_AMBIENT, SoundCategory.HOSTILE);
     }
 }

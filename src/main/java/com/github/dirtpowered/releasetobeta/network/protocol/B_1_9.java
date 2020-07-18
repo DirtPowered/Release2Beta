@@ -129,7 +129,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientChatTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientCloseWindowTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientConfirmTransactionTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientHandshakeTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerChangeHeldItemTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientPlayerInteractEntityTranslator;
@@ -147,11 +146,9 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientPlayerStateTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientRequestTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.LoginStartTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_9.ClientEnchantItemTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_9.ClientPlayerPlaceBlockTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.BetaToModernTranslatorRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.ModernToBetaTranslatorRegistry;
-import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientKeepAlivePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientRequestPacket;
@@ -168,12 +165,14 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlaye
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientCloseWindowPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientConfirmTransactionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientCreativeInventoryActionPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientEnchantItemPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientWindowActionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientSteerVehiclePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientTeleportConfirmPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientUpdateSignPacket;
 import com.github.steveice10.mc.protocol.packet.login.client.LoginStartPacket;
+
+//import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_9.ClientEnchantItemTranslator;
+//import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientEnchantItemPacket;
 
 public class B_1_9 {
 
@@ -186,7 +185,7 @@ public class B_1_9 {
         betaToModernTranslatorRegistry.registerTranslator(AnimationPacketData.class, new AnimationTranslator());
 
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerPlaceBlockPacket.class, new ClientPlayerPlaceBlockTranslator());
-        modernToBetaTranslatorRegistry.registerTranslator(ClientEnchantItemPacket.class, new ClientEnchantItemTranslator());
+        //modernToBetaTranslatorRegistry.registerTranslator(ClientEnchantItemPacket.class, new ClientEnchantItemTranslator());
 
         //1.8
         betaToModernTranslatorRegistry.registerTranslator(UpdateHealthPacketData.class, new UpdateHealthTranslator());
@@ -255,7 +254,6 @@ public class B_1_9 {
         modernToBetaTranslatorRegistry.registerTranslator(ClientCloseWindowPacket.class, new ClientCloseWindowTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerInteractEntityPacket.class, new ClientPlayerInteractEntityTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientPlayerUseItemPacket.class, new ClientPlayerUseItemTranslator());
-        modernToBetaTranslatorRegistry.registerTranslator(HandshakePacket.class, new ClientHandshakeTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientTeleportConfirmPacket.class, new ClientTeleportConfirmTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientWindowActionPacket.class, new ClientWindowActionTranslator());
         modernToBetaTranslatorRegistry.registerTranslator(ClientConfirmTransactionPacket.class, new ClientConfirmTransactionTranslator());

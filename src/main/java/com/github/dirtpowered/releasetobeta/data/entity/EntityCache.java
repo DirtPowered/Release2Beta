@@ -23,12 +23,12 @@
 package com.github.dirtpowered.releasetobeta.data.entity;
 
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
-import lombok.Getter;
+import lombok.Data;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Getter
+@Data
 public class EntityCache {
     private Map<Integer, Entity> entities = new ConcurrentHashMap<>(); // is accessed by main and client connection thread
 

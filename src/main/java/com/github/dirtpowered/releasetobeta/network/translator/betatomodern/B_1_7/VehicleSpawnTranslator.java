@@ -24,9 +24,11 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.VehicleSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.vehicle.EntityBoat;
 import com.github.dirtpowered.releasetobeta.data.entity.vehicle.EntityMinecart;
+import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -35,6 +37,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.type.object.MinecartTy
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectData;
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ProjectileData;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityVelocityPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -43,7 +46,7 @@ import java.util.UUID;
 public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketData> {
 
     @Override
-    public void translate(VehicleSpawnPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, VehicleSpawnPacketData packet, BetaClientSession session, Session modernSession) {
         int ownerId = packet.getThrowerEntityId();
         int entityId = packet.getEntityId();
         UUID uuid = UUID.randomUUID();
@@ -75,7 +78,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 data = MinecartType.POWERED;
                 break;
             case 60:
-                type = ObjectType.TIPPED_ARROW;
+                type = ObjectType.ARROW;
                 /*
                  * https://wiki.vg/Object_Data
                  * The entity ID of the shooter + 1
@@ -85,7 +88,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 data = new ProjectileData(ownerId + 1);
                 break;
             case 50:
-                type = ObjectType.PRIMED_TNT;
+                type = ObjectType.TNT;
                 break;
             case 61:
                 type = ObjectType.SNOWBALL;
@@ -96,7 +99,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 data = new ProjectileData(ownerId);
                 break;
             case 90:
-                type = ObjectType.FISH_HOOK;
+                type = ObjectType.FISHING_BOBBER;
                 Location bobberLocation = new Location(x, y, z);
                 Entity nearest = Utils.getNearestEntity(session.getEntityCache(), bobberLocation);
 
@@ -110,17 +113,17 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 type = ObjectType.BOAT;
                 break;
             case 63:
-                type = ObjectType.GHAST_FIREBALL;
+                type = ObjectType.FIREBALL;
                 data = new ProjectileData(0);
                 isFireball = true;
                 break;
             case 70:
                 type = ObjectType.FALLING_BLOCK;
-                data = new FallingBlockData(12, 0);
+                data = new FallingBlockData(DataConverter.getNewBlockId(12, 0), 0);
                 break;
             case 71:
                 type = ObjectType.FALLING_BLOCK;
-                data = new FallingBlockData(13, 0);
+                data = new FallingBlockData(DataConverter.getNewBlockId(13, 0), 0);
                 break;
         }
 
@@ -139,12 +142,16 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
             session.getEntityCache().addEntity(entityId, boat);
         }
 
+        if (type == null || data == null)
+            return;
+
         if (ownerId > 0 || isFireball) {
             vecX = packet.getVelocityX() / 8000.0D;
             vecY = packet.getVelocityY() / 8000.0D;
             vecZ = packet.getVelocityZ() / 8000.0D;
 
             modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, type, data, x, y, z, 0, 0, vecX, vecY, vecZ));
+            modernSession.send(new ServerEntityVelocityPacket(entityId, vecX, vecY, vecZ));
         } else {
             modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, type, data, x, y, z, 0, 0));
         }

@@ -23,12 +23,14 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PreChunkPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.chunk.Chunk;
 import com.github.steveice10.mc.protocol.data.game.chunk.Column;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerUnloadChunkPacket;
+import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.packetlib.Session;
 
 import java.util.Arrays;
@@ -36,20 +38,20 @@ import java.util.Arrays;
 public class PreChunkTranslator implements BetaToModern<PreChunkPacketData> {
 
     @Override
-    public void translate(PreChunkPacketData packet, BetaClientSession session, Session modernSession) {
-        int x = packet.getX();
-        int z = packet.getZ();
+    public void translate(ReleaseToBeta main, PreChunkPacketData packet, BetaClientSession session, Session modernSession) {
+        int chunkX = packet.getX();
+        int chunkZ = packet.getZ();
 
         if (packet.isFull()) {
-            byte[] biomes = new byte[256];
-            Arrays.fill(biomes, (byte) 129); //mutated_plains (most close to the beta default one)
+            int[] biomes = new int[1024];
+            Arrays.fill(biomes, 1); /* plains */
 
-            Column column = new Column(x, z, new Chunk[16], biomes, null); //TODO: Send chests, furnaces
+            Column column = new Column(chunkX, chunkZ, new Chunk[16], new CompoundTag[0], new CompoundTag("heightMaps"), biomes);
             modernSession.send(new ServerChunkDataPacket(column));
         } else {
             //unload
-            modernSession.send(new ServerUnloadChunkPacket(x, z));
-            session.getBlockStorage().remove(x, z);
+            modernSession.send(new ServerUnloadChunkPacket(chunkX, chunkZ));
+            session.getBlockStorage().remove(chunkX, chunkZ);
         }
     }
 }

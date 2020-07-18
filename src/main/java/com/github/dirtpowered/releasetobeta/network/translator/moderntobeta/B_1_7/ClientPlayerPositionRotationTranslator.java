@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerLookMovePacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -34,10 +35,10 @@ import com.github.steveice10.packetlib.Session;
 public class ClientPlayerPositionRotationTranslator implements ModernToBeta<ClientPlayerPositionRotationPacket> {
 
     @Override
-    public void translate(ClientPlayerPositionRotationPacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientPlayerPositionRotationPacket packet, Session modernSession, BetaClientSession betaSession) {
         ModernPlayer player = betaSession.getPlayer();
 
-        Location location = betaSession.getMain().getServer().getMovementTranslator().translate(
+        Location location = main.getServer().getMovementTranslator().translate(
                 betaSession.getBlockStorage(), packet.getX(), packet.getY(), packet.getZ()
         );
 
@@ -46,8 +47,8 @@ public class ClientPlayerPositionRotationTranslator implements ModernToBeta<Clie
         double z = location.getZ();
         double stance = location.getY();
 
-        float yaw = (float) packet.getYaw();
-        float pitch = (float) packet.getPitch();
+        float yaw = packet.getYaw();
+        float pitch = packet.getPitch();
 
         boolean onGround = packet.isOnGround();
 

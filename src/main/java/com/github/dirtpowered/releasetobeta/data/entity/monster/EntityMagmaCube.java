@@ -37,12 +37,12 @@ public class EntityMagmaCube extends Entity implements Mob {
 
     @Override
     public void onDeath(Session session) {
-        playSound(session, BuiltinSound.ENTITY_MAGMACUBE_DEATH, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_MAGMA_CUBE_DEATH, SoundCategory.HOSTILE);
     }
 
     @Override
     public void onDamage(Session session) {
-        playSound(session, BuiltinSound.ENTITY_MAGMACUBE_HURT, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_MAGMA_CUBE_HURT, SoundCategory.HOSTILE);
     }
 
     @Override

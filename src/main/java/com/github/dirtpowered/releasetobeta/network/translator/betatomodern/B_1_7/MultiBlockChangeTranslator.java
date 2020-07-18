@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MultiBlockChangePacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -37,7 +38,7 @@ import java.util.List;
 public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChangePacketData> {
 
     @Override
-    public void translate(MultiBlockChangePacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, MultiBlockChangePacketData packet, BetaClientSession session, Session modernSession) {
         int size = packet.getSize();
         short[] coordinateArray = packet.getCoordinateArray();
         byte[] blockArray = packet.getTypeArray();
@@ -50,14 +51,14 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
         for (int index = 0; index < size; ++index) {
             short coord = coordinateArray[index];
 
-            int internalBlockId = session.convertBlockData(blockArray[index] & 255, metadataArray[index], false);
+            int internalBlockId = main.getServer().convertBlockData(blockArray[index] & 255, metadataArray[index], false);
 
             int blockX = (chunkX << 4) + (coord >> 12 & 15);
             int blockY = coord & 255;
             int blockZ = (chunkZ << 4) + (coord >> 8 & 15);
 
             records.add(new BlockChangeRecord(
-                    new Position(blockX, blockY, blockZ), new BlockState(internalBlockId, 0))
+                    new Position(blockX, blockY, blockZ), new BlockState(internalBlockId))
             );
         }
 

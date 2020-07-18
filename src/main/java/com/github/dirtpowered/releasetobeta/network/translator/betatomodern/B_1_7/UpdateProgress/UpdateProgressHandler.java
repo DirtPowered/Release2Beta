@@ -25,9 +25,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateProgressPacketData;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowPropertyPacket;
 import com.github.steveice10.packetlib.Session;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 public class UpdateProgressHandler {
     private int maxFuel;
 

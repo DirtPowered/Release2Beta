@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerPositionPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -34,10 +35,10 @@ import com.github.steveice10.packetlib.Session;
 public class ClientPlayerPositionTranslator implements ModernToBeta<ClientPlayerPositionPacket> {
 
     @Override
-    public void translate(ClientPlayerPositionPacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientPlayerPositionPacket packet, Session modernSession, BetaClientSession betaSession) {
         ModernPlayer player = betaSession.getPlayer();
 
-        Location location = betaSession.getMain().getServer().getMovementTranslator().translate(
+        Location location = main.getServer().getMovementTranslator().translate(
                 betaSession.getBlockStorage(), packet.getX(), packet.getY(), packet.getZ()
         );
 

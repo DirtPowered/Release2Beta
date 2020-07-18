@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.KickDisconnectPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.lang.ServerMessages;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -34,12 +35,12 @@ import org.apache.commons.lang3.StringUtils;
 public class KickDisconnectTranslator implements BetaToModern<KickDisconnectPacketData> {
 
     @Override
-    public void translate(KickDisconnectPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, KickDisconnectPacketData packet, BetaClientSession session, Session modernSession) {
         String username = session.getPlayer().getUsername();
         String reason = packet.getDisconnectReason();
 
         String n = username == null ? session.getPlayer().getClientId().toString() : username;
-        session.getMain().getLogger().warning("[" + n + "] kicked from server: " + reason);
+        main.getLogger().warning("[" + n + "] kicked from server: " + reason);
 
         modernSession.send(new ServerDisconnectPacket(reason == null ? TextMessage.fromString(StringUtils.EMPTY) : ServerMessages.translate(reason).getMessage()));
     }

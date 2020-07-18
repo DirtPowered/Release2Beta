@@ -27,6 +27,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,17 +37,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
 
 public class DataConverter {
-    //TODO: find a better way to store IDs and use BiMap
-    private static Map<Integer, Integer> oldToNewBlocksMap = new HashMap<>();
-    private static Map<Integer, Integer> oldToNewItemsMap = new HashMap<>();
-    private ReleaseToBeta main;
+    //TODO: find a better way to store IDs and use something like BiMap?
+    private static Int2IntMap oldToNewBlocksMap = new Int2IntOpenHashMap();
+    private static Int2IntMap oldToNewItemsMap = new Int2IntOpenHashMap();
+
+    private static ReleaseToBeta main;
 
     public DataConverter(ReleaseToBeta releaseToBeta) {
-        this.main = releaseToBeta;
+        main = releaseToBeta;
 
         loadMappings();
     }
@@ -55,7 +57,7 @@ public class DataConverter {
         if (oldToNewBlocksMap.containsKey(sum)) {
             return oldToNewBlocksMap.get(sum);
         } else {
-            System.out.println("missing mapping for block " + blockId + ":" + data);
+            main.getLogger().warning("missing mapping for block " + blockId + ":" + data + "(" + combineId(blockId, data) + ")");
             return 1; //stone
         }
     }
@@ -64,18 +66,23 @@ public class DataConverter {
         int sum = (itemId * 16) + data;
         if (oldToNewItemsMap.containsKey(sum)) {
             return oldToNewItemsMap.get(sum);
+        } else if (oldToNewItemsMap.containsKey(itemId * 16)) { //temp. workaround for damageable items
+            return oldToNewItemsMap.get(itemId * 16);
         } else {
-            System.out.println("missing mapping for item " + itemId + ":" + data);
+            main.getLogger().warning("missing mapping for item " + itemId + ":" + data + "(" + combineId(itemId, data) + ")");
             return 1; //stone
         }
     }
 
+    private static int combineId(int id, int data) {
+        return (id * 16) + data;
+    }
+
     private void loadMappings() {
-        main.getLogger().info("loading 'legacy <-> 1.16.1' mappings");
+        main.getLogger().info("loading 'legacy <-> 1.15' mappings");
 
         File f;
         try {
-
             Path p = Paths.get("src/main/resources/mappings.json");
             if (!Files.exists(p)) {
                 File mappingTempFile = File.createTempFile("mappings", ".json");

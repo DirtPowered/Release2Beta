@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityStatusPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
@@ -37,7 +38,7 @@ import com.github.steveice10.packetlib.Session;
 public class EntityStatusTranslator implements BetaToModern<EntityStatusPacketData> {
 
     @Override
-    public void translate(EntityStatusPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, EntityStatusPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
         int status = packet.getStatus();
         EntityStatus entityStatus;

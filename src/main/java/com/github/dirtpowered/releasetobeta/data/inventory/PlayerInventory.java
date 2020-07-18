@@ -78,7 +78,7 @@ public class PlayerInventory {
             int amount = i.getAmount();
             amount = --amount;
 
-            inventoryItems[slotToUpdate] = new ItemStack(i.getId(), amount, i.getData(), i.getNBT());
+            inventoryItems[slotToUpdate] = new ItemStack(i.getId(), amount, i.getNbt());
 
             if (amount <= 0) {
                 inventoryItems[slotToUpdate] = null;
@@ -108,7 +108,7 @@ public class PlayerInventory {
                 this.inventoryItems[slot] = null;
             }
 
-            this.inventoryItems[slot] = new ItemStack(item.getId(), amountAfter, item.getData(), item.getNBT());
+            this.inventoryItems[slot] = new ItemStack(item.getId(), amountAfter, item.getNbt());
         }
     }
 

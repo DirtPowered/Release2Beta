@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityTeleportPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -34,7 +35,7 @@ import com.github.steveice10.packetlib.Session;
 public class EntityTeleportTranslator implements BetaToModern<EntityTeleportPacketData> {
 
     @Override
-    public void translate(EntityTeleportPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, EntityTeleportPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
         double x = Utils.toModernPos(packet.getX());
         double y = Utils.toModernPos(packet.getY());

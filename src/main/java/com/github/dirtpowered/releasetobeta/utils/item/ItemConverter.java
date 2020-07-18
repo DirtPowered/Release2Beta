@@ -23,7 +23,7 @@
 package com.github.dirtpowered.releasetobeta.utils.item;
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
-import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.opennbt.tag.builtin.ListTag;
@@ -33,11 +33,11 @@ import java.util.Collections;
 
 public class ItemConverter {
 
-    public static ItemStack betaToModern(BetaClientSession session, BetaItemStack item) {
+    public static ItemStack betaToModern(ReleaseToBeta main, BetaItemStack item) {
         if (item == null)
             return new ItemStack(0);
 
-        int internalItemId = session.convertBlockData(item.getBlockId(), item.getData(), true);
+        int internalItemId = main.getServer().convertBlockData(item.getBlockId(), item.getData(), true);
 
         /*if (MinecraftVersion.B_1_9.isNewerOrEqual(R2BConfiguration.version) && item.hasNbt()) {
             //TODO: translate enchants to new format
@@ -70,21 +70,21 @@ public class ItemConverter {
                 return null;
             }
         } else {*/
-        return new ItemStack(internalItemId, item.getAmount(), 0, removeItemAttributes());
+        return new ItemStack(internalItemId, item.getAmount(), removeItemAttributes());
         //}
     }
 
     public static BetaItemStack itemStackToBetaItemStack(ItemStack itemStack) {
         //TODO: InternalId to LegacyId
-        return new BetaItemStack(itemStack.getId(), itemStack.getAmount(), itemStack.getData());
+        return new BetaItemStack(itemStack.getId(), itemStack.getAmount(), /*itemStack.getData()*/0);
     }
 
-    public static ItemStack[] betaToModern(BetaClientSession session, BetaItemStack[] items) {
+    public static ItemStack[] betaToModern(ReleaseToBeta main, BetaItemStack[] items) {
         ItemStack[] is = new ItemStack[items.length];
 
         for (int i = 0; i < items.length; i++) {
             BetaItemStack item = items[i];
-            is[i] = betaToModern(session, item);
+            is[i] = betaToModern(main, item);
         }
 
         return is;

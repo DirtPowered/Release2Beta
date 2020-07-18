@@ -25,7 +25,6 @@ package com.github.dirtpowered.releasetobeta.data.entity.monster;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
-import com.github.steveice10.mc.protocol.data.game.BossBarAction;
 import com.github.steveice10.mc.protocol.data.game.BossBarColor;
 import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
@@ -50,20 +49,17 @@ public class EntityEnderDragon extends Entity implements Mob {
 
     @Override
     public void onSpawn(Session session) {
-        BossBarAction action = BossBarAction.ADD;
         Message message = ChatUtils.toModernMessage("&dBoss health", true);
         float health = 0.005f;
         BossBarColor color = BossBarColor.PINK;
         BossBarDivision division = BossBarDivision.NONE;
 
-        session.send(new ServerBossBarPacket(uuid, action, message, health, color, division, false, true));
+        session.send(new ServerBossBarPacket(uuid, message, health, color, division, false, true, false));
     }
 
     public void updateHealth(Session session, int health) {
         float a = health * 1.0f / 200;
-        BossBarAction action = BossBarAction.UPDATE_HEALTH;
-
-        session.send(new ServerBossBarPacket(uuid, action, a));
+        session.send(new ServerBossBarPacket(uuid, a));
     }
 
     private void destroyBossBar(Session session) {
@@ -72,17 +68,17 @@ public class EntityEnderDragon extends Entity implements Mob {
 
     @Override
     public void onDeath(Session session) {
-        playSound(session, BuiltinSound.ENTITY_ENDERDRAGON_DEATH, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_ENDER_DRAGON_DEATH, SoundCategory.HOSTILE);
     }
 
     @Override
     public void onDamage(Session session) {
-        playSound(session, BuiltinSound.ENTITY_ENDERDRAGON_HURT, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_ENDER_DRAGON_HURT, SoundCategory.HOSTILE);
     }
 
     @Override
     public void onUpdate(Session session) {
-        playSound(session, BuiltinSound.ENTITY_ENDERDRAGON_AMBIENT, SoundCategory.HOSTILE);
+        playSound(session, BuiltinSound.ENTITY_ENDER_DRAGON_AMBIENT, SoundCategory.HOSTILE);
     }
 
     @Override

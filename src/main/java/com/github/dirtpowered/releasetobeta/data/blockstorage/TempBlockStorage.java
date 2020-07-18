@@ -23,10 +23,10 @@
 package com.github.dirtpowered.releasetobeta.data.blockstorage;
 
 import com.github.dirtpowered.betaprotocollib.utils.Location;
-import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
-import io.netty.util.collection.LongObjectHashMap;
-import io.netty.util.collection.LongObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import lombok.Getter;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,9 @@ import java.util.List;
 public class TempBlockStorage {
 
     @Getter
-    private LongObjectMap<DataBlock[]> blockStorageMap = new LongObjectHashMap<>();
+    private Long2ObjectMap<DataBlock[]> blockStorageMap = new Long2ObjectOpenHashMap<>();
+
+    @Getter
     private int[] blocksToCache = new int[]{29, 33, 54};
 
     public void cacheBlocks(int chunkX, int chunkZ, DataBlock[] blocks) {
@@ -42,13 +44,8 @@ public class TempBlockStorage {
         List<DataBlock> list = new ArrayList<>();
 
         for (DataBlock block : blocks) {
-            for (int itemId : blocksToCache) {
-                if (block.getBlockState().getId() == itemId) {
-                    list.add(block);
-
-                    blockStorageMap.put(hashKey, list.toArray(new DataBlock[0]));
-                }
-            }
+            list.add(block);
+            blockStorageMap.put(hashKey, list.toArray(new DataBlock[0]));
         }
     }
 
@@ -69,7 +66,7 @@ public class TempBlockStorage {
     public DataBlock getCachedBlockAt(Location loc) {
         long hashKey = getChunkKey(loc);
 
-        DataBlock block = new DataBlock(loc, new BlockState(1, 0));
+        DataBlock block = new DataBlock(loc, new ImmutablePair<>(1 /* stone */, 0));
         DataBlock[] blocks = blockStorageMap.get(hashKey);
 
         if (blocks != null) {

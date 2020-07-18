@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockDigPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.data.MagicValues;
@@ -41,7 +42,7 @@ public class ClientPlayerActionTranslator implements ModernToBeta<ClientPlayerAc
      */
 
     @Override
-    public void translate(ClientPlayerActionPacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientPlayerActionPacket packet, Session modernSession, BetaClientSession betaSession) {
         PlayerAction action = packet.getAction();
         Position pos = packet.getPosition();
         int x = pos.getX();

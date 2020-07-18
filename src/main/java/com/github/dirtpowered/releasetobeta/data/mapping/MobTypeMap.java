@@ -9,7 +9,7 @@ public class MobTypeMap extends DataHolder<MobType> {
         add(50, MobType.CREEPER);
         add(51, MobType.SKELETON);
         add(52, MobType.SPIDER);
-        add(53, MobType.GIANT_ZOMBIE);
+        add(53, MobType.GIANT);
         add(54, MobType.ZOMBIE);
         add(55, MobType.SLIME);
         add(56, MobType.GHAST);
@@ -27,7 +27,7 @@ public class MobTypeMap extends DataHolder<MobType> {
         add(94, MobType.SQUID);
         add(95, MobType.WOLF);
         add(96, MobType.MOOSHROOM);
-        add(97, MobType.SNOWMAN);
+        add(97, MobType.SNOW_GOLEM);
         add(120, MobType.VILLAGER);
     }
 }

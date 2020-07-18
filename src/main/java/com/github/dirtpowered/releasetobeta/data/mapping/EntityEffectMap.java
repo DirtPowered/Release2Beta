@@ -28,14 +28,14 @@ import com.github.steveice10.mc.protocol.data.game.entity.Effect;
 public class EntityEffectMap extends DataHolder<Effect> {
 
     public EntityEffectMap() {
-        add(1, Effect.SPEED);
-        add(2, Effect.SLOWNESS);
-        add(3, Effect.DIG_SPEED);
-        add(4, Effect.DIG_SLOWNESS);
-        add(5, Effect.DAMAGE_BOOST);
+        add(1, Effect.FASTER_MOVEMENT);
+        add(2, Effect.SLOWER_MOVEMENT);
+        add(3, Effect.FASTER_DIG);
+        add(4, Effect.SLOWER_DIG);
+        add(5, Effect.INCREASE_DAMAGE);
         add(6, Effect.HEAL);
-        add(7, Effect.DAMAGE);
-        add(8, Effect.JUMP_BOOST);
+        add(7, Effect.HARM);
+        add(8, Effect.JUMP);
         add(9, Effect.CONFUSION);
         add(10, Effect.REGENERATION);
         add(11, Effect.RESISTANCE);

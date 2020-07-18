@@ -37,7 +37,7 @@ class TileEntityBed extends TileEntity {
     @Override
     public CompoundTag getNBT(Position position) {
         CompoundTag tileTag = new CompoundTag(StringUtil.EMPTY_STRING);
-        tileTag.put(new StringTag("id", getMinecraftKey()));
+        tileTag.put(new StringTag("id", getNamespaceKey()));
 
         tileTag.put(new IntTag("x", position.getX()));
         tileTag.put(new IntTag("y", position.getY()));

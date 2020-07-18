@@ -70,7 +70,7 @@ public class EntityRegistry {
         register(MobType.GHAST, EntityGhast.class, MinecraftVersion.B_1_6_6);
         register(MobType.CREEPER, EntityCreeper.class, MinecraftVersion.B_1_6_6);
         register(MobType.SLIME, EntitySlime.class, MinecraftVersion.B_1_6_6);
-        register(MobType.GIANT_ZOMBIE, EntityZombie.class, MinecraftVersion.B_1_6_6);
+        register(MobType.GIANT, EntityZombie.class, MinecraftVersion.B_1_6_6);
 
         //1.8
         register(MobType.ENDERMAN, EntityEnderman.class, MinecraftVersion.B_1_8_1);
@@ -81,7 +81,7 @@ public class EntityRegistry {
         register(MobType.BLAZE, EntityBlaze.class, MinecraftVersion.B_1_9);
         register(MobType.ENDER_DRAGON, EntityEnderDragon.class, MinecraftVersion.B_1_9);
         register(MobType.MAGMA_CUBE, EntityMagmaCube.class, MinecraftVersion.B_1_9);
-        register(MobType.SNOWMAN, EntitySnowman.class, MinecraftVersion.B_1_9);
+        register(MobType.SNOW_GOLEM, EntitySnowman.class, MinecraftVersion.B_1_9);
 
         //mobs
         register(MobType.PIG, EntityPig.class, MinecraftVersion.B_1_6_6);

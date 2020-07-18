@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockChangePacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -34,16 +35,17 @@ import com.github.steveice10.packetlib.Session;
 public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData> {
 
     @Override
-    public void translate(BlockChangePacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, BlockChangePacketData packet, BetaClientSession session, Session modernSession) {
         int x = packet.getXPosition();
         int y = packet.getYPosition();
         int z = packet.getZPosition();
 
-        int internalBlockId = session.convertBlockData(packet.getType(), packet.getMetadata(), false);
+        int internalBlockId = main.getServer().convertBlockData(packet.getType(), packet.getMetadata(), false);
 
         modernSession.send(
-                new ServerBlockChangePacket(new BlockChangeRecord(new Position(x, y, z),
-                        new BlockState(internalBlockId, 0)))
+                new ServerBlockChangePacket(
+                        new BlockChangeRecord(new Position(x, y, z), new BlockState(internalBlockId))
+                )
         );
     }
 }

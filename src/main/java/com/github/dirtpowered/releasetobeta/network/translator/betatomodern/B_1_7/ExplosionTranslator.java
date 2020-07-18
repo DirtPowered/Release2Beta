@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.ExplosionPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -39,12 +40,12 @@ import java.util.List;
 public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
 
     @Override
-    public void translate(ExplosionPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, ExplosionPacketData packet, BetaClientSession session, Session modernSession) {
         float x = Utils.toFloat(packet.getX());
         float y = Utils.toFloat(packet.getY());
         float z = Utils.toFloat(packet.getZ());
 
-        float explosionSize = packet.getExplosionSize();
+        float radius = packet.getExplosionSize();
 
         List<ExplodedBlockRecord> records = new ArrayList<>();
         for (BlockLocation destroyedBlockPosition : packet.getDestroyedBlockPositions()) {
@@ -55,7 +56,7 @@ public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
             records.add(new ExplodedBlockRecord(posX, posY, posZ));
         }
 
-        modernSession.send(new ServerExplosionPacket(x, y, z, explosionSize, records, 0, 0, 0));
-        session.getMain().getServer().playWorldSound(modernSession, (int) x, (int) y, (int) z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT);
+        modernSession.send(new ServerExplosionPacket(x, y, z, radius, records, 0, 0, 0));
+        main.getServer().playWorldSound(modernSession, (int) x, (int) y, (int) z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT);
     }
 }

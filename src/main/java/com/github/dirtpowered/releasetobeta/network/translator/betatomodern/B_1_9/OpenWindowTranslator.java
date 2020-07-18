@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.OpenWindowPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -34,39 +35,60 @@ import com.github.steveice10.packetlib.Session;
 public class OpenWindowTranslator implements BetaToModern<OpenWindowPacketData> {
 
     @Override
-    public void translate(OpenWindowPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, OpenWindowPacketData packet, BetaClientSession session, Session modernSession) {
         ModernPlayer player = session.getPlayer();
         int windowId = packet.getWindowId();
         int inventoryType = packet.getInventoryType();
         String inventoryTitle = ChatUtils.toModernMessage(packet.getWindowTitle(), false).toJsonString();
+
         int slots = packet.getSlotsCount();
 
         WindowType windowType;
 
         switch (inventoryType) {
             case 0:
-                windowType = WindowType.CHEST;
+                switch (slots) {
+                    case 9:
+                        windowType = WindowType.GENERIC_9X1;
+                        break;
+                    case 18:
+                        windowType = WindowType.GENERIC_9X2;
+                        break;
+                    case 27:
+                        windowType = WindowType.GENERIC_9X3;
+                        break;
+                    case 36:
+                        windowType = WindowType.GENERIC_9X4;
+                        break;
+                    case 45:
+                        windowType = WindowType.GENERIC_9X5;
+                        break;
+                    case 54:
+                        windowType = WindowType.GENERIC_9X6;
+                        break;
+                    default:
+                        windowType = WindowType.GENERIC_9X1;
+                        break;
+                }
                 break;
             case 1:
-                windowType = WindowType.CRAFTING_TABLE;
-                slots = 0;
+                windowType = WindowType.CRAFTING;
                 break;
             case 2:
                 windowType = WindowType.FURNACE;
                 break;
             case 3:
-                windowType = WindowType.DISPENSER;
+                windowType = WindowType.GENERIC_3X3;
                 break;
             case 4:
-                windowType = WindowType.ENCHANTING_TABLE;
-                slots = 0;
+                windowType = WindowType.ENCHANTMENT;
                 break;
             default:
-                windowType = WindowType.GENERIC_INVENTORY;
+                windowType = WindowType.GENERIC_9X3;
                 break;
         }
 
-        modernSession.send(new ServerOpenWindowPacket(windowId, windowType, inventoryTitle, slots));
+        modernSession.send(new ServerOpenWindowPacket(windowId, windowType, inventoryTitle));
         player.onInventoryOpen(windowType);
     }
 }

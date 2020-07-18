@@ -23,23 +23,37 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.SleepPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.MetadataType;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Pose;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerUseBedPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityMetadataPacket;
 import com.github.steveice10.packetlib.Session;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class SleepPacketTranslator implements BetaToModern<SleepPacketData> {
 
     @Override
-    public void translate(SleepPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, SleepPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
+
         int x = packet.getX();
         int y = packet.getY();
         int z = packet.getZ();
 
         Position pos = new Position(x, y, z);
 
-        modernSession.send(new ServerPlayerUseBedPacket(entityId, pos));
+        List<EntityMetadata> metadataList = new LinkedList<>();
+        metadataList.add(new EntityMetadata(13, MetadataType.POSITION, pos));
+
+        if (entityId != session.getPlayer().getEntityId())
+            metadataList.add(new EntityMetadata(6, MetadataType.POSE, Pose.SLEEPING));
+
+        modernSession.send(new ServerEntityMetadataPacket(entityId, metadataList.toArray(new EntityMetadata[0])));
     }
 }

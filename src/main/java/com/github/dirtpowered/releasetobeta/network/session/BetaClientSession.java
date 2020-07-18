@@ -34,7 +34,6 @@ import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.TempBlockStorage;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
-import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.MapData.MapDataHandler;
@@ -183,7 +182,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         if (handler != null && channel.isActive()) {
             Session session = main.getSessionRegistry().getSession(player.getClientId()).getModernSession();
             if (session != null) {
-                handler.translate(packet, this, session);
+                handler.translate(main, packet, this, session);
             }
         } else {
             main.getLogger().warning("[" + player.getClientId() + "/" + player.getUsername() + "]" + " missing 'BetaToModern' translator for: " + packet.getClass().getSimpleName());
@@ -245,10 +244,6 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             main.getServer().sendWorldBorder(session);
             setLoggedIn(true);
         }
-    }
-
-    public int convertBlockData(int blockId, int blockData, boolean inInventory) {
-        return inInventory ? DataConverter.getNewItemId(blockId, blockData) : DataConverter.getNewBlockId(blockId, blockData);
     }
 
     public String[] combinedPlayerList() {

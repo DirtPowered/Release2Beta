@@ -91,9 +91,7 @@ public abstract class Entity {
         }
     }
 
-    @Deprecated
     protected void playSound(Session session, BuiltinSound sound, SoundCategory category) {
-        //TODO: Use {@link com.github.dirtpowered.releasetobeta.network.server.ModernServer#playWorldSound}
         session.send(new ServerPlayBuiltinSoundPacket(sound, category, location.getX(), location.getY(), location.getZ(), 1.f, 1.f));
     }
 }
