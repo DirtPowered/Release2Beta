@@ -33,8 +33,9 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.BlockValueType;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.ChestValue;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.ChestValueType;
-import com.github.steveice10.mc.protocol.data.game.world.block.value.GenericBlockValue;
+import com.github.steveice10.mc.protocol.data.game.world.block.value.NoteBlockValue;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.NoteBlockValueType;
+import com.github.steveice10.mc.protocol.data.game.world.block.value.PistonValue;
 import com.github.steveice10.mc.protocol.data.game.world.block.value.PistonValueType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
@@ -105,10 +106,12 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
             }
 
             modernSession.send(new ServerPlayBuiltinSoundPacket(builtinSound, SoundCategory.BLOCK, x, y, z, 1.33f, pitch));
-            if (type == ChestValueType.VIEWING_PLAYER_COUNT) {
-                modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, new ChestValue(pitch /* 0/1 */), blockId));
+            if (type instanceof ChestValueType) {
+                modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, new ChestValue(pitch /* 0/1 */), 145));
+            } else if (type instanceof NoteBlockValueType) {
+                modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, new NoteBlockValue(pitch), 73));
             } else {
-                modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, new GenericBlockValue(pitch), blockId));
+                modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, PistonValue.DOWN, 99));
             }
         }
     }
