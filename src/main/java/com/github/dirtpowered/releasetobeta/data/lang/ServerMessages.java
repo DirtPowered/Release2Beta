@@ -41,13 +41,13 @@ public class ServerMessages {
                 translatedMessage = new RichMessage(new TranslationMessage("multiplayer.disconnect.unverified_username"), false);
                 break;
             case "You can only sleep at night":
-                translatedMessage = new RichMessage(new TranslationMessage("tile.bed.noSleep"), true);
+                translatedMessage = new RichMessage(new TranslationMessage("block.minecraft.bed.no_sleep"), true);
                 break;
             case "This bed is occupied":
-                translatedMessage = new RichMessage(new TranslationMessage("tile.bed.occupied"), true);
+                translatedMessage = new RichMessage(new TranslationMessage("block.minecraft.bed.occupied"), true);
                 break;
             case "Your home bed was missing or obstructed":
-                translatedMessage = new RichMessage(new TranslationMessage("tile.bed.notValid"), true);
+                translatedMessage = new RichMessage(new TranslationMessage("block.minecraft.bed.obstructed"), true);
                 break;
             case "Kicked by admin":
                 translatedMessage = new RichMessage(new TranslationMessage("multiplayer.disconnect.kicked"), false);
