@@ -26,14 +26,8 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PreChunkP
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.steveice10.mc.protocol.data.game.chunk.Chunk;
-import com.github.steveice10.mc.protocol.data.game.chunk.Column;
-import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerUnloadChunkPacket;
-import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.packetlib.Session;
-
-import java.util.Arrays;
 
 public class PreChunkTranslator implements BetaToModern<PreChunkPacketData> {
 
@@ -42,13 +36,7 @@ public class PreChunkTranslator implements BetaToModern<PreChunkPacketData> {
         int chunkX = packet.getX();
         int chunkZ = packet.getZ();
 
-        if (packet.isFull()) {
-            int[] biomes = new int[1024];
-            Arrays.fill(biomes, 1); /* plains */
-
-            Column column = new Column(chunkX, chunkZ, new Chunk[16], new CompoundTag[0], new CompoundTag("heightMaps"), biomes);
-            modernSession.send(new ServerChunkDataPacket(column));
-        } else {
+        if (!packet.isFull()) {
             //unload
             modernSession.send(new ServerUnloadChunkPacket(chunkX, chunkZ));
             session.getBlockStorage().remove(chunkX, chunkZ);

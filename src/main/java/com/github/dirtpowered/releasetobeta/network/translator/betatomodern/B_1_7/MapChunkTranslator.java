@@ -85,7 +85,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                 }
 
                 modernSession.send(new ServerChunkDataPacket(
-                        new Column(chunkX, chunkZ, chunks, chunkTileEntities.toArray(new CompoundTag[0]), new CompoundTag(StringUtil.EMPTY_STRING)))
+                        new Column(chunkX, chunkZ, chunks, chunkTileEntities.toArray(new CompoundTag[0]), new CompoundTag(StringUtil.EMPTY_STRING), new int[1024]))
                 );
 
                 modernSession.send(new ServerUpdateLightPacket(chunkX, chunkZ, skyLight, blockLight));
