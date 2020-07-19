@@ -54,12 +54,12 @@ public class LoginTranslator implements BetaToModern<LoginPacketData> {
                 0,
                 R2BConfiguration.maxPlayers,
                 WorldType.DEFAULT,
-                16,
+                32,
                 false,
                 true
         ));
 
-        modernSession.send(new ServerDifficultyPacket(Difficulty.EASY, true));
+        modernSession.send(new ServerDifficultyPacket(Difficulty.EASY, false));
 
         player.setEntityId(entityId);
         player.setDimension(dimension);

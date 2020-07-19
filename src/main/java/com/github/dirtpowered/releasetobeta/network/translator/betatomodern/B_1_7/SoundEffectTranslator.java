@@ -24,7 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.SoundEffectPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
-import com.github.dirtpowered.releasetobeta.data.mapping.SoundEffectMap;
+import com.github.dirtpowered.releasetobeta.data.mapping.StaticValues;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -42,13 +42,11 @@ public class SoundEffectTranslator implements BetaToModern<SoundEffectPacketData
 
     @Override
     public void translate(ReleaseToBeta main, SoundEffectPacketData packet, BetaClientSession session, Session modernSession) {
-        SoundEffectMap soundEffectMap = main.getSoundEffectMap();
-
         int id = packet.getSoundType();
         int data = packet.getData();
 
         Position pos = new Position(packet.getX(), packet.getY(), packet.getZ());
-        WorldEffect worldEffect = soundEffectMap.getFromId(id);
+        WorldEffect worldEffect = StaticValues.getWorldEffect(id);
 
         if (worldEffect instanceof SoundEffect) {
             if (worldEffect == SoundEffect.RECORD) {

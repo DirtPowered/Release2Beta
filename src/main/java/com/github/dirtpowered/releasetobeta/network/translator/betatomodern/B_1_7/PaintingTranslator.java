@@ -24,9 +24,9 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PaintingPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.data.mapping.StaticValues;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.steveice10.mc.protocol.data.MagicValues;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.entity.type.PaintingType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.HangingDirection;
@@ -41,7 +41,8 @@ public class PaintingTranslator implements BetaToModern<PaintingPacketData> {
     public void translate(ReleaseToBeta main, PaintingPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
         UUID uuid = UUID.randomUUID();
-        PaintingType paintingType = MagicValues.key(PaintingType.class, packet.getTitle());
+
+        PaintingType paintingType = StaticValues.getPaintingType(packet.getTitle());
         int direction = packet.getDirection();
 
         int x = packet.getX();
@@ -56,15 +57,15 @@ public class PaintingTranslator implements BetaToModern<PaintingPacketData> {
                 z -= 1;
                 break;
             case 1:
-                hangingDirection = HangingDirection.WEST;
+                hangingDirection = HangingDirection.EAST;
                 x -= 1;
                 break;
             case 2:
-                hangingDirection = HangingDirection.SOUTH;
+                hangingDirection = HangingDirection.WEST;
                 z += 1;
                 break;
             case 3:
-                hangingDirection = HangingDirection.EAST;
+                hangingDirection = HangingDirection.SOUTH;
                 x += 1;
                 break;
             default:

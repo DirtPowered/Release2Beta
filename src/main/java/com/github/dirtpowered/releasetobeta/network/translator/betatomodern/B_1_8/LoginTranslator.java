@@ -25,6 +25,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.LoginPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
+import com.github.dirtpowered.releasetobeta.data.mapping.StaticValues;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -46,7 +47,7 @@ public class LoginTranslator implements BetaToModern<LoginPacketData> {
 
         int maxPlayers = packet.getMaxPlayers();
         GameMode gameMode = packet.getGamemode() == 0 ? GameMode.SURVIVAL : GameMode.CREATIVE;
-        Difficulty difficulty = main.getDifficultyMap().getFromId(packet.getDifficulty());
+        Difficulty difficulty = StaticValues.getDifficulty(packet.getDifficulty());
 
         session.setProtocolState(ProtocolState.PLAY);
         modernSession.send(new ServerJoinGamePacket(
@@ -57,12 +58,12 @@ public class LoginTranslator implements BetaToModern<LoginPacketData> {
                 0,
                 maxPlayers,
                 WorldType.DEFAULT,
-                16,
+                32,
                 false,
                 true
         ));
 
-        modernSession.send(new ServerDifficultyPacket(difficulty, true));
+        modernSession.send(new ServerDifficultyPacket(difficulty, false));
 
         player.setEntityId(entityId);
         player.setDimension(dimension);

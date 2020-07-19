@@ -26,6 +26,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MobSpawnP
 import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
+import com.github.dirtpowered.releasetobeta.data.mapping.StaticValues;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -53,7 +54,7 @@ public class MobSpawnTranslator implements BetaToModern<MobSpawnPacketData> {
         float yaw = packet.getYaw();
         float pitch = packet.getPitch();
 
-        MobType type = main.getMobTypeMap().getFromId(packet.getType());
+        MobType type = StaticValues.getMobType((int) packet.getType());
 
         try {
             Class<? extends Entity> c = main.getServer().getEntityRegistry().getEntityFromMobType(type);

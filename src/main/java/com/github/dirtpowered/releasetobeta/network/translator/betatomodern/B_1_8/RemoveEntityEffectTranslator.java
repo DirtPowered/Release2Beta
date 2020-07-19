@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.RemoveEntityEffectPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.data.mapping.StaticValues;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.Effect;
@@ -35,7 +36,7 @@ public class RemoveEntityEffectTranslator implements BetaToModern<RemoveEntityEf
     @Override
     public void translate(ReleaseToBeta main, RemoveEntityEffectPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
-        Effect effect = main.getEntityEffectMap().getFromId(packet.getEffectId());
+        Effect effect = StaticValues.getEntityEffect(packet.getEffectId());
 
         modernSession.send(new ServerEntityRemoveEffectPacket(entityId, effect));
     }

@@ -25,15 +25,14 @@ package com.github.dirtpowered.releasetobeta.data.mapping.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class DataHolder<T> {
+public abstract class DataHolder<K,V> {
+    private Map<K, V> registry = new HashMap<>();
 
-    private Map<Integer, T> registry = new HashMap<>();
-
-    protected void add(int from, T to) {
+    protected void add(K from, V to) {
         registry.put(from, to);
     }
 
-    public T getFromId(int id) {
+    public V getFromId(K id) {
         return registry.getOrDefault(id, null);
     }
 }
