@@ -26,18 +26,44 @@ import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
+import com.github.steveice10.opennbt.tag.builtin.IntTag;
 import com.github.steveice10.opennbt.tag.builtin.ListTag;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 
 public class ItemConverter {
 
+    private final static int[] DAMAGEABLE_ITEMS = new int[] {
+            256, 257, 258, 259, 261, 267, 268, 269, 270,
+            271, 272, 273, 274, 275, 276, 277, 278, 279,
+            283, 284, 285, 286, 290, 291, 292, 293, 294,
+            298, 299, 300, 301, 302, 303, 304, 305, 306,
+            307, 308, 309, 310, 311, 312, 313, 314, 315,
+            316, 317, 346, 359
+    };
+
     public static ItemStack betaToModern(ReleaseToBeta main, BetaItemStack item) {
         if (item == null)
             return new ItemStack(0);
 
-        int internalItemId = main.getServer().convertBlockData(item.getBlockId(), item.getData(), true);
+        CompoundTag additionalTags;
+
+        int internalItemId;
+        if (isDamageable(item.getBlockId())) {
+            internalItemId = main.getServer().convertBlockData(item.getBlockId(), 0, true);
+            additionalTags = new CompoundTag("tag");
+            additionalTags.put(new IntTag("Damage", item.getData()));
+
+            additionalTags.put(removeItemAttributes());
+        } else {
+            internalItemId = main.getServer().convertBlockData(item.getBlockId(), item.getData(), true);
+            CompoundTag attr = new CompoundTag(StringUtils.EMPTY);
+
+            attr.put(removeItemAttributes());
+            additionalTags = attr;
+        }
 
         /*if (MinecraftVersion.B_1_9.isNewerOrEqual(R2BConfiguration.version) && item.hasNbt()) {
             //TODO: translate enchants to new format
@@ -70,7 +96,7 @@ public class ItemConverter {
                 return null;
             }
         } else {*/
-        return new ItemStack(internalItemId, item.getAmount(), removeItemAttributes());
+        return new ItemStack(internalItemId, item.getAmount(), additionalTags);
         //}
     }
 
@@ -90,14 +116,11 @@ public class ItemConverter {
         return is;
     }
 
-    private static CompoundTag removeItemAttributes() {
-        CompoundTag tag = new CompoundTag(StringUtils.EMPTY);
-        tag.put(new ListTag("AttributeModifiers", Collections.emptyList()));
-        return tag;
+    private static ListTag removeItemAttributes() {
+        return new ListTag("AttributeModifiers", Collections.emptyList());
     }
 
-    public static boolean isDamageable() {
-        //TODO: finish it
-        return false;
+    private static boolean isDamageable(int legacyId) {
+        return ArrayUtils.contains(DAMAGEABLE_ITEMS, legacyId);
     }
 }

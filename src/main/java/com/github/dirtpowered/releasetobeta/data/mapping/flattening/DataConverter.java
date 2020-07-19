@@ -66,8 +66,6 @@ public class DataConverter {
         int sum = (itemId * 16) + data;
         if (oldToNewItemsMap.containsKey(sum)) {
             return oldToNewItemsMap.get(sum);
-        } else if (oldToNewItemsMap.containsKey(itemId * 16)) { //temp. workaround for damageable items
-            return oldToNewItemsMap.get(itemId * 16);
         } else {
             main.getLogger().warning("missing mapping for item " + itemId + ":" + data + "(" + combineId(itemId, data) + ")");
             return 1; //stone

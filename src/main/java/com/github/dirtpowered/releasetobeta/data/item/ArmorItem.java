@@ -23,32 +23,34 @@
 package com.github.dirtpowered.releasetobeta.data.item;
 
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
+import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
+import com.github.steveice10.opennbt.tag.builtin.IntTag;
 
 public enum ArmorItem {
-    LEATHER_HELMET(298, 3.0D, 33),
-    LEATHER_CHESTPLATE(299, 8.0D, 48),
-    LEATHER_LEGGINGS(300, 6.0D, 45),
-    LEATHER_BOOTS(301, 3.0D, 39),
+    LEATHER_HELMET(563, 3.0D, 33),
+    LEATHER_CHESTPLATE(564, 8.0D, 48),
+    LEATHER_LEGGINGS(565, 6.0D, 45),
+    LEATHER_BOOTS(566, 3.0D, 39),
 
-    CHAINMAIL_HELMET(302, 3.0D, 66),
-    CHAINMAIL_CHESTPLATE(303, 8.0D, 96),
-    CHAINMAIL_LEGGINGS(304, 6.0D, 90),
-    CHAINMAIL_BOOTS(305, 3.0D, 78),
+    CHAINMAIL_HELMET(567, 3.0D, 66),
+    CHAINMAIL_CHESTPLATE(568, 8.0D, 96),
+    CHAINMAIL_LEGGINGS(569, 6.0D, 90),
+    CHAINMAIL_BOOTS(570, 3.0D, 78),
 
-    IRON_HELMET(306, 3.0D, 132),
-    IRON_CHESTPLATE(307, 8.0D, 192),
-    IRON_LEGGINGS(308, 6.0D, 180),
-    IRON_BOOTS(309, 3.0D, 156),
+    IRON_HELMET(571, 3.0D, 132),
+    IRON_CHESTPLATE(572, 8.0D, 192),
+    IRON_LEGGINGS(573, 6.0D, 180),
+    IRON_BOOTS(574, 3.0D, 156),
 
-    DIAMOND_HELMET(310, 3.0D, 264),
-    DIAMOND_CHESTPLATE(311, 8.0D, 348),
-    DIAMOND_LEGGINGS(312, 6.0D, 360),
-    DIAMOND_BOOTS(313, 3.0D, 312),
+    DIAMOND_HELMET(575, 3.0D, 264),
+    DIAMOND_CHESTPLATE(576, 8.0D, 348),
+    DIAMOND_LEGGINGS(577, 6.0D, 360),
+    DIAMOND_BOOTS(578, 3.0D, 312),
 
-    GOLDEN_HELMET(314, 3.0D, 66),
-    GOLDEN_CHESTPLATE(315, 8.0D, 96),
-    GOLDEN_LEGGINGS(316, 6.0D, 90),
-    GOLDEN_BOOTS(317, 3.0D, 78);
+    GOLDEN_HELMET(579, 3.0D, 66),
+    GOLDEN_CHESTPLATE(580, 8.0D, 96),
+    GOLDEN_LEGGINGS(581, 6.0D, 90),
+    GOLDEN_BOOTS(582, 3.0D, 78);
 
     private int itemId;
     private int maxDurability;
@@ -63,8 +65,11 @@ public enum ArmorItem {
     public static double getArmorValueFromItem(ItemStack itemStack) {
         for (ArmorItem armorItem : values()) {
             if (itemStack.getId() == armorItem.itemId) {
-                //TODO: use isDamageable
-                //return (armorItem.maxDurability - itemStack.getData()) * armorItem.armorValue / armorItem.maxDurability;
+                CompoundTag rootTag = itemStack.getNbt();
+                IntTag damageTag = rootTag.get("Damage");
+
+                int damage = damageTag.getValue();
+                return (armorItem.maxDurability - damage) * armorItem.armorValue / armorItem.maxDurability;
             }
         }
 
