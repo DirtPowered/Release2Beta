@@ -49,10 +49,12 @@ public class SleepPacketTranslator implements BetaToModern<SleepPacketData> {
         Position pos = new Position(x, y, z);
 
         List<EntityMetadata> metadataList = new LinkedList<>();
-        metadataList.add(new EntityMetadata(13, MetadataType.POSITION, pos));
 
-        if (entityId != session.getPlayer().getEntityId())
+        if (entityId != session.getPlayer().getEntityId()) {
             metadataList.add(new EntityMetadata(6, MetadataType.POSE, Pose.SLEEPING));
+        }
+
+        metadataList.add(new EntityMetadata(13, MetadataType.OPTIONAL_POSITION, pos));
 
         modernSession.send(new ServerEntityMetadataPacket(entityId, metadataList.toArray(new EntityMetadata[0])));
     }
