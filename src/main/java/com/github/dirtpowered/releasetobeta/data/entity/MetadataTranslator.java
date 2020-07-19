@@ -34,6 +34,7 @@ import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.MetadataType;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Pose;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntitySetPassengersPacket;
@@ -91,9 +92,20 @@ public class MetadataTranslator {
                         if (betaPlayer.isInVehicle()) {
                             target.sendPacket(new ServerEntitySetPassengersPacket(betaPlayer.getVehicleEntityId(), new int[0]));
                         }
+
+                        if (betaPlayer.isSneaking()) {
+                            metadataList.add(new EntityMetadata(6, MetadataType.POSE, Pose.STANDING));
+                        }
                     }
 
                     metadataList.add(new EntityMetadata(0, MetadataType.BYTE, value));
+                } else if (((Byte) value).intValue() == 0x02) {
+                    if (e instanceof BetaPlayer) {
+                        BetaPlayer betaPlayer = (BetaPlayer) e;
+                        betaPlayer.setSneaking(true);
+
+                        metadataList.add(new EntityMetadata(6, MetadataType.POSE, Pose.SNEAKING));
+                    }
                 } else {
                     metadataList.add(new EntityMetadata(0, MetadataType.BYTE, value));
                 }

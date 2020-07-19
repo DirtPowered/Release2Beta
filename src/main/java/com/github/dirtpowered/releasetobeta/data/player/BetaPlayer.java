@@ -49,6 +49,9 @@ public class BetaPlayer extends Entity implements Mob {
     @Setter
     private int vehicleEntityId;
 
+    @Setter
+    private boolean sneaking;
+
     private String username;
     private GameProfile gameProfile;
 
