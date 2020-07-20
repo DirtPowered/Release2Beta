@@ -27,6 +27,7 @@ import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerUnloadChunkPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerUpdateViewPositionPacket;
 import com.github.steveice10.packetlib.Session;
 
 public class PreChunkTranslator implements BetaToModern<PreChunkPacketData> {
@@ -40,6 +41,9 @@ public class PreChunkTranslator implements BetaToModern<PreChunkPacketData> {
             //unload
             modernSession.send(new ServerUnloadChunkPacket(chunkX, chunkZ));
             session.getBlockStorage().remove(chunkX, chunkZ);
+        } else {
+            //TODO: send only when needed
+            modernSession.send(new ServerUpdateViewPositionPacket(chunkX, chunkZ));
         }
     }
 }
