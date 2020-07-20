@@ -29,12 +29,23 @@ import com.github.dirtpowered.releasetobeta.data.entity.DummyEntity;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
+import lombok.Getter;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class Utils {
+
+    @Getter
+    static int[] filledBiomeData;
+
+    static {
+        filledBiomeData = new int[1024];
+        Arrays.fill(filledBiomeData, 1);
+    }
+
     public static double toModernPos(int pos) {
         return pos / 32.0D;
     }

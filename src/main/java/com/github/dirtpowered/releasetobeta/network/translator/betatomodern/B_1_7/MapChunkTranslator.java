@@ -32,6 +32,7 @@ import com.github.dirtpowered.releasetobeta.data.chunk.ModernChunk;
 import com.github.dirtpowered.releasetobeta.data.entity.tile.TileEntity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.chunk.Chunk;
 import com.github.steveice10.mc.protocol.data.game.chunk.Column;
 import com.github.steveice10.mc.protocol.data.game.chunk.NibbleArray3d;
@@ -85,7 +86,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                 }
 
                 modernSession.send(new ServerChunkDataPacket(
-                        new Column(chunkX, chunkZ, chunks, chunkTileEntities.toArray(new CompoundTag[0]), new CompoundTag(StringUtil.EMPTY_STRING), new int[1024]))
+                        new Column(chunkX, chunkZ, chunks, chunkTileEntities.toArray(new CompoundTag[0]), new CompoundTag(StringUtil.EMPTY_STRING), Utils.getFilledBiomeData()))
                 );
 
                 modernSession.send(new ServerUpdateLightPacket(chunkX, chunkZ, skyLight, blockLight));
