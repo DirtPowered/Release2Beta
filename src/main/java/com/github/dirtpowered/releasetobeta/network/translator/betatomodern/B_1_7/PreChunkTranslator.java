@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PreChunkPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerUnloadChunkPacket;
@@ -42,8 +43,20 @@ public class PreChunkTranslator implements BetaToModern<PreChunkPacketData> {
             modernSession.send(new ServerUnloadChunkPacket(chunkX, chunkZ));
             session.getBlockStorage().remove(chunkX, chunkZ);
         } else {
-            //TODO: send only when needed
-            modernSession.send(new ServerUpdateViewPositionPacket(chunkX, chunkZ));
+            ModernPlayer player = session.getPlayer();
+            /*
+             * Based on ViaVersion implementation (author: Gerrygames)
+             * commit: a4085c1a5a9d0a0bd6927c8c798519ea16b1d1ab
+             */
+            int distX = Math.abs(player.getViewPosX() - chunkX);
+            int distZ = Math.abs(player.getViewPosZ() - chunkZ);
+
+            if (distX > 32 || distZ > 32) {
+                player.setViewPosX(chunkX);
+                player.setViewPosZ(chunkZ);
+
+                modernSession.send(new ServerUpdateViewPositionPacket(chunkX, chunkZ));
+            }
         }
     }
 }

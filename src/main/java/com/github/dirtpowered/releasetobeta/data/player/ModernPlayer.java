@@ -27,6 +27,7 @@ import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
 import com.github.dirtpowered.releasetobeta.data.entity.model.PlayerAction;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
+import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
@@ -75,6 +76,8 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
     private boolean sprinting;
     private float health;
     private long lastLocationUpdate;
+    private int viewPosX;
+    private int viewPosZ;
 
     public ModernPlayer(BetaClientSession session, UUID clientId) {
         super(0); //will be changed later
@@ -153,7 +156,7 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
 
         int itemId = itemstack.getId();
 
-        if (itemId == 323) {
+        if (itemId == DataConverter.getNewItemId(323, 0)) {
             sendPacket(new ServerOpenTileEntityEditorPacket(new Position(x, y, z)));
         }
     }
