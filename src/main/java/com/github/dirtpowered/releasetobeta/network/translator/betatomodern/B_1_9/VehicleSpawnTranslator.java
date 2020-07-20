@@ -71,11 +71,11 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 data = MinecartType.NORMAL;
                 break;
             case 11:
-                type = ObjectType.MINECART;
+                type = ObjectType.CHEST_MINECART;
                 data = MinecartType.CHEST;
                 break;
             case 12:
-                type = ObjectType.MINECART;
+                type = ObjectType.FURNACE_MINECART;
                 data = MinecartType.POWERED;
                 break;
             case 60:
