@@ -28,13 +28,17 @@ import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
-import com.github.steveice10.mc.protocol.data.game.world.block.ExplodedBlockRecord;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerExplosionPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerMultiBlockChangePacket;
 import com.github.steveice10.packetlib.Session;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
@@ -47,16 +51,18 @@ public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
 
         float radius = packet.getExplosionSize();
 
-        List<ExplodedBlockRecord> records = new ArrayList<>();
+        List<BlockChangeRecord> records = new ArrayList<>();
         for (BlockLocation destroyedBlockPosition : packet.getDestroyedBlockPositions()) {
             int posX = destroyedBlockPosition.getX();
             int posY = destroyedBlockPosition.getY();
             int posZ = destroyedBlockPosition.getZ();
 
-            records.add(new ExplodedBlockRecord(posX, posY, posZ));
+            records.add(new BlockChangeRecord(new Position(posX, posY, posZ), new BlockState(0)));
         }
 
-        modernSession.send(new ServerExplosionPacket(x, y, z, radius, records, 0, 0, 0));
+        modernSession.send(new ServerExplosionPacket(x, y, z, radius, Collections.emptyList(), 0, 0, 0));
+        modernSession.send(new ServerMultiBlockChangePacket(records.toArray(new BlockChangeRecord[0])));
+
         main.getServer().playWorldSound(modernSession, (int) x, (int) y, (int) z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT);
     }
 }
