@@ -55,9 +55,8 @@ public class ClientPlayerUseItemTranslator implements ModernToBeta<ClientPlayerU
         ItemStack itemStack = inventory.getItemInHand();
 
         // Updating item amount in beta is done client-side (modern client still do that, but not for arrows)
-        //TODO: Use new IDs
-        if (!MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version) && itemStack != null && itemStack.getId() == 261 /* bow */) {
-            int slot = inventory.removeItem(262 /* arrow */);
+        if (!MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version) && itemStack != null && itemStack.getId() == 525 /* bow */) {
+            int slot = inventory.removeItem(526 /* arrow */);
             if (slot != -1) {
                 modernSession.send(new ServerSetSlotPacket(0, slot, inventory.getItem(slot)));
             }

@@ -39,7 +39,7 @@ import java.util.UUID;
 public class Utils {
 
     @Getter
-    static int[] filledBiomeData;
+    final static int[] filledBiomeData;
 
     static {
         filledBiomeData = new int[1024];

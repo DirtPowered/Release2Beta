@@ -71,13 +71,11 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
          * Special note on using buckets: When using buckets, the Notchian client might send two packets: first a normal and then a special case
          * https://wiki.vg/index.php?title=Protocol&oldid=689#Player_Block_Placement_.280x0F.29
          */
-
-        //TODO: Use new IDs
-        if (itemStack.getId() == 327 || itemStack.getId() == 326 || itemStack.getId() == 325 | itemStack.getId() == 335)
+        if (itemStack.getId() == 597 || itemStack.getId() == 596 || itemStack.getId() == 595 | itemStack.getId() == 604)
             betaSession.sendPacket(blockPlacePacketData);
 
         // b1.7.3 server sometimes fails to update current slot
-        if (ItemFood.isFoodItem(itemStack.getId()) || itemStack.getId() == 323) {
+        if (ItemFood.isFoodItem(itemStack.getId()) || itemStack.getId() == 589) {
             int currentSlot = inventory.getCurrentSlot();
             inventory.decrement(currentSlot);
 

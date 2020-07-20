@@ -25,20 +25,20 @@ package com.github.dirtpowered.releasetobeta.data.item;
 import java.util.Arrays;
 
 public enum ItemFood {
-    APPLE(260),
-    BREAD(297),
-    PORK(319),
-    GRILLED_PORK(320),
-    GOLDEN_APPLE(322),
-    RAW_FISH(349),
-    COOKED_FISH(350),
-    COOKIE(357),
-    MELON(360),
-    RAW_BEEF(363),
-    COOKED_BEEF(364),
-    RAW_CHICKEN(365),
-    COOKED_CHICKEN(366),
-    ROTTEN_FLESH(367);
+    APPLE(524),
+    BREAD(562),
+    PORK(584),
+    GRILLED_PORK(585),
+    GOLDEN_APPLE(587),
+    RAW_FISH(625),
+    COOKED_FISH(629),
+    COOKIE(670),
+    MELON(673),
+    RAW_BEEF(677),
+    COOKED_BEEF(678),
+    RAW_CHICKEN(679),
+    COOKED_CHICKEN(680),
+    ROTTEN_FLESH(681);
 
     private int itemId;
 
@@ -47,8 +47,6 @@ public enum ItemFood {
     }
 
     public static boolean isFoodItem(int itemId) {
-        return Arrays.stream(values()).anyMatch(itemFood -> {
-            return itemId == itemFood.itemId;
-        });
+        return Arrays.stream(values()).anyMatch(itemFood -> itemId == itemFood.itemId);
     }
 }
