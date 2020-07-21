@@ -61,8 +61,9 @@ public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
         }
 
         modernSession.send(new ServerExplosionPacket(x, y, z, radius, Collections.emptyList(), 0, 0, 0));
-        modernSession.send(new ServerMultiBlockChangePacket(records.toArray(new BlockChangeRecord[0])));
-
+        if (!records.isEmpty()) {
+            modernSession.send(new ServerMultiBlockChangePacket(records.toArray(new BlockChangeRecord[0])));
+        }
         main.getServer().playWorldSound(modernSession, (int) x, (int) y, (int) z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT);
     }
 }
