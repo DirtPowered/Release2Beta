@@ -32,6 +32,7 @@ import com.github.dirtpowered.releasetobeta.utils.interfaces.Tickable;
 import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.ClientKeepAlivePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientPluginMessagePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientSettingsPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerAbilitiesPacket;
@@ -44,7 +45,6 @@ import com.github.steveice10.mc.protocol.packet.status.client.StatusQueryPacket;
 import com.github.steveice10.packetlib.Server;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.server.ServerAdapter;
-import com.github.steveice10.packetlib.event.server.ServerClosingEvent;
 import com.github.steveice10.packetlib.event.server.SessionAddedEvent;
 import com.github.steveice10.packetlib.event.server.SessionRemovedEvent;
 import com.github.steveice10.packetlib.event.session.DisconnectingEvent;
@@ -77,6 +77,7 @@ public class ServerConnection implements Tickable {
             ClientSettingsPacket.class,
             StatusPingPacket.class,
             ClientPluginMessagePacket.class,
+            ClientKeepAlivePacket.class,
             ClientSteerBoatPacket.class,
             ClientVehicleMovePacket.class
     };
@@ -95,14 +96,6 @@ public class ServerConnection implements Tickable {
         server.setGlobalFlag(MinecraftConstants.SERVER_LOGIN_HANDLER_KEY, new LoginHandler(main));
 
         server.addListener(new ServerAdapter() {
-
-            @Override
-            public void serverClosing(ServerClosingEvent event) {
-                event.getServer().getSessions().forEach(session -> {
-                    if (session != null)
-                        session.disconnect("Server closed", true);
-                });
-            }
 
             @Override
             public void sessionAdded(SessionAddedEvent event) {
@@ -141,7 +134,7 @@ public class ServerConnection implements Tickable {
             }
         });
 
-        server.bind();
+        server.bind(true); // wait for connection to be established
     }
 
     @SuppressWarnings("unchecked")

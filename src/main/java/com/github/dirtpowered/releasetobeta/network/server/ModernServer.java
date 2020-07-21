@@ -47,6 +47,7 @@ import lombok.Getter;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class ModernServer {
     private ProfileCache profileCache;
     private CommandRegistry commandRegistry;
     private String[] commands;
-    private BufferedImage serverIcon;
+    private byte[] serverIcon;
 
     private MetadataTranslator metadataTranslator;
     private MovementTranslator movementTranslator;
@@ -80,7 +81,12 @@ public class ModernServer {
         this.movementTranslator = new MovementTranslator();
 
         try {
-            this.serverIcon = ImageIO.read(new File("server-icon.png"));
+            BufferedImage bufferedImage = ImageIO.read(new File("server-icon.png"));
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            ImageIO.write(bufferedImage, "png", outputStream);
+
+            this.serverIcon = outputStream.toByteArray();
         } catch (IOException e) {
             main.getLogger().warning("unable to read server-icon.png (missing?)");
         }
@@ -140,7 +146,7 @@ public class ModernServer {
         return inInventory ? DataConverter.getNewItemId(blockId, blockData) : DataConverter.getNewBlockId(blockId, blockData);
     }
 
-    public BufferedImage getServerIcon() {
+    public byte[] getServerIcon() {
         return serverIcon;
     }
 

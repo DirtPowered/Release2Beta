@@ -24,7 +24,7 @@ package com.github.dirtpowered.releasetobeta.data.mapping;
 
 import com.github.dirtpowered.releasetobeta.data.mapping.model.DataHolder;
 import com.github.steveice10.mc.protocol.data.game.entity.Effect;
-import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
+import com.github.steveice10.mc.protocol.data.game.entity.type.EntityType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.PaintingType;
 import com.github.steveice10.mc.protocol.data.game.setting.Difficulty;
 import com.github.steveice10.mc.protocol.data.game.world.effect.ParticleEffect;
@@ -34,14 +34,14 @@ import com.github.steveice10.mc.protocol.data.game.world.effect.WorldEffect;
 public class StaticValues {
     private static DifficultyMap difficultyMap;
     private static EntityEffectMap entityEffectMap;
-    private static MobTypeMap mobTypeMap;
+    private static EntityTypeMap entityTypeMap;
     private static PaintingTypeMap paintingTypeMap;
     private static SoundEffectMap soundEffectMap;
 
     static {
         difficultyMap = new DifficultyMap();
         entityEffectMap = new EntityEffectMap();
-        mobTypeMap = new MobTypeMap();
+        entityTypeMap = new EntityTypeMap();
         paintingTypeMap = new PaintingTypeMap();
         soundEffectMap = new SoundEffectMap();
     }
@@ -54,8 +54,8 @@ public class StaticValues {
         return entityEffectMap.getFromId(effect);
     }
 
-    public static MobType getMobType(int mobId) {
-        return mobTypeMap.getFromId(mobId);
+    public static EntityType getEntityType(int mobId) {
+        return entityTypeMap.getFromId(mobId);
     }
 
     public static PaintingType getPaintingType(String paintingStr) {
@@ -101,32 +101,32 @@ public class StaticValues {
         }
     }
 
-    static class MobTypeMap extends DataHolder<Integer, MobType> {
+    static class EntityTypeMap extends DataHolder<Integer, EntityType> {
 
-        MobTypeMap() {
-            add(50, MobType.CREEPER);
-            add(51, MobType.SKELETON);
-            add(52, MobType.SPIDER);
-            add(53, MobType.GIANT);
-            add(54, MobType.ZOMBIE);
-            add(55, MobType.SLIME);
-            add(56, MobType.GHAST);
-            add(57, MobType.ZOMBIE_PIGMAN);
-            add(58, MobType.ENDERMAN);
-            add(59, MobType.CAVE_SPIDER);
-            add(60, MobType.SILVERFISH);
-            add(61, MobType.BLAZE);
-            add(62, MobType.MAGMA_CUBE);
-            add(63, MobType.ENDER_DRAGON);
-            add(90, MobType.PIG);
-            add(91, MobType.SHEEP);
-            add(92, MobType.COW);
-            add(93, MobType.CHICKEN);
-            add(94, MobType.SQUID);
-            add(95, MobType.WOLF);
-            add(96, MobType.MOOSHROOM);
-            add(97, MobType.SNOW_GOLEM);
-            add(120, MobType.VILLAGER);
+        EntityTypeMap() {
+            add(50, EntityType.CREEPER);
+            add(51, EntityType.SKELETON);
+            add(52, EntityType.SPIDER);
+            add(53, EntityType.GIANT);
+            add(54, EntityType.ZOMBIE);
+            add(55, EntityType.SLIME);
+            add(56, EntityType.GHAST);
+            add(57, EntityType.ZOMBIE_PIGMAN);
+            add(58, EntityType.ENDERMAN);
+            add(59, EntityType.CAVE_SPIDER);
+            add(60, EntityType.SILVERFISH);
+            add(61, EntityType.BLAZE);
+            add(62, EntityType.MAGMA_CUBE);
+            add(63, EntityType.ENDER_DRAGON);
+            add(90, EntityType.PIG);
+            add(91, EntityType.SHEEP);
+            add(92, EntityType.COW);
+            add(93, EntityType.CHICKEN);
+            add(94, EntityType.SQUID);
+            add(95, EntityType.WOLF);
+            add(96, EntityType.MOOSHROOM);
+            add(97, EntityType.SNOW_GOLEM);
+            add(120, EntityType.VILLAGER);
         }
     }
 

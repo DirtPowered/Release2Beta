@@ -76,7 +76,7 @@ public class PlayerInventory {
         if (slotToUpdate > 0) {
             ItemStack i = inventoryItems[slotToUpdate];
             int amount = i.getAmount();
-            amount = --amount;
+            amount -= 1;
 
             inventoryItems[slotToUpdate] = new ItemStack(i.getId(), amount, i.getNbt());
 

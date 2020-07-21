@@ -31,9 +31,9 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
-import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
+import com.github.steveice10.mc.protocol.data.game.entity.type.EntityType;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityMetadataPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnMobPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnLivingEntityPacket;
 import com.github.steveice10.packetlib.Session;
 
 import java.lang.reflect.Constructor;
@@ -54,7 +54,7 @@ public class MobSpawnTranslator implements BetaToModern<MobSpawnPacketData> {
         float yaw = packet.getYaw();
         float pitch = packet.getPitch();
 
-        MobType type = StaticValues.getMobType((int) packet.getType());
+        EntityType type = StaticValues.getEntityType((int) packet.getType());
 
         try {
             Class<? extends Entity> c = main.getServer().getEntityRegistry().getEntityFromMobType(type);
@@ -67,10 +67,9 @@ public class MobSpawnTranslator implements BetaToModern<MobSpawnPacketData> {
 
             EntityMetadata[] metadata = main.getServer().getMetadataTranslator().toModernMetadata(session.getPlayer(), modernSession, object, packet.getMetadata());
 
-            modernSession.send(new ServerSpawnMobPacket(entityId, uuid, type, x, y, z, yaw, pitch, yaw, 0, 0, 0));
+            modernSession.send(new ServerSpawnLivingEntityPacket(entityId, uuid, type, x, y, z, yaw, pitch, yaw, 0, 0, 0));
             modernSession.send(new ServerEntityMetadataPacket(entityId, metadata));
 
-            //Logger.info("spawning {} [entityId={}]", c.getSimpleName(), entityId);
             object.onSpawn(modernSession);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();

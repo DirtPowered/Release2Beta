@@ -32,13 +32,13 @@ import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverte
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
-import com.github.steveice10.mc.protocol.data.game.entity.type.object.FallingBlockData;
-import com.github.steveice10.mc.protocol.data.game.entity.type.object.MinecartType;
-import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectData;
-import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectType;
-import com.github.steveice10.mc.protocol.data.game.entity.type.object.ProjectileData;
+import com.github.steveice10.mc.protocol.data.game.entity.object.FallingBlockData;
+import com.github.steveice10.mc.protocol.data.game.entity.object.MinecartType;
+import com.github.steveice10.mc.protocol.data.game.entity.object.ObjectData;
+import com.github.steveice10.mc.protocol.data.game.entity.object.ProjectileData;
+import com.github.steveice10.mc.protocol.data.game.entity.type.EntityType;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityVelocityPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnEntityPacket;
 import com.github.steveice10.packetlib.Session;
 
 import java.util.UUID;
@@ -53,7 +53,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
 
         boolean isFireball = false;
 
-        ObjectType type = null;
+        EntityType type = null;
         ObjectData data = null;
 
         double x = Utils.toModernPos(packet.getX());
@@ -66,19 +66,19 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
 
         switch (packet.getType()) {
             case 10:
-                type = ObjectType.MINECART;
+                type = EntityType.MINECART;
                 data = MinecartType.NORMAL;
                 break;
             case 11:
-                type = ObjectType.CHEST_MINECART;
+                type = EntityType.MINECART_CHEST;
                 data = MinecartType.CHEST;
                 break;
             case 12:
-                type = ObjectType.FURNACE_MINECART;
+                type = EntityType.MINECART_FURNACE;
                 data = MinecartType.POWERED;
                 break;
             case 60:
-                type = ObjectType.ARROW;
+                type = EntityType.ARROW;
                 /*
                  * https://wiki.vg/Object_Data
                  * The entity ID of the shooter + 1
@@ -88,18 +88,18 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 data = new ProjectileData(ownerId + 1);
                 break;
             case 50:
-                type = ObjectType.TNT;
+                type = EntityType.PRIMED_TNT;
                 break;
             case 61:
-                type = ObjectType.SNOWBALL;
+                type = EntityType.SNOWBALL;
                 data = new ProjectileData(ownerId);
                 break;
             case 62:
-                type = ObjectType.EGG;
+                type = EntityType.THROWN_EGG;
                 data = new ProjectileData(ownerId);
                 break;
             case 90:
-                type = ObjectType.FISHING_BOBBER;
+                type = EntityType.FISHING_BOBBER;
                 Location bobberLocation = new Location(x, y, z);
                 Entity nearest = Utils.getNearestEntity(session.getEntityCache(), bobberLocation);
 
@@ -110,31 +110,31 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 }
                 break;
             case 1:
-                type = ObjectType.BOAT;
+                type = EntityType.BOAT;
                 break;
             case 63:
-                type = ObjectType.FIREBALL;
+                type = EntityType.FIREBALL;
                 data = new ProjectileData(0);
                 isFireball = true;
                 break;
             case 70:
-                type = ObjectType.FALLING_BLOCK;
+                type = EntityType.FALLING_BLOCK;
                 data = new FallingBlockData(DataConverter.getNewBlockId(12, 0), 0);
                 break;
             case 71:
-                type = ObjectType.FALLING_BLOCK;
+                type = EntityType.FALLING_BLOCK;
                 data = new FallingBlockData(DataConverter.getNewBlockId(13, 0), 0);
                 break;
         }
 
         // cache vehicles
-        if (type == ObjectType.MINECART) {
+        if (type == EntityType.MINECART) {
             EntityMinecart minecart = new EntityMinecart(entityId);
             minecart.onSpawn(modernSession);
 
             minecart.setLocation(new Location(x, y, z));
             session.getEntityCache().addEntity(entityId, minecart);
-        } else if (type == ObjectType.BOAT) {
+        } else if (type == EntityType.BOAT) {
             EntityBoat boat = new EntityBoat(entityId);
             boat.onSpawn(modernSession);
 
@@ -150,10 +150,10 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
             vecY = packet.getVelocityY() / 8000.0D;
             vecZ = packet.getVelocityZ() / 8000.0D;
 
-            modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, type, data, x, y, z, 0, 0, vecX, vecY, vecZ));
+            modernSession.send(new ServerSpawnEntityPacket(entityId, uuid, type, data, x, y, z, 0, 0, vecX, vecY, vecZ));
             modernSession.send(new ServerEntityVelocityPacket(entityId, vecX, vecY, vecZ));
         } else {
-            modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, type, data, x, y, z, 0, 0));
+            modernSession.send(new ServerSpawnEntityPacket(entityId, uuid, type, data, x, y, z, 0, 0));
         }
     }
 }

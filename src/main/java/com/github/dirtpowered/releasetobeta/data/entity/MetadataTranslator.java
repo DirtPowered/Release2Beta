@@ -35,7 +35,7 @@ import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.MetadataType;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Pose;
-import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
+import com.github.steveice10.mc.protocol.data.game.entity.type.EntityType;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntitySetPassengersPacket;
 import com.github.steveice10.packetlib.Session;
@@ -46,10 +46,10 @@ import java.util.List;
 public class MetadataTranslator {
 
     public EntityMetadata[] toModernMetadata(ModernPlayer target, Session modernSession, Entity e, List<WatchableObject> oldMetadata) {
-        MobType mobType = null;
+        EntityType entityType = null;
 
         if (e != null)
-            mobType = e.getMobType();
+            entityType = e.getEntityType();
 
         List<EntityMetadata> metadataList = new ArrayList<>();
 
@@ -115,9 +115,9 @@ public class MetadataTranslator {
 
                 if (type == MetadataType.BYTE && index == 16) {
                     //sheep color
-                    if (mobType == MobType.SHEEP) {
+                    if (entityType == EntityType.SHEEP) {
                         metadataList.add(new EntityMetadata(16, MetadataType.BYTE, value));
-                    } else if (mobType == MobType.CREEPER) {
+                    } else if (entityType == EntityType.CREEPER) {
                         //creeper fuse
                         Byte b = (Byte) value;
                         if (e instanceof EntityCreeper) {
@@ -128,33 +128,33 @@ public class MetadataTranslator {
                         }
 
                         metadataList.add(new EntityMetadata(15, MetadataType.INT, b.intValue()));
-                    } else if (mobType == MobType.WOLF) {
+                    } else if (entityType == EntityType.WOLF) {
                         metadataList.add(new EntityMetadata(16, MetadataType.BYTE, value));
-                    } else if (mobType == MobType.PIG) {
+                    } else if (entityType == EntityType.PIG) {
                         boolean hasSaddle = ((Byte) value).intValue() == 1;
 
                         metadataList.add(new EntityMetadata(16, MetadataType.BOOLEAN, hasSaddle));
-                    } else if (mobType == MobType.SLIME || mobType == MobType.MAGMA_CUBE) {
+                    } else if (entityType == EntityType.SLIME || entityType == EntityType.MAGMA_CUBE) {
                         Byte b = (Byte) value;
 
                         metadataList.add(new EntityMetadata(15, MetadataType.INT, b.intValue()));
-                    } else if (mobType == MobType.GHAST) {
+                    } else if (entityType == EntityType.GHAST) {
                         boolean isAggressive = ((Byte) value).intValue() == 1;
 
                         metadataList.add(new EntityMetadata(15, MetadataType.BOOLEAN, isAggressive));
-                    } else if (mobType == MobType.ENDERMAN) {
+                    } else if (entityType == EntityType.ENDERMAN) {
                         int itemId = ((Byte) value).intValue();
 
                         if (((Byte) value).intValue() > 0) {
                             metadataList.add(new EntityMetadata(15, MetadataType.BLOCK_STATE, new BlockState(DataConverter.getNewItemId(itemId, 0))));
                         }
-                    } else if (mobType == MobType.BLAZE) {
+                    } else if (entityType == EntityType.BLAZE) {
                         metadataList.add(new EntityMetadata(15, MetadataType.BYTE, value));
                     }
                 }
 
                 if (type == MetadataType.BYTE && index == 17) {
-                    if (mobType == MobType.CREEPER || mobType == MobType.ENDERMAN) {
+                    if (entityType == EntityType.CREEPER || entityType == EntityType.ENDERMAN) {
                         //is powered or enderman screaming
                         boolean state = ((Byte) value).intValue() == 1;
                         metadataList.add(new EntityMetadata(16, MetadataType.BOOLEAN, state));
@@ -167,7 +167,7 @@ public class MetadataTranslator {
                 }
 
                 if (type == MetadataType.INT && index == 16) {
-                    if (mobType == MobType.ENDER_DRAGON) {
+                    if (entityType == EntityType.ENDER_DRAGON) {
                         int health = (int) value;
                         EntityEnderDragon enderDragon = (EntityEnderDragon) e;
                         enderDragon.updateHealth(modernSession, health);

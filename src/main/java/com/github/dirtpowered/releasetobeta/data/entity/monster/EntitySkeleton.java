@@ -27,7 +27,7 @@ import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
 import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
 import com.github.steveice10.mc.protocol.data.game.entity.EquipmentSlot;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
-import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
+import com.github.steveice10.mc.protocol.data.game.entity.type.EntityType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityEquipmentPacket;
@@ -36,7 +36,7 @@ import com.github.steveice10.packetlib.Session;
 public class EntitySkeleton extends Entity implements Mob {
 
     public EntitySkeleton(int entityId) {
-        super(entityId, MobType.SKELETON);
+        super(entityId, EntityType.SKELETON);
     }
 
     @Override

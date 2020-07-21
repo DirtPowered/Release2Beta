@@ -25,7 +25,7 @@ package com.github.dirtpowered.releasetobeta.data.entity.model;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
-import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
+import com.github.steveice10.mc.protocol.data.game.entity.type.EntityType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayBuiltinSoundPacket;
@@ -41,7 +41,7 @@ public abstract class Entity {
     @Setter
     private int entityId;
 
-    private MobType mobType;
+    private EntityType entityType;
     private boolean betaPlayer;
 
     @Setter
@@ -49,9 +49,9 @@ public abstract class Entity {
 
     private Random rand;
 
-    public Entity(int entityId, MobType type) {
+    public Entity(int entityId, EntityType type) {
         this.entityId = entityId;
-        this.mobType = type;
+        this.entityType = type;
         this.betaPlayer = false;
 
         this.location = new Location(0, 0, 0);
@@ -82,7 +82,7 @@ public abstract class Entity {
         if (rand.nextDouble() < 0.0074D) {
             double dist = location.distanceTo(player.getLocation());
             if (dist < Constants.SOUND_RANGE) {
-                if (this instanceof Mob && getMobType() != null) {
+                if (this instanceof Mob && getEntityType() != null) {
                     Mob mob = (Mob) this;
 
                     mob.onUpdate(session);

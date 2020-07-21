@@ -114,7 +114,11 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     int internalBlockId = main.getServer().convertBlockData(legacyId, legacyData, false);
 
                     if (skylight) {
-                        skyLight.set(x, y, z, chunk.getSkyLightAt(x, y + height, z));
+                        if (legacyId == 54) {
+                            skyLight.set(x, y, z, 15); // fix chest lighting
+                        } else {
+                            skyLight.set(x, y, z, chunk.getSkyLightAt(x, y + height, z));
+                        }
                     }
 
                     blockLight.set(x, y, z, chunk.getBlockLightAt(x, y + height, z));

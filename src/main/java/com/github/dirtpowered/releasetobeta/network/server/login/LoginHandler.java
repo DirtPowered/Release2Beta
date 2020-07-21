@@ -52,31 +52,26 @@ public class LoginHandler implements ServerLoginHandler {
 
     @Override
     public void loggedIn(Session session) {
-        try {
-            if (session.isConnected()) {
-                if ((System.currentTimeMillis() - lastLogin) < R2BConfiguration.globalConnectionThrottle) {
-                    session.disconnect(ChatUtils.colorize(R2BConfiguration.connectionThrottleKickMessage));
-                    return;
-                }
-
-                this.lastLogin = System.currentTimeMillis();
-
-                if (main.getBootstrap().getOnline() + 1 > R2BConfiguration.maxPlayers && main.getBootstrap().getPlatform() != Platform.BUKKIT) {
-                    session.disconnect(ChatUtils.colorize(R2BConfiguration.serverFullMessage));
-                    return;
-                }
-
-                UUID uniqueId = UUID.randomUUID();
-                session.setFlag("uniqueId", uniqueId);
-
-                createClientSession(uniqueId, session);
-            }
-        } catch (InterruptedException e) {
-            main.getLogger().error(e.getMessage());
+        if ((System.currentTimeMillis() - lastLogin) < R2BConfiguration.globalConnectionThrottle) {
+            session.disconnect(ChatUtils.colorize(R2BConfiguration.connectionThrottleKickMessage));
+            return;
         }
+
+        lastLogin = System.currentTimeMillis();
+
+        if (main.getBootstrap().getOnline() + 1 > R2BConfiguration.maxPlayers && main.getBootstrap().getPlatform() != Platform.BUKKIT) {
+            session.disconnect(ChatUtils.colorize(R2BConfiguration.serverFullMessage));
+            return;
+        }
+
+        UUID uniqueId = UUID.randomUUID();
+        session.setFlag("uniqueId", uniqueId);
+
+        // temp workaround
+        main.getScheduledExecutorService().execute(() -> createClientSession(uniqueId, session));
     }
 
-    private void createClientSession(UUID clientId, Session session) throws InterruptedException {
+    private void createClientSession(UUID clientId, Session session) {
         NioEventLoopGroup loopGroup = new NioEventLoopGroup();
 
         try {
@@ -86,8 +81,8 @@ public class LoginHandler implements ServerLoginHandler {
             clientBootstrap.channel(NioSocketChannel.class);
             clientBootstrap.option(ChannelOption.SO_KEEPALIVE, true);
             clientBootstrap.option(ChannelOption.TCP_NODELAY, true);
-
             clientBootstrap.remoteAddress(new InetSocketAddress(R2BConfiguration.remoteAddress, R2BConfiguration.remotePort));
+
             clientBootstrap.handler(new ChannelInitializer<SocketChannel>() {
 
                 @Override
@@ -104,13 +99,13 @@ public class LoginHandler implements ServerLoginHandler {
                 }
             });
 
-            ChannelFuture channelFuture = clientBootstrap.connect().sync();
-            channelFuture.channel().closeFuture().sync();
+            ChannelFuture f = clientBootstrap.connect().sync();
+            f.channel().closeFuture().sync();
         } catch (Exception e) {
             session.disconnect(e.getMessage());
             main.getSessionRegistry().removeSession(clientId);
         } finally {
-            loopGroup.shutdownGracefully().sync();
+            loopGroup.shutdownGracefully();
         }
     }
 }

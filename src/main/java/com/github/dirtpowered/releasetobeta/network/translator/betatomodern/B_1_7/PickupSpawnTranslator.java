@@ -31,9 +31,9 @@ import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.dirtpowered.releasetobeta.utils.item.ItemConverter;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.MetadataType;
-import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectType;
+import com.github.steveice10.mc.protocol.data.game.entity.type.EntityType;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityMetadataPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnEntityPacket;
 import com.github.steveice10.packetlib.Session;
 
 import java.util.Arrays;
@@ -59,7 +59,7 @@ public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData
                 new EntityMetadata(7, MetadataType.ITEM, ItemConverter.betaToModern(main, itemStack))
         ).toArray(new EntityMetadata[0]);
 
-        modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, ObjectType.ITEM, x, y, z, 0, 0));
+        modernSession.send(new ServerSpawnEntityPacket(entityId, uuid, EntityType.ITEM, x, y, z, 0, 0));
         modernSession.send(new ServerEntityMetadataPacket(entityId, metadata));
     }
 }

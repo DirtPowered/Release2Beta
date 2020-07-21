@@ -23,11 +23,11 @@
 package com.github.dirtpowered.releasetobeta.data.entity;
 
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
-import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
+import com.github.steveice10.mc.protocol.data.game.entity.type.EntityType;
 
 public class DummyEntity extends Entity {
 
-    public DummyEntity(int entityId, MobType type) {
+    public DummyEntity(int entityId, EntityType type) {
         super(entityId, type);
     }
 

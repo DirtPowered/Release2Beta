@@ -27,7 +27,7 @@ import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.mc.protocol.data.game.BossBarColor;
 import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
-import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
+import com.github.steveice10.mc.protocol.data.game.entity.type.EntityType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.data.message.Message;
@@ -44,7 +44,7 @@ public class EntityEnderDragon extends Entity implements Mob {
     }
 
     public EntityEnderDragon(int entityId) {
-        super(entityId, MobType.ENDER_DRAGON);
+        super(entityId, EntityType.ENDER_DRAGON);
     }
 
     @Override

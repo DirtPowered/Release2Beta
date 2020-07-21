@@ -30,14 +30,12 @@ import com.github.steveice10.mc.protocol.data.status.VersionInfo;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.awt.image.BufferedImage;
-
 @Getter
 @Builder
 public class ServerListPing {
     private String motd;
     private GameProfile[] playerListSample;
-    private BufferedImage icon;
+    private byte[] icon;
     private int maxPlayers;
     private int onlinePlayers;
     private int protocolVersion;

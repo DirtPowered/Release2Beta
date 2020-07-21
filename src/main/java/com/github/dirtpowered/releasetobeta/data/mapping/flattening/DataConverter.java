@@ -77,7 +77,7 @@ public class DataConverter {
     }
 
     private void loadMappings() {
-        main.getLogger().info("loading 'legacy <-> 1.15' mappings");
+        main.getLogger().info("loading 'legacy <-> 1.15.2' mappings");
 
         File f;
         try {

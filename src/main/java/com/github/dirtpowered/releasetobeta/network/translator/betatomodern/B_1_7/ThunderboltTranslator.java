@@ -27,8 +27,8 @@ import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
-import com.github.steveice10.mc.protocol.data.game.entity.type.GlobalEntityType;
-import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnGlobalEntityPacket;
+import com.github.steveice10.mc.protocol.data.game.entity.type.WeatherEntityType;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnWeatherEntityPacket;
 import com.github.steveice10.packetlib.Session;
 
 public class ThunderboltTranslator implements BetaToModern<ThunderboltPacketData> {
@@ -40,6 +40,6 @@ public class ThunderboltTranslator implements BetaToModern<ThunderboltPacketData
         double y = Utils.toModernPos(packet.getY());
         double z = Utils.toModernPos(packet.getZ());
 
-        modernSession.send(new ServerSpawnGlobalEntityPacket(entityId, GlobalEntityType.LIGHTNING_BOLT, x, y, z));
+        modernSession.send(new ServerSpawnWeatherEntityPacket(entityId, WeatherEntityType.LIGHTNING_BOLT, x, y, z));
     }
 }

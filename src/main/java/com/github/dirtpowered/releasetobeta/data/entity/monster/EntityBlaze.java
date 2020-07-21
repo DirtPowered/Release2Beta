@@ -24,7 +24,7 @@ package com.github.dirtpowered.releasetobeta.data.entity.monster;
 
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
-import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
+import com.github.steveice10.mc.protocol.data.game.entity.type.EntityType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.packetlib.Session;
@@ -32,7 +32,7 @@ import com.github.steveice10.packetlib.Session;
 public class EntityBlaze extends Entity implements Mob {
 
     public EntityBlaze(int entityId) {
-        super(entityId, MobType.BLAZE);
+        super(entityId, EntityType.BLAZE);
     }
 
     @Override
