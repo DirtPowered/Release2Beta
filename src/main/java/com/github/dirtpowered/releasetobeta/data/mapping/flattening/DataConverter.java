@@ -59,7 +59,8 @@ public class DataConverter {
         if (oldToNewBlocksMap.containsKey(sum)) {
             return oldToNewBlocksMap.get(sum);
         } else {
-            main.getLogger().warning("missing mapping for block " + blockId + ":" + data + "(" + combineId(blockId, data) + ")");
+            if (!R2BConfiguration.suppressMappingsErrors)
+                main.getLogger().warning("missing mapping for block " + blockId + ":" + data + "(" + combineId(blockId, data) + ")");
             return 1; //stone
         }
     }
@@ -69,7 +70,8 @@ public class DataConverter {
         if (oldToNewItemsMap.containsKey(sum)) {
             return oldToNewItemsMap.get(sum);
         } else {
-            main.getLogger().warning("missing mapping for item " + itemId + ":" + data + "(" + combineId(itemId, data) + ")");
+            if (!R2BConfiguration.suppressMappingsErrors)
+                main.getLogger().warning("missing mapping for item " + itemId + ":" + data + "(" + combineId(itemId, data) + ")");
             return 1; //stone
         }
     }
@@ -78,7 +80,8 @@ public class DataConverter {
         if (newToOldItemsMap.containsKey(internalItemId)) {
             return newToOldItemsMap.get(internalItemId);
         } else {
-            main.getLogger().warning("missing mapping for item (" + internalItemId + ")");
+            if (!R2BConfiguration.suppressMappingsErrors)
+                main.getLogger().warning("missing mapping for item (" + internalItemId + ")");
             return 16; //stone
         }
     }

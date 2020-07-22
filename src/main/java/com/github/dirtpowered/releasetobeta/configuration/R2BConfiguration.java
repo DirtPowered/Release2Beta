@@ -56,6 +56,7 @@ public class R2BConfiguration {
     public static boolean metricsEnabled;
     public static String metricsUniqueId;
     public static boolean logPings;
+    public static boolean suppressMappingsErrors;
 
     private ReleaseToBeta main;
 
@@ -125,6 +126,8 @@ public class R2BConfiguration {
             //metrics
             metricsEnabled = config.getBoolean("metrics.enable_metrics");
             metricsUniqueId = config.getString("metrics.unique_id");
+
+            suppressMappingsErrors = config.getBoolean("debug.suppressMappingsErrors");
         } catch (Exception e) {
             main.getLogger().error("Error: " + e.getMessage());
         }

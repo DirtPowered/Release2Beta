@@ -37,3 +37,5 @@ experimental:
 metrics:
   enable_metrics: true
   unique_id: default
+debug:
+  suppressMappingsErrors: false

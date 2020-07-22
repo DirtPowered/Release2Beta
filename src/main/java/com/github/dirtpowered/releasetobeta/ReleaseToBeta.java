@@ -64,6 +64,9 @@ public class ReleaseToBeta implements Runnable {
         this.bootstrap = bootstrap;
         getLogger().info("Starting ReleaseToBeta on " + bootstrap.getPlatform() + " platform");
 
+        String ver = getClass().getPackage().getImplementationVersion();
+        getLogger().info("Version: " + (ver == null ? "custom?" : ver));
+
         new R2BConfiguration(this).loadConfiguration(bootstrap.getConfigPath()); //load config
 
         this.dataConverter = new DataConverter(this);
