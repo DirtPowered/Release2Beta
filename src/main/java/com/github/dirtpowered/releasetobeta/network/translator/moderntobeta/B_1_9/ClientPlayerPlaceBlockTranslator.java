@@ -24,6 +24,8 @@ package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockPlacePacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
@@ -35,6 +37,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.data.message.TranslationMessage;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPlaceBlockPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerHealthPacket;
 import com.github.steveice10.packetlib.Session;
 
 public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlayerPlaceBlockPacket> {
@@ -59,6 +62,10 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
             player.sendRawMessage(new TranslationMessage("build.tooHigh", TextMessage.fromString("256")), MessageType.NOTIFICATION);
 
         betaSession.sendPacket(blockPlacePacketData);
+
+        if (R2BConfiguration.disableSprinting) {
+            modernSession.send(new ServerPlayerHealthPacket(player.getHealth(), Constants.NO_SPRING_FOOD_LEVEL, 0));
+        }
 
         if (itemStack.getId() == 597 || itemStack.getId() == 596 || itemStack.getId() == 595 | itemStack.getId() == 604)
             betaSession.sendPacket(blockPlacePacketData);

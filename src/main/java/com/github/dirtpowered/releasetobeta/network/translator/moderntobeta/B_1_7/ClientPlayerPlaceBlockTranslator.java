@@ -27,6 +27,7 @@ import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockPlacePacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.data.item.ItemFood;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
@@ -39,6 +40,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.data.message.TranslationMessage;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPlaceBlockPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerHealthPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerSetSlotPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -67,6 +69,9 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
 
         betaSession.sendPacket(blockPlacePacketData);
 
+        if (R2BConfiguration.disableSprinting) {
+            modernSession.send(new ServerPlayerHealthPacket(player.getHealth(), Constants.NO_SPRING_FOOD_LEVEL, 0));
+        }
         /*
          * Special note on using buckets: When using buckets, the Notchian client might send two packets: first a normal and then a special case
          * https://wiki.vg/index.php?title=Protocol&oldid=689#Player_Block_Placement_.280x0F.29
