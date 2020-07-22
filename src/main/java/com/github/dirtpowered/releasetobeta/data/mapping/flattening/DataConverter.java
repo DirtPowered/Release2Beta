@@ -22,7 +22,9 @@
 
 package com.github.dirtpowered.releasetobeta.data.mapping.flattening;
 
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -140,7 +142,10 @@ public class DataConverter {
                     int internalId = data.getAsJsonObject().get("internalId").getAsInt();
 
                     oldToNewItemsMap.put(legacyIdData, internalId);
-                    newToOldItemsMap.put(internalId, legacyIdData);
+
+                    if (MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version)) {
+                        newToOldItemsMap.put(internalId, legacyIdData);
+                    }
                     count++;
                 }
             }

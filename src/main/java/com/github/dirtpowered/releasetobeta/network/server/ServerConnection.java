@@ -32,7 +32,6 @@ import com.github.dirtpowered.releasetobeta.utils.interfaces.Tickable;
 import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket;
-import com.github.steveice10.mc.protocol.packet.ingame.client.ClientKeepAlivePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientPluginMessagePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientSettingsPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerAbilitiesPacket;
@@ -77,7 +76,6 @@ public class ServerConnection implements Tickable {
             ClientSettingsPacket.class,
             StatusPingPacket.class,
             ClientPluginMessagePacket.class,
-            ClientKeepAlivePacket.class,
             ClientSteerBoatPacket.class,
             ClientVehicleMovePacket.class
     };

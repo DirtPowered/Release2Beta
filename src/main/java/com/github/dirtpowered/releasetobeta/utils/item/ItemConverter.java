@@ -104,7 +104,7 @@ public class ItemConverter {
     public static BetaItemStack itemStackToBetaItemStack(ItemStack itemStack) {
         int internalId = DataConverter.getOldItemId(itemStack.getId());
         int combinedId = (internalId / 16) << 16 | internalId & 15;
-        System.out.println(internalId);
+
         return new BetaItemStack(internalId / 16, itemStack.getAmount(), combinedId & 65535);
     }
 
