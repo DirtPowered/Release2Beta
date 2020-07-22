@@ -40,9 +40,9 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 public class DataConverter {
-    //TODO: find a better way to store IDs and use something like BiMap?
     private static Int2IntMap oldToNewBlocksMap = new Int2IntOpenHashMap();
     private static Int2IntMap oldToNewItemsMap = new Int2IntOpenHashMap();
+    private static Int2IntMap newToOldItemsMap = new Int2IntOpenHashMap();
 
     private static ReleaseToBeta main;
 
@@ -53,7 +53,7 @@ public class DataConverter {
     }
 
     public static int getNewBlockId(int blockId, int data) {
-        int sum = (blockId * 16) + data;
+        int sum = combineId(blockId, data);
         if (oldToNewBlocksMap.containsKey(sum)) {
             return oldToNewBlocksMap.get(sum);
         } else {
@@ -63,12 +63,21 @@ public class DataConverter {
     }
 
     public static int getNewItemId(int itemId, int data) {
-        int sum = (itemId * 16) + data;
+        int sum = combineId(itemId, data);
         if (oldToNewItemsMap.containsKey(sum)) {
             return oldToNewItemsMap.get(sum);
         } else {
             main.getLogger().warning("missing mapping for item " + itemId + ":" + data + "(" + combineId(itemId, data) + ")");
             return 1; //stone
+        }
+    }
+
+    public static int getOldItemId(int internalItemId) {
+        if (newToOldItemsMap.containsKey(internalItemId)) {
+            return newToOldItemsMap.get(internalItemId);
+        } else {
+            main.getLogger().warning("missing mapping for item (" + internalItemId + ")");
+            return 16; //stone
         }
     }
 
@@ -131,6 +140,7 @@ public class DataConverter {
                     int internalId = data.getAsJsonObject().get("internalId").getAsInt();
 
                     oldToNewItemsMap.put(legacyIdData, internalId);
+                    newToOldItemsMap.put(internalId, legacyIdData);
                     count++;
                 }
             }
@@ -144,5 +154,6 @@ public class DataConverter {
     public void cleanup() {
         oldToNewItemsMap.clear();
         oldToNewBlocksMap.clear();
+        newToOldItemsMap.clear();
     }
 }

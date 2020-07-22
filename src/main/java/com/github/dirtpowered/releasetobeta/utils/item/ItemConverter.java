@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.utils.item;
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.opennbt.tag.builtin.IntTag;
@@ -101,8 +102,10 @@ public class ItemConverter {
     }
 
     public static BetaItemStack itemStackToBetaItemStack(ItemStack itemStack) {
-        //TODO: InternalId to LegacyId
-        return new BetaItemStack(itemStack.getId(), itemStack.getAmount(), /*itemStack.getData()*/0);
+        int internalId = DataConverter.getOldItemId(itemStack.getId());
+        int combinedId = (internalId / 16) << 16 | internalId & 15;
+        System.out.println(internalId);
+        return new BetaItemStack(internalId / 16, itemStack.getAmount(), combinedId & 65535);
     }
 
     public static ItemStack[] betaToModern(ReleaseToBeta main, BetaItemStack[] items) {

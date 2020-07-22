@@ -179,7 +179,6 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
     }
 
     public int getPing() {
-        int a = (64 * 16) + 15;
         if (getModernSession() != null) {
             return (int) (long) getModernSession().getFlag("ping");
         }
