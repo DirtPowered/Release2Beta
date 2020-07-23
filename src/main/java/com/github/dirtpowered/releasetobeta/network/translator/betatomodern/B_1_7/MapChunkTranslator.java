@@ -26,8 +26,8 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapChunkP
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
-import com.github.dirtpowered.releasetobeta.data.blockstorage.DataBlock;
-import com.github.dirtpowered.releasetobeta.data.blockstorage.TempBlockStorage;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.ClientWorldTracker;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.data.chunk.BetaChunk;
 import com.github.dirtpowered.releasetobeta.data.chunk.ModernChunk;
 import com.github.dirtpowered.releasetobeta.data.entity.tile.TileEntity;
@@ -103,13 +103,14 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     private ModernChunk translateChunk(ReleaseToBeta main, BetaClientSession session, BetaChunk chunk, int height, boolean skylight) {
         Chunk modernChunk = new Chunk();
-        TempBlockStorage blockStorage = session.getBlockStorage();
+        List<CachedBlock> blockList = new ArrayList<>();
 
-        List<DataBlock> blockList = new ArrayList<>();
         List<CompoundTag> chunkTileEntities = new ArrayList<>();
 
         NibbleArray3d skyLight = new NibbleArray3d(4096);
         NibbleArray3d blockLight = new NibbleArray3d(4096);
+
+        ClientWorldTracker worldTracker = session.getClientWorldTracker();
 
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
@@ -137,25 +138,14 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                         }
                     }
 
-                    if (blockStorage.needsCaching(legacyId)) {
-                        blockList.add(new DataBlock(
-                                new BlockLocation(chunk.getRawX() + x, y + height, chunk.getRawZ() + z),
-                                new BlockLocation(x, y, z), legacyId)
-                        );
-                    }
+                    blockList.add(new CachedBlock(
+                            new BlockLocation(chunk.getRawX() + x, y + height, chunk.getRawZ() + z), legacyId, legacyData)
+                    );
                 }
             }
         }
 
-        blockStorage.cacheBlocks(chunk.getX(), chunk.getZ(), blockList.toArray(new DataBlock[0]));
-
-        return new ModernChunk(
-                main.getServer().getBlockConnector().connectBlocks(
-                        blockStorage, chunk.getX(), chunk.getZ(), modernChunk
-                ),
-                chunkTileEntities,
-                blockLight,
-                skyLight
-        );
+        worldTracker.onChunkBlockUpdate(chunk.getX(), chunk.getZ(), blockList);
+        return new ModernChunk(modernChunk, chunkTileEntities, blockLight, skyLight);
     }
 }

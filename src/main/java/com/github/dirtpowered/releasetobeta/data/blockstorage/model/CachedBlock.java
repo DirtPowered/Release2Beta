@@ -20,16 +20,30 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.data.blockstorage;
+package com.github.dirtpowered.releasetobeta.data.blockstorage.model;
 
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+import java.util.Objects;
+
+@Getter
 @AllArgsConstructor
-public class DataBlock {
+public class CachedBlock {
     private BlockLocation blockLocation;
-    private BlockLocation chunkPosition;
-    private int legacyBlockId;
+    private int typeId, data;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CachedBlock that = (CachedBlock) o;
+        return Objects.equals(blockLocation, that.blockLocation); // check only location
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(blockLocation);
+    }
 }

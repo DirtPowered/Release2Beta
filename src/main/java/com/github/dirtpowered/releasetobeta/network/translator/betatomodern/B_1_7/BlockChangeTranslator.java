@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockChangePacketData;
+import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -40,12 +41,17 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
         int y = packet.getYPosition();
         int z = packet.getZPosition();
 
-        int internalBlockId = main.getServer().convertBlockData(packet.getType(), packet.getMetadata(), false);
+        int typeId = packet.getType();
+        int data = packet.getMetadata();
+
+        int internalBlockId = main.getServer().convertBlockData(typeId, data, false);
 
         modernSession.send(
                 new ServerBlockChangePacket(
                         new BlockChangeRecord(new Position(x, y, z), new BlockState(internalBlockId))
                 )
         );
+
+        session.getClientWorldTracker().onBlockUpdate(new BlockLocation(x, y, z), typeId, data);
     }
 }
