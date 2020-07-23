@@ -22,14 +22,14 @@
 
 package com.github.dirtpowered.releasetobeta.data.blockstorage;
 
-import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Data
 @AllArgsConstructor
 public class DataBlock {
-    private Location location;
-    private Pair<Integer, Integer> legacyBlock;
+    private BlockLocation blockLocation;
+    private BlockLocation chunkPosition;
+    private int legacyBlockId;
 }

@@ -22,11 +22,11 @@
 
 package com.github.dirtpowered.releasetobeta.data.blockstorage;
 
-import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
+import com.github.dirtpowered.releasetobeta.utils.Utils;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import lombok.Getter;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +36,12 @@ public class TempBlockStorage {
     @Getter
     private Long2ObjectMap<DataBlock[]> blockStorageMap = new Long2ObjectOpenHashMap<>();
 
-    @Getter
-    private int[] blocksToCache = new int[]{29, 33, 54};
+    public boolean needsCaching(int legacyId) {
+        return legacyId == 29 || legacyId == 33 || legacyId == 54 || legacyId == 78 || legacyId == 2;
+    }
 
     public void cacheBlocks(int chunkX, int chunkZ, DataBlock[] blocks) {
-        long hashKey = coordsToLong(chunkX, chunkZ);
+        long hashKey = Utils.coordsToLong(chunkX, chunkZ);
         List<DataBlock> list = new ArrayList<>();
 
         for (DataBlock block : blocks) {
@@ -49,30 +50,24 @@ public class TempBlockStorage {
         }
     }
 
-    private long coordsToLong(int x, int z) {
-        int chunkX = (int) Math.floor(x) << 4;
-        int chunkZ = (int) Math.floor(z) << 4;
-        return (long) chunkX & 0xffffffffL | ((long) chunkZ & 0xffffffffL) << 32;
-    }
-
     public void remove(int chunkX, int chunkZ) {
-        blockStorageMap.remove(coordsToLong(chunkX, chunkZ));
+        blockStorageMap.remove(Utils.coordsToLong(chunkX, chunkZ));
     }
 
     public void purgeAll() {
         blockStorageMap.clear();
     }
 
-    public DataBlock getCachedBlockAt(Location loc) {
+    public DataBlock getCachedBlockAt(BlockLocation loc) {
         long hashKey = getChunkKey(loc);
 
-        DataBlock block = new DataBlock(loc, new ImmutablePair<>(1 /* stone */, 0));
+        DataBlock block = new DataBlock(loc, new BlockLocation(0, 0, 0), 1);
         DataBlock[] blocks = blockStorageMap.get(hashKey);
 
         if (blocks != null) {
             for (DataBlock dataBlock : blocks) {
 
-                if (dataBlock.getLocation().equals(loc)) {
+                if (dataBlock.getBlockLocation().equals(loc)) {
                     block = dataBlock;
                 }
             }
@@ -81,7 +76,7 @@ public class TempBlockStorage {
         return block;
     }
 
-    private long getChunkKey(Location loc) {
-        return coordsToLong((int) Math.floor(loc.getX()) >> 4, (int) Math.floor(loc.getZ()) >> 4);
+    private long getChunkKey(BlockLocation loc) {
+        return Utils.coordsToLong((int) Math.floor(loc.getX()) >> 4, (int) Math.floor(loc.getZ()) >> 4);
     }
 }

@@ -22,6 +22,7 @@
 
 package com.github.dirtpowered.releasetobeta.data.location;
 
+import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.TempBlockStorage;
@@ -56,7 +57,7 @@ public class MovementTranslator {
         for (int y = minY; y < maxY + 1; y++) {
             for (int x = minX; x < maxX + 1; x++) {
                 for (int z = minZ; z < maxZ + 1; z++) {
-                    int blockId = blockCache.getCachedBlockAt(new Location(x, y, z)).getLegacyBlock().getKey();
+                    int blockId = blockCache.getCachedBlockAt(new BlockLocation(x, y, z)).getLegacyBlockId();
 
                     if (items.containsKey(blockId)) {
                         return correctPosition(x, y, z, boundingBox, items.get(blockId));

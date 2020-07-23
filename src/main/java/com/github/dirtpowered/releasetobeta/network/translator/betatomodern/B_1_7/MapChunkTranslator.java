@@ -23,10 +23,11 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapChunkPacketData;
-import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.DataBlock;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.TempBlockStorage;
 import com.github.dirtpowered.releasetobeta.data.chunk.BetaChunk;
 import com.github.dirtpowered.releasetobeta.data.chunk.ModernChunk;
 import com.github.dirtpowered.releasetobeta.data.entity.tile.TileEntity;
@@ -43,8 +44,6 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerUpdate
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.packetlib.Session;
 import io.netty.util.internal.StringUtil;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -80,9 +79,13 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                 for (int i = 0; i < 8; i++) {
                     modernChunks[i] = translateChunk(main, session, chunk, i * 16, skylight);
                     chunks[i] = modernChunks[i].getChunk();
-                    blockLight[i + 1] = modernChunks[i].getBlockLight();
-                    if (skylight) skyLight[i + 1] = modernChunks[i].getSkyLight();
+
                     chunkTileEntities.addAll(modernChunks[i].getChunkTileEntities());
+
+                    blockLight[i + 1] = modernChunks[i].getBlockLight();
+                    if (skylight) {
+                        skyLight[i + 1] = modernChunks[i].getSkyLight();
+                    }
                 }
 
                 modernSession.send(new ServerChunkDataPacket(
@@ -100,6 +103,8 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     private ModernChunk translateChunk(ReleaseToBeta main, BetaClientSession session, BetaChunk chunk, int height, boolean skylight) {
         Chunk modernChunk = new Chunk();
+        TempBlockStorage blockStorage = session.getBlockStorage();
+
         List<DataBlock> blockList = new ArrayList<>();
         List<CompoundTag> chunkTileEntities = new ArrayList<>();
 
@@ -132,14 +137,25 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                         }
                     }
 
-                    if (ArrayUtils.contains(session.getBlockStorage().getBlocksToCache(), legacyId)) {
-                        blockList.add(new DataBlock(new Location(chunk.getRawX() + x, y + height, chunk.getRawZ() + z), new ImmutablePair<>(legacyId, 0)));
+                    if (blockStorage.needsCaching(legacyId)) {
+                        blockList.add(new DataBlock(
+                                new BlockLocation(chunk.getRawX() + x, y + height, chunk.getRawZ() + z),
+                                new BlockLocation(x, y, z), legacyId)
+                        );
                     }
                 }
             }
         }
 
-        session.getBlockStorage().cacheBlocks(chunk.getX(), chunk.getZ(), blockList.toArray(new DataBlock[0]));
-        return new ModernChunk(modernChunk, chunkTileEntities, blockLight, skyLight);
+        blockStorage.cacheBlocks(chunk.getX(), chunk.getZ(), blockList.toArray(new DataBlock[0]));
+
+        return new ModernChunk(
+                main.getServer().getBlockConnector().connectBlocks(
+                        blockStorage, chunk.getX(), chunk.getZ(), modernChunk
+                ),
+                chunkTileEntities,
+                blockLight,
+                skyLight
+        );
     }
 }

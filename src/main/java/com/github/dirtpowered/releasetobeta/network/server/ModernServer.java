@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.server;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.BlockConnector;
 import com.github.dirtpowered.releasetobeta.data.command.CommandRegistry;
 import com.github.dirtpowered.releasetobeta.data.command.R2BCommand;
 import com.github.dirtpowered.releasetobeta.data.command.model.Command;
@@ -62,6 +63,7 @@ public class ModernServer {
     private CommandRegistry commandRegistry;
     private String[] commands;
     private byte[] serverIcon;
+    private BlockConnector blockConnector;
 
     private MetadataTranslator metadataTranslator;
     private MovementTranslator movementTranslator;
@@ -79,6 +81,7 @@ public class ModernServer {
 
         this.metadataTranslator = new MetadataTranslator();
         this.movementTranslator = new MovementTranslator();
+        this.blockConnector = new BlockConnector();
 
         try {
             BufferedImage bufferedImage = ImageIO.read(new File("server-icon.png"));
