@@ -26,6 +26,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapChunkP
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.BlockDataFixer;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.ClientWorldTracker;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
@@ -123,7 +124,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     int internalBlockId = main.getServer().convertBlockData(legacyId, legacyData, false);
 
                     if (skylight) {
-                        if (legacyId == 54) {
+                        if (legacyId == Block.CHEST) {
                             skyLight.set(x, y, z, 15); // fix chest lighting
                         } else {
                             skyLight.set(x, y, z, chunk.getSkyLightAt(x, y + height, z));
@@ -146,7 +147,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                                 new BlockLocation(chunk.getRawX() + x, y + height, chunk.getRawZ() + z), legacyId, legacyData)
                         );
 
-                        if (legacyId == 90) dataFix = true;
+                        if (BlockDataFixer.canFix(legacyId)) dataFix = true;
                     }
                 }
             }
@@ -158,11 +159,13 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
             for (CachedBlock block : BlockDataFixer.fixBlockData(worldTracker, chunk.getX(), chunk.getZ())) {
                 BlockLocation loc = block.getBlockLocation();
 
-                int chunkPosX = loc.getX() & 0xF;
-                int chunkPosY = loc.getY() & 0xF;
-                int chunkPosZ = loc.getZ() & 0xF;
+                if ((loc.getY() >> 4 == height >> 4)) {
+                    int chunkPosX = loc.getX() & 0xF;
+                    int chunkPosY = loc.getY() & 0xF;
+                    int chunkPosZ = loc.getZ() & 0xF;
 
-                modernChunk.set(chunkPosX, chunkPosY, chunkPosZ, new BlockState(main.getServer().convertBlockData(block.getTypeId(), block.getData(), false)));
+                    modernChunk.set(chunkPosX, chunkPosY, chunkPosZ, new BlockState(main.getServer().convertBlockData(block.getTypeId(), block.getData(), false)));
+                }
             }
         }
 

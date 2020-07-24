@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.data.entity.tile;
 
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.opennbt.tag.builtin.IntTag;
@@ -42,7 +43,7 @@ public abstract class TileEntity {
     static {
         register(26, TileEntityBed.class, MinecraftVersion.B_1_6_6);
         register(52, TileEntityMobSpawner.class, MinecraftVersion.B_1_6_6);
-        register(54, TileEntityChest.class, MinecraftVersion.B_1_6_6);
+        register(Block.CHEST, TileEntityChest.class, MinecraftVersion.B_1_6_6);
         register(116, TileEntityEnchantingTable.class, MinecraftVersion.B_1_9);
         register(119, TileEntityEndPortal.class, MinecraftVersion.B_1_9);
     }

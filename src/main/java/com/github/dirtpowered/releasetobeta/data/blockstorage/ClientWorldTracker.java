@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.data.blockstorage;
 
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
+import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.WorldTrackerImpl;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -41,12 +42,18 @@ public class ClientWorldTracker implements WorldTrackerImpl {
 
     @Getter
     public boolean needsCaching(int legacyId) {
-        return legacyId == 29 || legacyId == 33 || legacyId == 54 || legacyId == 90 || legacyId == 49;
+        return legacyId == Block.STICKY_PISTON ||
+                legacyId == Block.PISTON ||
+                legacyId == Block.CHEST ||
+                legacyId == Block.PORTAL ||
+                legacyId == Block.OBSIDIAN ||
+                legacyId == Block.SNOW_LAYER ||
+                legacyId == Block.GRASS_BLOCK;
     }
 
     @Override
     public void onBlockUpdate(BlockLocation blockLocation, int typeId, int data) {
-        if (!needsCaching(typeId) && typeId != 0)
+        if (!needsCaching(typeId) && typeId != Block.AIR)
             return;
 
         int chunkX = Utils.toChunkPos(blockLocation.getX());
@@ -80,8 +87,8 @@ public class ClientWorldTracker implements WorldTrackerImpl {
                 for (CachedBlock cachedBlock : cachedBlocks) {
                     int typeId = cachedBlock.getTypeId();
 
-                    if (needsCaching(typeId) && typeId != 0) {
-                        if (cachedBlock.getTypeId() == 0) {
+                    if (needsCaching(typeId) && typeId != Block.AIR) {
+                        if (cachedBlock.getTypeId() == Block.AIR) {
                             blocks.remove(cachedBlock);
                         } else {
                             blocks.add(cachedBlock);
@@ -113,7 +120,7 @@ public class ClientWorldTracker implements WorldTrackerImpl {
             }
         }
 
-        return new CachedBlock(blockLocation, 0, 0);
+        return new CachedBlock(blockLocation, Block.AIR, 0);
     }
 
     @Override

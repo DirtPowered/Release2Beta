@@ -50,7 +50,7 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
 
         int internalBlockId = main.getServer().convertBlockData(typeId, data, false);
 
-        if (typeId == 90) dataFix = true;
+        if (BlockDataFixer.canFix(typeId)) dataFix = true;
 
         modernSession.send(
                 new ServerBlockChangePacket(
@@ -64,8 +64,10 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
             CachedBlock block = BlockDataFixer.fixSingleBlockData(session.getClientWorldTracker(), new CachedBlock(new BlockLocation(x, y, z), typeId, data));
             if (block != null) {
                 int newId = main.getServer().convertBlockData(block.getTypeId(), block.getData(), false);
+
+                BlockLocation b = block.getBlockLocation();
                 modernSession.send(new ServerBlockChangePacket(
-                        new BlockChangeRecord(new Position(x, y, z), new BlockState(newId))
+                        new BlockChangeRecord(new Position(b.getX(), b.getY(), b.getZ()), new BlockState(newId))
                 ));
             }
         }

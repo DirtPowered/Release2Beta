@@ -23,15 +23,13 @@
 package com.github.dirtpowered.releasetobeta.data.blockstorage;
 
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
+import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BlockDataFixer {
-
-    private final static int OBSIDIAN = 49;
-    private final static int PORTAL = 90;
 
     public static List<CachedBlock> fixBlockData(ClientWorldTracker worldTracker, int chunkX, int chunkZ) {
         List<CachedBlock> cachedBlocks = new ArrayList<>();
@@ -47,24 +45,42 @@ public class BlockDataFixer {
     }
 
     public static CachedBlock fixSingleBlockData(ClientWorldTracker worldTracker, CachedBlock cachedBlock) {
-        if (cachedBlock.getTypeId() == PORTAL) {
-            BlockLocation loc = cachedBlock.getBlockLocation();
+        BlockLocation loc = cachedBlock.getBlockLocation();
+        int typeId = cachedBlock.getTypeId();
 
+        if (typeId == Block.PORTAL) {
             int data = 0;
 
-            if (worldTracker.getBlockAt(loc.getX() - 1, loc.getY(), loc.getZ()).getTypeId() == OBSIDIAN
-                    || worldTracker.getBlockAt(loc.getX() + 1, loc.getY(), loc.getZ()).getTypeId() == OBSIDIAN) {
+            if (worldTracker.getBlockAt(loc.getX() - 1, loc.getY(), loc.getZ()).getTypeId() == Block.OBSIDIAN
+                    || worldTracker.getBlockAt(loc.getX() + 1, loc.getY(), loc.getZ()).getTypeId() == Block.OBSIDIAN) {
                 data = 1;
             }
 
-            if (worldTracker.getBlockAt(loc.getX(), loc.getY(), loc.getZ() - 1).getTypeId() == OBSIDIAN
-                    || worldTracker.getBlockAt(loc.getX(), loc.getY(), loc.getZ() + 1).getTypeId() == OBSIDIAN) {
+            if (worldTracker.getBlockAt(loc.getX(), loc.getY(), loc.getZ() - 1).getTypeId() == Block.OBSIDIAN
+                    || worldTracker.getBlockAt(loc.getX(), loc.getY(), loc.getZ() + 1).getTypeId() == Block.OBSIDIAN) {
                 data = 2;
             }
 
-            return new CachedBlock(loc, PORTAL, data);
+            return new CachedBlock(loc, Block.PORTAL, data);
+
+        } else if (typeId == Block.SNOW_LAYER) {
+            if (worldTracker.getBlockAt(loc.getX(), loc.getY() - 1, loc.getZ()).getTypeId() == Block.GRASS_BLOCK) {
+
+                return new CachedBlock(new BlockLocation(loc.getX(), loc.getY() - 1, loc.getZ()), Block.GRASS_BLOCK, 1);
+            }
+
+        } else if (typeId == Block.GRASS_BLOCK) {
+
+            if (worldTracker.getBlockAt(loc.getX(), loc.getY() + 1, loc.getZ()).getTypeId() == Block.SNOW_LAYER) {
+
+                return new CachedBlock(new BlockLocation(loc.getX(), loc.getY(), loc.getZ()), Block.GRASS_BLOCK, 1);
+            }
         }
 
         return null;
+    }
+
+    public static boolean canFix(int legacyId) {
+        return legacyId == Block.PORTAL || legacyId == Block.SNOW_LAYER;
     }
 }

@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.data.location;
 
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.ClientWorldTracker;
 
@@ -37,7 +38,7 @@ public class MovementTranslator {
     private Map<Integer, BoundingBox> items = new HashMap<>();
 
     public MovementTranslator() {
-        register(54, new BoundingBox(0.5, 0.5, 0.5, 1, 1, 1));
+        register(Block.CHEST, new BoundingBox(0.5, 0.5, 0.5, 1, 1, 1));
         //TODO: add more
     }
 

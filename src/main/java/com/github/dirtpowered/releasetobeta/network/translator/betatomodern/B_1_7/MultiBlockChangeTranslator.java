@@ -72,7 +72,7 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
             );
 
             blockList.add(new CachedBlock(new BlockLocation(blockX, blockY, blockZ), typeId, data));
-            if (typeId == 90) dataFix = true;
+            if (BlockDataFixer.canFix(typeId)) dataFix = true;
         }
 
         session.getClientWorldTracker().onMultiBlockUpdate(blockList);

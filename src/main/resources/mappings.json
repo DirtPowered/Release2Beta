@@ -10,6 +10,9 @@
       "32": {
         "internalId": 9
       },
+      "33": { //fake snowy_grass
+        "internalId": 8
+      },
       "48": {
         "internalId": 10
       },

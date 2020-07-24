@@ -25,6 +25,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayNoteblockPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -65,7 +66,7 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
             int blockId = b.getTypeId();
             switch (packet.getInstrumentType()) {
                 case 0:
-                    if (blockId == 33 || blockId == 29) {
+                    if (blockId == Block.PISTON || blockId == Block.STICKY_PISTON) {
                         builtinSound = BuiltinSound.BLOCK_PISTON_EXTEND;
                         type = PistonValueType.PUSHING;
                         pitch = 0;
@@ -75,10 +76,10 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
                     }
                     break;
                 case 1:
-                    if (blockId == 54) {
+                    if (blockId == Block.CHEST) {
                         builtinSound = BuiltinSound.BLOCK_CHEST_OPEN;
                         type = ChestValueType.VIEWING_PLAYER_COUNT;
-                    } else if (blockId == 33 || blockId == 29) {
+                    } else if (blockId == Block.PISTON || blockId == Block.STICKY_PISTON) {
                         builtinSound = BuiltinSound.BLOCK_PISTON_CONTRACT;
                         type = PistonValueType.PULLING;
                         pitch = 0;
