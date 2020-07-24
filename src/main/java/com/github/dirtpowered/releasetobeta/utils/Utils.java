@@ -97,4 +97,8 @@ public class Utils {
 
         return (long) chunkX & 0xffffffffL | ((long) chunkZ & 0xffffffffL) << 32;
     }
+
+    public static int toChunkPos(int posArg) {
+        return (int) Math.floor(posArg) >> 4;
+    }
 }

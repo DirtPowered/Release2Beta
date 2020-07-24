@@ -25,6 +25,8 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockChangePacketData;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.BlockDataFixer;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -44,7 +46,11 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
         int typeId = packet.getType();
         int data = packet.getMetadata();
 
+        boolean dataFix = false;
+
         int internalBlockId = main.getServer().convertBlockData(typeId, data, false);
+
+        if (typeId == 90) dataFix = true;
 
         modernSession.send(
                 new ServerBlockChangePacket(
@@ -53,5 +59,15 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
         );
 
         session.getClientWorldTracker().onBlockUpdate(new BlockLocation(x, y, z), typeId, data);
+
+        if (dataFix) {
+            CachedBlock block = BlockDataFixer.fixSingleBlockData(session.getClientWorldTracker(), new CachedBlock(new BlockLocation(x, y, z), typeId, data));
+            if (block != null) {
+                int newId = main.getServer().convertBlockData(block.getTypeId(), block.getData(), false);
+                modernSession.send(new ServerBlockChangePacket(
+                        new BlockChangeRecord(new Position(x, y, z), new BlockState(newId))
+                ));
+            }
+        }
     }
 }

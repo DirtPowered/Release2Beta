@@ -28,7 +28,9 @@ import com.github.dirtpowered.releasetobeta.data.blockstorage.model.WorldTracker
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import jdk.nashorn.internal.objects.annotations.Getter;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,8 +39,9 @@ public class ClientWorldTracker implements WorldTrackerImpl {
 
     private Long2ObjectMap<Set<CachedBlock>> worldTrackerStorage = new Long2ObjectOpenHashMap<>();
 
-    private boolean needsCaching(int legacyId) {
-        return legacyId == 29 || legacyId == 33 || legacyId == 54 || legacyId == 78 || legacyId == 2;
+    @Getter
+    public boolean needsCaching(int legacyId) {
+        return legacyId == 29 || legacyId == 33 || legacyId == 54 || legacyId == 90 || legacyId == 49;
     }
 
     @Override
@@ -46,8 +49,8 @@ public class ClientWorldTracker implements WorldTrackerImpl {
         if (!needsCaching(typeId) && typeId != 0)
             return;
 
-        int chunkX = toChunkPos(blockLocation.getX());
-        int chunkZ = toChunkPos(blockLocation.getZ());
+        int chunkX = Utils.toChunkPos(blockLocation.getX());
+        int chunkZ = Utils.toChunkPos(blockLocation.getZ());
 
         long key = Utils.coordsToLong(chunkX, chunkZ);
         CachedBlock cachedBlock = new CachedBlock(blockLocation, typeId, data);
@@ -67,8 +70,8 @@ public class ClientWorldTracker implements WorldTrackerImpl {
     @Override
     public void onMultiBlockUpdate(List<CachedBlock> cachedBlocks) {
         for (CachedBlock block : cachedBlocks) {
-            int chunkX = toChunkPos(block.getBlockLocation().getX());
-            int chunkZ = toChunkPos(block.getBlockLocation().getZ());
+            int chunkX = Utils.toChunkPos(block.getBlockLocation().getX());
+            int chunkZ = Utils.toChunkPos(block.getBlockLocation().getZ());
 
             long key = Utils.coordsToLong(chunkX, chunkZ);
 
@@ -91,9 +94,13 @@ public class ClientWorldTracker implements WorldTrackerImpl {
         }
     }
 
+    CachedBlock getBlockAt(int x, int y, int z) {
+        return getBlockAt(new BlockLocation(x, y, z));
+    }
+
     public CachedBlock getBlockAt(BlockLocation blockLocation) {
-        int chunkX = toChunkPos(blockLocation.getX());
-        int chunkZ = toChunkPos(blockLocation.getZ());
+        int chunkX = Utils.toChunkPos(blockLocation.getX());
+        int chunkZ = Utils.toChunkPos(blockLocation.getZ());
 
         long key = Utils.coordsToLong(chunkX, chunkZ);
 
@@ -111,17 +118,16 @@ public class ClientWorldTracker implements WorldTrackerImpl {
 
     @Override
     public void onChunkBlockUpdate(int chunkX, int chunkZ, List<CachedBlock> cachedBlocks) {
+        if (cachedBlocks.isEmpty())
+            return;
+
         long key = Utils.coordsToLong(chunkX, chunkZ);
 
         if (worldTrackerStorage.containsKey(key)) {
             Set<CachedBlock> blocks = worldTrackerStorage.get(key);
-            for (CachedBlock cachedBlock : cachedBlocks) {
-                if (needsCaching(cachedBlock.getTypeId())) {
-                    blocks.add(cachedBlock);
-                }
-            }
+            blocks.addAll(cachedBlocks);
         } else {
-            worldTrackerStorage.put(key, new HashSet<>());
+            worldTrackerStorage.put(key, new HashSet<>(cachedBlocks));
         }
     }
 
@@ -130,7 +136,9 @@ public class ClientWorldTracker implements WorldTrackerImpl {
         worldTrackerStorage.remove(Utils.coordsToLong(chunkX, chunkZ));
     }
 
-    private int toChunkPos(int posArg) {
-        return (int) Math.floor(posArg) >> 4;
+    Set<CachedBlock> getCachedBlocksInChunk(int chunkX, int chunkZ) {
+        long key = Utils.coordsToLong(chunkX, chunkZ);
+
+        return worldTrackerStorage.containsKey(key) ? worldTrackerStorage.get(key) : Collections.emptySet();
     }
 }

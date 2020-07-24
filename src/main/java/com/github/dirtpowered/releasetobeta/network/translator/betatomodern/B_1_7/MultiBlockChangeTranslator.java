@@ -25,6 +25,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MultiBlockChangePacketData;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.BlockDataFixer;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -49,6 +50,8 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
         int chunkX = packet.getX();
         int chunkZ = packet.getZ();
 
+        boolean dataFix = false;
+
         List<BlockChangeRecord> records = new ArrayList<>();
         List<CachedBlock> blockList = new ArrayList<>();
 
@@ -69,10 +72,22 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
             );
 
             blockList.add(new CachedBlock(new BlockLocation(blockX, blockY, blockZ), typeId, data));
+            if (typeId == 90) dataFix = true;
+        }
+
+        session.getClientWorldTracker().onMultiBlockUpdate(blockList);
+
+        if (dataFix) {
+            for (CachedBlock block : BlockDataFixer.fixBlockData(session.getClientWorldTracker(), chunkX, chunkZ)) {
+                BlockLocation b = block.getBlockLocation();
+
+                records.add(new BlockChangeRecord(
+                        new Position(b.getX(), b.getY(), b.getZ()),
+                        new BlockState(main.getServer().convertBlockData(block.getTypeId(), block.getData(), false)))
+                );
+            }
         }
 
         modernSession.send(new ServerMultiBlockChangePacket(records.toArray(new BlockChangeRecord[0])));
-
-        session.getClientWorldTracker().onMultiBlockUpdate(blockList);
     }
 }

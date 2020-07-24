@@ -26,6 +26,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapChunkP
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.BlockDataFixer;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.ClientWorldTracker;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.data.chunk.BetaChunk;
@@ -112,6 +113,8 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
         ClientWorldTracker worldTracker = session.getClientWorldTracker();
 
+        boolean dataFix = false;
+
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
@@ -138,14 +141,31 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                         }
                     }
 
-                    blockList.add(new CachedBlock(
-                            new BlockLocation(chunk.getRawX() + x, y + height, chunk.getRawZ() + z), legacyId, legacyData)
-                    );
+                    if (worldTracker.needsCaching(legacyId)) {
+                        blockList.add(new CachedBlock(
+                                new BlockLocation(chunk.getRawX() + x, y + height, chunk.getRawZ() + z), legacyId, legacyData)
+                        );
+
+                        if (legacyId == 90) dataFix = true;
+                    }
                 }
             }
         }
 
         worldTracker.onChunkBlockUpdate(chunk.getX(), chunk.getZ(), blockList);
+
+        if (dataFix) {
+            for (CachedBlock block : BlockDataFixer.fixBlockData(worldTracker, chunk.getX(), chunk.getZ())) {
+                BlockLocation loc = block.getBlockLocation();
+
+                int chunkPosX = loc.getX() & 0xF;
+                int chunkPosY = loc.getY() & 0xF;
+                int chunkPosZ = loc.getZ() & 0xF;
+
+                modernChunk.set(chunkPosX, chunkPosY, chunkPosZ, new BlockState(main.getServer().convertBlockData(block.getTypeId(), block.getData(), false)));
+            }
+        }
+
         return new ModernChunk(modernChunk, chunkTileEntities, blockLight, skyLight);
     }
 }
