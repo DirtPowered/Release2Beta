@@ -25,6 +25,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.ExplosionPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -65,7 +66,11 @@ public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
             modernSession.send(new ServerMultiBlockChangePacket(records.toArray(new BlockChangeRecord[0])));
 
             // update block cache
-            session.getClientWorldTracker().onBlockUpdate((int) x, (int) y, (int) z, 0, 0);
+            for (BlockChangeRecord record : records) {
+                Position position = record.getPosition();
+
+                session.getClientWorldTracker().onBlockUpdate(position.getX(), position.getY(), position.getZ(), Block.AIR, 0);
+            }
         }
         main.getServer().playWorldSound(modernSession, (int) x, (int) y, (int) z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT);
     }
