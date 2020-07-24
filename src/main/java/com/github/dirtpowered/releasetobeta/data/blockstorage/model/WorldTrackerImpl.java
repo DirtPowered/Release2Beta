@@ -35,4 +35,6 @@ public interface WorldTrackerImpl {
     void onChunkBlockUpdate(int chunkX, int chunkZ, List<CachedBlock> cachedBlocks);
 
     void onChunkUnload(int chunkX, int chunkZ);
+
+    void purge();
 }

@@ -228,10 +228,10 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         session.disconnect(ChatUtils.colorize("&cunexpectedly disconnected from server"));
         main.getServer().getServerConnection().getPlayerList().removeTabEntry(player);
         initialPackets.clear();
-
         entityCache.getEntities().clear();
         betaPlayers.clear();
 
+        getClientWorldTracker().purge();
         main.getSessionRegistry().removeSession(player.getClientId());
     }
 

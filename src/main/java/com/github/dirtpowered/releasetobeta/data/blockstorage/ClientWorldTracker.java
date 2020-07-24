@@ -101,6 +101,35 @@ public class ClientWorldTracker implements WorldTrackerImpl {
         }
     }
 
+    @Override
+    public void onChunkBlockUpdate(int chunkX, int chunkZ, List<CachedBlock> cachedBlocks) {
+        if (cachedBlocks.isEmpty())
+            return;
+
+        long key = Utils.coordsToLong(chunkX, chunkZ);
+
+        if (worldTrackerStorage.containsKey(key)) {
+            Set<CachedBlock> blocks = worldTrackerStorage.get(key);
+            blocks.addAll(cachedBlocks);
+        } else {
+            worldTrackerStorage.put(key, new HashSet<>(cachedBlocks));
+        }
+    }
+
+    @Override
+    public void onChunkUnload(int chunkX, int chunkZ) {
+        worldTrackerStorage.remove(Utils.coordsToLong(chunkX, chunkZ));
+    }
+
+    @Override
+    public void purge() {
+        worldTrackerStorage.clear();
+    }
+
+    public void onBlockUpdate(int x, int y, int z, int typeId, int data) {
+        onBlockUpdate(new BlockLocation(x, y, z), typeId, data);
+    }
+
     CachedBlock getBlockAt(int x, int y, int z) {
         return getBlockAt(new BlockLocation(x, y, z));
     }
@@ -121,26 +150,6 @@ public class ClientWorldTracker implements WorldTrackerImpl {
         }
 
         return new CachedBlock(blockLocation, Block.AIR, 0);
-    }
-
-    @Override
-    public void onChunkBlockUpdate(int chunkX, int chunkZ, List<CachedBlock> cachedBlocks) {
-        if (cachedBlocks.isEmpty())
-            return;
-
-        long key = Utils.coordsToLong(chunkX, chunkZ);
-
-        if (worldTrackerStorage.containsKey(key)) {
-            Set<CachedBlock> blocks = worldTrackerStorage.get(key);
-            blocks.addAll(cachedBlocks);
-        } else {
-            worldTrackerStorage.put(key, new HashSet<>(cachedBlocks));
-        }
-    }
-
-    @Override
-    public void onChunkUnload(int chunkX, int chunkZ) {
-        worldTrackerStorage.remove(Utils.coordsToLong(chunkX, chunkZ));
     }
 
     Set<CachedBlock> getCachedBlocksInChunk(int chunkX, int chunkZ) {
