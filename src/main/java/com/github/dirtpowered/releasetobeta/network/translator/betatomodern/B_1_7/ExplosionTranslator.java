@@ -24,9 +24,12 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.ExplosionPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
+import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
 import com.github.steveice10.mc.protocol.data.game.world.block.ExplodedBlockRecord;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
@@ -53,6 +56,11 @@ public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
             int posZ = destroyedBlockPosition.getZ();
 
             records.add(new ExplodedBlockRecord(posX, posY, posZ));
+        }
+
+        // update block cache
+        for (ExplodedBlockRecord record : records) {
+            session.getWorldTracker().onBlockUpdate(record.getX(), record.getY(), record.getZ(), Block.AIR, 0);
         }
 
         modernSession.send(new ServerExplosionPacket(x, y, z, explosionSize, records, 0, 0, 0));

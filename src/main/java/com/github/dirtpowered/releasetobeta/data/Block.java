@@ -20,16 +20,13 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.data.blockstorage;
+package com.github.dirtpowered.releasetobeta.data;
 
-import com.github.dirtpowered.betaprotocollib.utils.Location;
-import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
-public class DataBlock {
-    private Location location;
-    private BlockState blockState;
+public class Block {
+    public final static int AIR = 0;
+    public final static int STICKY_PISTON = 29;
+    public final static int PISTON = 33;
+    public final static int OBSIDIAN = 49;
+    public final static int CHEST = 54;
+    public final static int PORTAL = 90;
 }

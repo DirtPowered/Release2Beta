@@ -79,4 +79,15 @@ public class Utils {
 
         return (dimension == -1 ? -1 : 0);
     }
+
+    public static long coordsToLong(int x, int z) {
+        int chunkX = (int) Math.floor(x) << 4;
+        int chunkZ = (int) Math.floor(z) << 4;
+
+        return (long) chunkX & 0xffffffffL | ((long) chunkZ & 0xffffffffL) << 32;
+    }
+
+    public static int toChunkPos(int posArg) {
+        return (int) Math.floor(posArg) >> 4;
+    }
 }

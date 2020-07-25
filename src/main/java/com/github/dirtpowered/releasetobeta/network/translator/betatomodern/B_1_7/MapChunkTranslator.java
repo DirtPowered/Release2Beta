@@ -23,9 +23,12 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapChunkPacketData;
-import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
-import com.github.dirtpowered.releasetobeta.data.blockstorage.DataBlock;
+import com.github.dirtpowered.releasetobeta.data.Block;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.BlockDataFixer;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.ClientWorldTracker;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.data.chunk.BetaChunk;
 import com.github.dirtpowered.releasetobeta.data.chunk.ModernChunk;
 import com.github.dirtpowered.releasetobeta.data.entity.tile.TileEntity;
@@ -87,37 +90,70 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         NibbleArray3d nibbleBlockLight = new NibbleArray3d(4096);
         NibbleArray3d nibbleSkyLight = new NibbleArray3d(4096);
 
-        List<DataBlock> blockList = new ArrayList<>();
+        ClientWorldTracker worldTracker = session.getWorldTracker();
+
+        boolean dataFix = false;
+
+        List<CachedBlock> blockList = new ArrayList<>();
         List<CompoundTag> chunkTileEntities = new ArrayList<>();
+
 
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    int worldXPos = chunk.getRawX() + x;
-                    int worldYPos = y + height;
-                    int worldZPos = chunk.getRawZ() + z;
 
-                    int data = chunk.getMetadataAt(x, worldYPos, z);
+                    int data = chunk.getMetadataAt(x, y + height, z);
 
-                    int blockId = session.remapBlock(chunk.getTypeAt(x, worldYPos, z), data, false);
+                    int blockId = session.remapBlock(chunk.getTypeAt(x, y + height, z), data, false);
                     int blockData = session.remapMetadata(blockId, data);
 
-                    BlockState blockState = new BlockState(blockId, blockData);
+                    storage.set(x, y, z, new BlockState(blockId, blockData));
 
-                    blockList.add(new DataBlock(new Location(worldXPos, worldYPos, worldZPos), blockState));
+                    if (skylight) {
+                        if (blockId == Block.CHEST) {
+                            nibbleSkyLight.set(x, y, z, 15); // fix chest lighting
+                        } else {
+                            nibbleSkyLight.set(x, y, z, chunk.getSkyLightAt(x, y + height, z));
+                        }
+                    }
 
-                    storage.set(x, y, z, blockState);
-                    nibbleBlockLight.set(x, y, z, chunk.getBlockLightAt(x, worldYPos, z));
-                    nibbleSkyLight.set(x, y, z, chunk.getSkyLightAt(x, worldYPos, z));
+                    nibbleBlockLight.set(x, y, z, chunk.getBlockLightAt(x, y + height, z));
 
+                    if (TileEntity.containsId(blockId)) {
+                        TileEntity tile = TileEntity.create(blockId);
 
-                    if (TileEntity.containsId(blockId))
-                        chunkTileEntities.add(TileEntity.create(blockId).getNBT(new Position(worldXPos, worldYPos, worldZPos)));
+                        if (tile != null) {
+                            chunkTileEntities.add(tile.getNBT(new Position(chunk.getRawX() + x, y + height, chunk.getRawZ() + z)));
+                        }
+                    }
+
+                    if (worldTracker.needsCaching(blockId)) {
+                        blockList.add(new CachedBlock(
+                                new BlockLocation(chunk.getRawX() + x, y + height, chunk.getRawZ() + z), blockId, blockData)
+                        );
+
+                        if (BlockDataFixer.canFix(blockId)) dataFix = true;
+                    }
                 }
             }
         }
 
-        session.getBlockStorage().cacheBlocks(chunk.getX(), chunk.getZ(), blockList.toArray(new DataBlock[0]));
+        worldTracker.onChunkBlockUpdate(chunk.getX(), chunk.getZ(), blockList);
+
+        if (dataFix) {
+            for (CachedBlock block : BlockDataFixer.fixBlockData(worldTracker, chunk.getX(), chunk.getZ())) {
+                BlockLocation loc = block.getBlockLocation();
+
+                if ((loc.getY() >> 4 == height >> 4)) {
+                    int chunkPosX = loc.getX() & 0xF;
+                    int chunkPosY = loc.getY() & 0xF;
+                    int chunkPosZ = loc.getZ() & 0xF;
+
+                    storage.set(chunkPosX, chunkPosY, chunkPosZ, new BlockState(block.getTypeId(), block.getData()));
+                }
+            }
+        }
+
         return new ModernChunk(new Chunk(storage, nibbleBlockLight, skylight ? nibbleSkyLight : null), chunkTileEntities);
     }
 }

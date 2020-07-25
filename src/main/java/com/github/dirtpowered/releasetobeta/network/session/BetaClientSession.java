@@ -32,7 +32,7 @@ import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.api.plugin.event.player.PlayerJoinEvent;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
-import com.github.dirtpowered.releasetobeta.data.blockstorage.TempBlockStorage;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.ClientWorldTracker;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
@@ -66,7 +66,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
 
     @Getter
-    TempBlockStorage blockStorage;
+    private ClientWorldTracker worldTracker;
 
     private final Channel channel;
 
@@ -109,8 +109,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         this.updateProgressHandler = new UpdateProgressHandler();
         this.betaPlayers = new ArrayList<>();
 
-        // blockstorage
-        this.blockStorage = new TempBlockStorage();
+        // world tracker
+        this.worldTracker = new ClientWorldTracker();
 
         // connection callback
         this.connectionCallback = onConnect;
@@ -238,7 +238,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         entityCache.getEntities().clear();
         betaPlayers.clear();
 
-        blockStorage.purgeAll();
+        worldTracker.purge();
         main.getSessionRegistry().removeSession(player.getClientId());
     }
 

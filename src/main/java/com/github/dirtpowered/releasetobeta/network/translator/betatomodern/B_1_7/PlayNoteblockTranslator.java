@@ -23,9 +23,9 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayNoteblockPacketData;
-import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.data.Constants;
-import com.github.dirtpowered.releasetobeta.data.blockstorage.DataBlock;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -53,13 +53,13 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
         BuiltinSound builtinSound;
         BlockValueType type;
 
-        Location l = new Location(x, y, z);
+        BlockLocation l = new BlockLocation(x, y, z);
 
         double dist = l.distanceTo(session.getPlayer().getLocation());
         if (dist < Constants.SOUND_RANGE) {
-            DataBlock b = session.getBlockStorage().getCachedBlockAt(l);
+            CachedBlock b = session.getWorldTracker().getBlockAt(l);
 
-            int blockId = b.getBlockState().getId();
+            int blockId = b.getTypeId();
             switch (packet.getInstrumentType()) {
                 case 0:
                     if (blockId == 33 || blockId == 29) {

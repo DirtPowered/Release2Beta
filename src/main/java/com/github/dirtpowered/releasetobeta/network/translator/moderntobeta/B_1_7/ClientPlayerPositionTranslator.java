@@ -38,7 +38,7 @@ public class ClientPlayerPositionTranslator implements ModernToBeta<ClientPlayer
         ModernPlayer player = betaSession.getPlayer();
 
         Location location = betaSession.getMain().getServer().getMovementTranslator().translate(
-                betaSession.getBlockStorage(), packet.getX(), packet.getY(), packet.getZ()
+                betaSession.getWorldTracker(), packet.getX(), packet.getY(), packet.getZ()
         );
 
         double x = location.getX();

@@ -23,6 +23,9 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockChangePacketData;
+import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.BlockDataFixer;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -39,10 +42,30 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
         int y = packet.getYPosition();
         int z = packet.getZPosition();
 
-        int blockData = packet.getMetadata();
-        int blockId = session.remapBlock(packet.getType(), blockData, false);
+        int typeId = packet.getType();
+        int data = packet.getMetadata();
 
-        modernSession.send(new ServerBlockChangePacket(new BlockChangeRecord(new Position(x, y, z),
-                new BlockState(blockId, session.remapMetadata(blockId, blockData)))));
+        boolean dataFix = false;
+
+        if (BlockDataFixer.canFix(typeId)) dataFix = true;
+
+        modernSession.send(
+                new ServerBlockChangePacket(
+                        new BlockChangeRecord(new Position(x, y, z), new BlockState(typeId, session.remapMetadata(typeId, data)))
+                )
+        );
+
+        session.getWorldTracker().onBlockUpdate(x, y, z, typeId, data);
+
+        if (dataFix) {
+            CachedBlock block = BlockDataFixer.fixSingleBlockData(session.getWorldTracker(), new CachedBlock(new BlockLocation(x, y, z), typeId, session.remapMetadata(typeId, data)));
+            if (block != null) {
+
+                BlockLocation b = block.getBlockLocation();
+                modernSession.send(new ServerBlockChangePacket(
+                        new BlockChangeRecord(new Position(b.getX(), b.getY(), b.getZ()), new BlockState(block.getTypeId(), block.getData()))
+                ));
+            }
+        }
     }
 }
