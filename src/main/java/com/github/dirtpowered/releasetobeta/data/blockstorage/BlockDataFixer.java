@@ -22,7 +22,9 @@
 
 package com.github.dirtpowered.releasetobeta.data.blockstorage;
 
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 
@@ -63,7 +65,7 @@ public class BlockDataFixer {
 
             return new CachedBlock(loc, Block.PORTAL, data);
 
-        } else if (typeId == Block.CHEST) {
+        } else if (typeId == Block.CHEST && !MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version)) {
             int data = 0;
 
             if (worldTracker.getBlockAt(loc.getX() - 1, loc.getY(), loc.getZ()).getTypeId() == Block.CHEST
