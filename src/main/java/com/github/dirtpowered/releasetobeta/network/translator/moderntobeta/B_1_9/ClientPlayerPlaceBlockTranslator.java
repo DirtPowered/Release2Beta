@@ -53,10 +53,8 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
         int face = MagicValues.value(Integer.class, packet.getFace());
 
         ItemStack itemStack = player.getInventory().getItemInHand();
-        if (itemStack == null)
-            return;
 
-        BlockPlacePacketData blockPlacePacketData = new BlockPlacePacketData(x, y, z, face, ItemConverter.itemStackToBetaItemStack(itemStack));
+        BlockPlacePacketData blockPlacePacketData = new BlockPlacePacketData(x, y, z, face, ItemConverter.itemStackToBetaItemStack(itemStack == null ? new ItemStack(0) : itemStack));
 
         if (y >= 256 - 2)
             player.sendRawMessage(new TranslationMessage("build.tooHigh", TextMessage.fromString("256")), MessageType.NOTIFICATION);
@@ -66,6 +64,9 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
         if (R2BConfiguration.disableSprinting) {
             modernSession.send(new ServerPlayerHealthPacket(player.getHealth(), Constants.NO_SPRING_FOOD_LEVEL, 0));
         }
+
+        if (itemStack == null)
+            return;
 
         if (itemStack.getId() == 597 || itemStack.getId() == 596 || itemStack.getId() == 595 | itemStack.getId() == 604)
             betaSession.sendPacket(blockPlacePacketData);

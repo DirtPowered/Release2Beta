@@ -55,11 +55,8 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
         int z = pos.getZ();
 
         int face = MagicValues.value(Integer.class, packet.getFace());
-        PlayerInventory inventory = player.getInventory();
 
-        ItemStack itemStack = inventory.getItemInHand();
-        if (itemStack == null)
-            return;
+        PlayerInventory inventory = player.getInventory();
 
         BlockPlacePacketData blockPlacePacketData = new BlockPlacePacketData(x, y, z, face, new BetaItemStack()); //item-stack is ignored
 
@@ -72,6 +69,10 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
         if (R2BConfiguration.disableSprinting) {
             modernSession.send(new ServerPlayerHealthPacket(player.getHealth(), Constants.NO_SPRING_FOOD_LEVEL, 0));
         }
+
+        ItemStack itemStack = inventory.getItemInHand();
+        if (itemStack == null)
+            return;
         /*
          * Special note on using buckets: When using buckets, the Notchian client might send two packets: first a normal and then a special case
          * https://wiki.vg/index.php?title=Protocol&oldid=689#Player_Block_Placement_.280x0F.29
