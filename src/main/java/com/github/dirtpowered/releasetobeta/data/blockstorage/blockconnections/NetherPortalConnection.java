@@ -27,7 +27,7 @@ import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.m
 public class NetherPortalConnection implements BlockConnection {
 
     @Override
-    public int connect(boolean west, boolean east, boolean north, boolean south, boolean up, boolean down) {
+    public int connect(boolean west, boolean east, boolean north, boolean south, boolean up, boolean down, int originalData) {
         int data = -1;
 
         if (!east && !north && !south && west || east && !north && !south && !west) {

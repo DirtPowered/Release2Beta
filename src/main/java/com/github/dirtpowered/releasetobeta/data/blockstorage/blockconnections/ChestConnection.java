@@ -27,18 +27,46 @@ import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.m
 public class ChestConnection implements BlockConnection {
 
     @Override
-    public int connect(boolean west, boolean east, boolean north, boolean south, boolean up, boolean down) {
-        int data = 2;
+    public int connect(boolean west, boolean east, boolean north, boolean south, boolean up, boolean down, int originalData) {
+        int data = originalData;
 
-        if (!east && !north && !south && west || east && !north && !south && !west) {
-            data = 3;
+        // set b1.6-1.7 default facing to north
+        if (originalData == 0) {
+            data = 2;
         }
 
-        if (!east && north && !south && !west || !east && !north && south && !west) {
-            data = 4;
+        // west | north-right (not facing south)
+        if (!east && !north && !south && west && originalData != 3) {
+            data = 6;
         }
-
-        //TODO: block connections
+        // east | north-left (not facing south)
+        if (east && !north && !south && !west && originalData != 3) {
+            data = 7;
+        }
+        // north | west-left (not facing east)
+        if (!east && north && !south && !west && originalData != 5) {
+            data = 8;
+        }
+        // south | west-right (not facing east)
+        if (!east && !north && south && !west && originalData != 5) {
+            data = 9;
+        }
+        // west | north-right (facing south)
+        if (!east && !north && !south && west && originalData == 3) {
+            data = 10;
+        }
+        // east | north-left (facing south)
+        if (east && !north && !south && !west && originalData == 3) {
+            data = 11;
+        }
+        // north | west-left (facing east)
+        if (!east && north && !south && !west && originalData == 5) {
+            data = 12;
+        }
+        // south | west-right (facing east)
+        if (!east && !north && south && !west && originalData == 5) {
+            data = 13;
+        }
 
         return data;
     }

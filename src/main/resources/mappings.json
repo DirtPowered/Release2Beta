@@ -976,6 +976,31 @@
       "869": {
         "internalId": 2051
       },
+      //start  fake chests
+      "870": {
+        "internalId": 2037
+      },
+      "871": {
+        "internalId": 2035
+      },
+      "872": {
+        "internalId": 2047
+      },
+      "873": {
+        "internalId": 2049
+      },
+      "874": {
+        "internalId": 2041
+      },
+      "875": {
+        "internalId": 2043
+      },
+      "876": {
+        "internalId": 2055
+      },
+      "877": {
+        "internalId": 2053
+      },//end
       "880": {
         "internalId": 3216
       },

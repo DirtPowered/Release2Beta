@@ -27,7 +27,7 @@ import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.m
 public class SnowLayerConnection implements BlockConnection {
 
     @Override
-    public int connect(boolean west, boolean east, boolean north, boolean south, boolean up, boolean down) {
+    public int connect(boolean west, boolean east, boolean north, boolean south, boolean up, boolean down, int originalData) {
         return up ? 1 : 0;
     }
 }

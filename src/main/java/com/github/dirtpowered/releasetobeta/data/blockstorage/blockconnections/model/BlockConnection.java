@@ -24,5 +24,5 @@ package com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.
 
 public interface BlockConnection {
 
-    int connect(boolean west, boolean east, boolean north, boolean south, boolean up, boolean down);
+    int connect(boolean west, boolean east, boolean north, boolean south, boolean up, boolean down, int originalData);
 }
