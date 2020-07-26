@@ -48,7 +48,7 @@ public class ClientWorldTracker implements WorldTrackerImpl {
                 legacyId == Block.PORTAL ||
                 legacyId == Block.OBSIDIAN ||
                 legacyId == Block.SNOW_LAYER ||
-                legacyId == Block.GRASS_BLOCK;
+                legacyId == Block.FENCE;
     }
 
     @Override
@@ -130,8 +130,8 @@ public class ClientWorldTracker implements WorldTrackerImpl {
         onBlockUpdate(new BlockLocation(x, y, z), typeId, data);
     }
 
-    CachedBlock getBlockAt(int x, int y, int z) {
-        return getBlockAt(new BlockLocation(x, y, z));
+    int getBlock(int x, int y, int z) {
+        return getBlockAt(new BlockLocation(x, y, z)).getTypeId();
     }
 
     public CachedBlock getBlockAt(BlockLocation blockLocation) {

@@ -1585,6 +1585,53 @@
       "1360": {
         "internalId": 3995
       },
+      //start - fake fence data
+      "1361": {
+        "internalId": 3978
+      },
+      "1362": {
+        "internalId": 3991
+      },
+      "1363": {
+        "internalId": 3971
+      },
+      "1364": {
+        "internalId": 3967
+      },
+      "1365": {
+        "internalId": 3975
+      },
+      "1366": {
+        "internalId": 3974
+      },
+      "1367": {
+        "internalId": 3966
+      },
+      "1368": {
+        "internalId": 3982
+      },
+      "1369": {
+        "internalId": 3990
+      },
+      "1370": {
+        "internalId": 3986
+      },
+      "1371": {
+        "internalId": 3970
+      },
+      "1372": {
+        "internalId": 3994
+      },
+      "1373": {
+        "internalId": 3983
+      },
+      "1374": {
+        "internalId": 3987
+      },
+      "1375": {
+        "internalId": 3979
+      },
+      //end
       "1376": {
         "internalId": 4003
       },

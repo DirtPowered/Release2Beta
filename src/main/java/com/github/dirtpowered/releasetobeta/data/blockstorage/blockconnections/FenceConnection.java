@@ -1,0 +1,99 @@
+/*
+ * Copyright (c) 2020 Dirt Powered
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections;
+
+import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.model.BlockConnection;
+
+public class FenceConnection implements BlockConnection {
+
+    @Override
+    public int connect(boolean west, boolean east, boolean north, boolean south, boolean up, boolean down) {
+        int data = -1;
+
+        if (!east && !north && !south && !west) {
+            data = 0;
+        }
+
+        if (east && !north && !south && west) {
+            data = 1;
+        }
+
+        if (!east && !north && south && !west) {
+            data = 2;
+        }
+
+        if (east && north && !south && !west) {
+            data = 3;
+        }
+
+        if (east && north && south && !west) {
+            data = 4;
+        }
+
+        if (east && !north && south && !west) {
+            data = 5;
+        }
+
+        if (east && !north && south && west) {
+            data = 6;
+        }
+
+        if (east && north && south && west) {
+            data = 7;
+        }
+
+        if (!east && north && south && west) {
+            data = 8;
+        }
+
+        if (!east && !north && south && west) {
+            data = 9;
+        }
+
+        if (!east && north && !south && west) {
+            data = 10;
+        }
+
+        if (east && north && !south && west) {
+            data = 11;
+        }
+
+        if (!east && !north && !south && west) {
+            data = 12;
+        }
+
+        if (!east && north && south && !west) {
+            data = 13;
+        }
+
+        if (!east && north && !south && !west) {
+            data = 14;
+        }
+
+        if (east && !north && !south && !west) {
+            data = 15;
+        }
+
+        return data;
+    }
+}

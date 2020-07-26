@@ -22,14 +22,85 @@
 
 package com.github.dirtpowered.releasetobeta.data.blockstorage;
 
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.Block;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.ChestConnection;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.FenceConnection;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.NetherPortalConnection;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.SnowLayerConnection;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.model.BlockConnection;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BlockDataFixer {
+    private static final Map<Integer, BlockConnection> blockConnections = new HashMap<>();
+
+    static {
+        register(Block.FENCE, new FenceConnection());
+        register(Block.OBSIDIAN, new NetherPortalConnection());
+        register(Block.SNOW_LAYER, new SnowLayerConnection());
+        register(Block.CHEST, new ChestConnection());
+    }
+
+    public static boolean canFix(int legacyId) {
+        return legacyId == Block.PORTAL || legacyId == Block.SNOW_LAYER || legacyId == Block.FENCE || legacyId == Block.CHEST;
+    }
+
+    private static void register(int typeId, BlockConnection blockConnection) {
+        blockConnections.put(typeId, blockConnection);
+    }
+
+    private static boolean containsId(int typeId) {
+        return blockConnections.containsKey(typeId);
+    }
+
+    private static int connectTo(ClientWorldTracker worldTracker, BlockLocation loc, int block) {
+        int x = loc.getX();
+        int y = loc.getY();
+        int z = loc.getZ();
+
+        boolean west = worldTracker.getBlock(x - 1, y, z) == block;
+        boolean east = worldTracker.getBlock(x + 1, y, z) == block;
+        boolean north = worldTracker.getBlock(x, y, z - 1) == block;
+        boolean south = worldTracker.getBlock(x, y, z + 1) == block;
+
+        boolean up = worldTracker.getBlock(x, y + 1, z) == block;
+        boolean down = worldTracker.getBlock(x, y - 1, z) == block;
+
+        return containsId(block) ? blockConnections.get(block).connect(west, east, north, south, up, down) : -1;
+    }
+
+    public static CachedBlock fixSingleBlockData(ClientWorldTracker worldTracker, CachedBlock cachedBlock) {
+        BlockLocation loc = cachedBlock.getBlockLocation();
+
+        int typeId = cachedBlock.getTypeId();
+
+        int x = loc.getX();
+        int y = loc.getY();
+        int z = loc.getZ();
+
+        switch (typeId) {
+            case Block.SNOW_LAYER:
+                BlockLocation below = new BlockLocation(x, y - 1, z);
+                return new CachedBlock(below, Block.GRASS_BLOCK, connectTo(worldTracker, below, Block.SNOW_LAYER));
+            case Block.FENCE:
+                return new CachedBlock(loc, Block.FENCE, connectTo(worldTracker, loc, Block.FENCE));
+            case Block.PORTAL:
+                return new CachedBlock(loc, Block.PORTAL, connectTo(worldTracker, loc, Block.OBSIDIAN));
+        }
+
+        // special case
+        if (typeId == Block.CHEST && !MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version))
+            return new CachedBlock(loc, Block.CHEST, connectTo(worldTracker, loc, Block.CHEST));
+
+        return null;
+    }
 
     public static List<CachedBlock> fixBlockData(ClientWorldTracker worldTracker, int chunkX, int chunkZ) {
         List<CachedBlock> cachedBlocks = new ArrayList<>();
@@ -42,45 +113,5 @@ public class BlockDataFixer {
         }
 
         return cachedBlocks;
-    }
-
-    public static CachedBlock fixSingleBlockData(ClientWorldTracker worldTracker, CachedBlock cachedBlock) {
-        BlockLocation loc = cachedBlock.getBlockLocation();
-        int typeId = cachedBlock.getTypeId();
-
-        if (typeId == Block.PORTAL) {
-            int data = 0;
-
-            if (worldTracker.getBlockAt(loc.getX() - 1, loc.getY(), loc.getZ()).getTypeId() == Block.OBSIDIAN
-                    || worldTracker.getBlockAt(loc.getX() + 1, loc.getY(), loc.getZ()).getTypeId() == Block.OBSIDIAN) {
-                data = 1;
-            }
-
-            if (worldTracker.getBlockAt(loc.getX(), loc.getY(), loc.getZ() - 1).getTypeId() == Block.OBSIDIAN
-                    || worldTracker.getBlockAt(loc.getX(), loc.getY(), loc.getZ() + 1).getTypeId() == Block.OBSIDIAN) {
-                data = 2;
-            }
-
-            return new CachedBlock(loc, Block.PORTAL, data);
-
-        } else if (typeId == Block.SNOW_LAYER) {
-            if (worldTracker.getBlockAt(loc.getX(), loc.getY() - 1, loc.getZ()).getTypeId() == Block.GRASS_BLOCK) {
-
-                return new CachedBlock(new BlockLocation(loc.getX(), loc.getY() - 1, loc.getZ()), Block.GRASS_BLOCK, 1);
-            }
-
-        } else if (typeId == Block.GRASS_BLOCK) {
-
-            if (worldTracker.getBlockAt(loc.getX(), loc.getY() + 1, loc.getZ()).getTypeId() == Block.SNOW_LAYER) {
-
-                return new CachedBlock(new BlockLocation(loc.getX(), loc.getY(), loc.getZ()), Block.GRASS_BLOCK, 1);
-            }
-        }
-
-        return null;
-    }
-
-    public static boolean canFix(int legacyId) {
-        return legacyId == Block.PORTAL || legacyId == Block.SNOW_LAYER;
     }
 }
