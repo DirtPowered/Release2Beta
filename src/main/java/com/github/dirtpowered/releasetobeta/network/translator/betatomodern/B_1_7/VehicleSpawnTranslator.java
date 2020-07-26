@@ -33,6 +33,7 @@ import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.entity.object.FallingBlockData;
+import com.github.steveice10.mc.protocol.data.game.entity.object.GenericObjectData;
 import com.github.steveice10.mc.protocol.data.game.entity.object.MinecartType;
 import com.github.steveice10.mc.protocol.data.game.entity.object.ObjectData;
 import com.github.steveice10.mc.protocol.data.game.entity.object.ProjectileData;
@@ -89,6 +90,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 break;
             case 50:
                 type = EntityType.PRIMED_TNT;
+                data = new GenericObjectData(0);
                 break;
             case 61:
                 type = EntityType.SNOWBALL;
@@ -111,6 +113,7 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
                 break;
             case 1:
                 type = EntityType.BOAT;
+                data = new GenericObjectData(0);
                 break;
             case 63:
                 type = EntityType.FIREBALL;
