@@ -25,25 +25,18 @@ package com.github.dirtpowered.releasetobeta.bootstrap.standalone;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.bootstrap.AbstractBootstrap;
 import com.github.dirtpowered.releasetobeta.bootstrap.Platform;
-import com.github.dirtpowered.releasetobeta.bootstrap.standalone.gui.LoggerWindow;
-import com.github.dirtpowered.releasetobeta.bootstrap.standalone.gui.WrappedLogger;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import com.github.dirtpowered.releasetobeta.logger.DefaultLogger;
-import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.writers.FileWriter;
 
-import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class StandaloneBootstrap implements AbstractBootstrap {
     private ReleaseToBeta server;
     private DefaultLogger logger;
-
-    @Getter
-    private LoggerWindow loggerWindow;
 
     public static void main(String[] args) {
         new StandaloneBootstrap().onEnable();
@@ -52,10 +45,6 @@ public class StandaloneBootstrap implements AbstractBootstrap {
     @Override
     public void onEnable() {
         initDefaultLogger();
-
-        loggerWindow = new LoggerWindow(GraphicsEnvironment.isHeadless());
-
-        loggerWindow.show();
 
         logger = new DefaultLogger();
         server = new ReleaseToBeta(this);
@@ -99,7 +88,6 @@ public class StandaloneBootstrap implements AbstractBootstrap {
 
     private void initDefaultLogger() {
         Configurator.currentConfig()
-                .addWriter(new WrappedLogger(this))
                 .addWriter(new FileWriter("logs/log-" + new SimpleDateFormat("dd-MM-HH:mm:ss").format(new Date()) + ".txt"))
                 .formatPattern("[{level} {date:HH:mm:ss}] {message}")
                 .activate();
