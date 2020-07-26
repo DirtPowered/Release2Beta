@@ -48,6 +48,7 @@ public class ClientWorldTracker implements WorldTrackerImpl {
                 legacyId == Block.PORTAL ||
                 legacyId == Block.OBSIDIAN ||
                 legacyId == Block.SNOW_LAYER ||
+                legacyId == Block.GRASS_BLOCK ||
                 legacyId == Block.FENCE;
     }
 

@@ -86,18 +86,23 @@ public class BlockDataFixer {
         int z = loc.getZ();
 
         switch (typeId) {
-            case Block.SNOW_LAYER:
-                BlockLocation below = new BlockLocation(x, y - 1, z);
-                return new CachedBlock(below, Block.GRASS_BLOCK, connectTo(worldTracker, below, Block.SNOW_LAYER));
             case Block.FENCE:
                 return new CachedBlock(loc, Block.FENCE, connectTo(worldTracker, loc, Block.FENCE));
             case Block.PORTAL:
                 return new CachedBlock(loc, Block.PORTAL, connectTo(worldTracker, loc, Block.OBSIDIAN));
         }
 
-        // special case
+        // special cases
         if (typeId == Block.CHEST && !MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version))
             return new CachedBlock(loc, Block.CHEST, connectTo(worldTracker, loc, Block.CHEST));
+
+        if (typeId == Block.SNOW_LAYER) {
+            BlockLocation below = new BlockLocation(x, y - 1, z);
+
+            if (worldTracker.getBlockAt(below).getTypeId() == Block.GRASS_BLOCK) {
+                return new CachedBlock(below, Block.GRASS_BLOCK, connectTo(worldTracker, below, Block.SNOW_LAYER));
+            }
+        }
 
         return null;
     }

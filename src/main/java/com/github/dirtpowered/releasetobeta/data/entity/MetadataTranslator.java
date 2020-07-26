@@ -46,6 +46,9 @@ import java.util.List;
 public class MetadataTranslator {
 
     public EntityMetadata[] toModernMetadata(ModernPlayer target, Session modernSession, Entity e, List<WatchableObject> oldMetadata) {
+        if (oldMetadata == null)
+            return new EntityMetadata[0];
+
         EntityType entityType = null;
 
         if (e != null)
