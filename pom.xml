@@ -29,6 +29,7 @@
                 <includes>
                     <include>config.yml</include>
                     <include>plugin.yml</include>
+                    <include>mappings.json</include>
                 </includes>
             </resource>
         </resources>
@@ -100,7 +101,12 @@
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
-            <version>8.3.1</version>
+            <version>8.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
         </dependency>
         <dependency>
             <groupId>BetaProtocollib</groupId>

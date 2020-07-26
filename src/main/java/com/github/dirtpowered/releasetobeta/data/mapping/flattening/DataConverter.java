@@ -30,6 +30,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -100,11 +101,7 @@ public class DataConverter {
                 mappingTempFile.deleteOnExit();
 
                 try (FileOutputStream out = new FileOutputStream(mappingTempFile)) {
-                    byte[] buffer = new byte[1024];
-                    int read;
-                    while ((read = getClass().getResourceAsStream("/mappings.json").read(buffer)) != -1) {
-                        out.write(buffer, 0, read);
-                    }
+                    IOUtils.copy(DataConverter.class.getResourceAsStream("/mappings.json"), out);
                 }
 
                 f = mappingTempFile;
