@@ -243,6 +243,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
             main.getServer().sendInitialPlayerAbilities(player);
             main.getServer().sendWorldBorder(session);
+            main.getServer().sendBlockTags(session);
             setLoggedIn(true);
         }
     }

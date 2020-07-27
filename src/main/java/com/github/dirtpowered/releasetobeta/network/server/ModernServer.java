@@ -38,6 +38,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.attribute.AttributeTyp
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDeclareTagsPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityPropertiesPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerAbilitiesPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayBuiltinSoundPacket;
@@ -51,7 +52,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class ModernServer {
@@ -65,6 +69,8 @@ public class ModernServer {
 
     private MetadataTranslator metadataTranslator;
     private MovementTranslator movementTranslator;
+
+    private Map<String, int[]> fluidTags = new HashMap<>();
 
     public ModernServer(ReleaseToBeta main) {
         this.main = main;
@@ -80,6 +86,8 @@ public class ModernServer {
         this.metadataTranslator = new MetadataTranslator();
         this.movementTranslator = new MovementTranslator();
 
+        registerTags();
+
         try {
             BufferedImage bufferedImage = ImageIO.read(new File("server-icon.png"));
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -90,6 +98,11 @@ public class ModernServer {
         } catch (IOException e) {
             main.getLogger().warning("unable to read server-icon.png (missing?)");
         }
+    }
+
+    private void registerTags() {
+        fluidTags.put("minecraft:water", new int[] {1, 2});
+        fluidTags.put("minecraft:lava", new int[] {3, 4});
     }
 
     private void registerInternalCommands() {
@@ -135,6 +148,10 @@ public class ModernServer {
     public void sendInitialPlayerAbilities(ModernPlayer player) {
         boolean creative = player.getGamemode() == 1;
         player.sendPacket(new ServerPlayerAbilitiesPacket(false, creative, creative, creative, 0.05f, 0.1f));
+    }
+
+    public void sendBlockTags(Session session) {
+        session.send(new ServerDeclareTagsPacket(Collections.emptyMap(), Collections.emptyMap(), fluidTags, Collections.emptyMap()));
     }
 
     public void sendWorldBorder(Session session) {
