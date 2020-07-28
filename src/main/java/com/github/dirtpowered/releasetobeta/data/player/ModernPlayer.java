@@ -62,6 +62,7 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
     private PlayerInventory inventory;
     private WindowType openedInventoryType;
     private long lastInteractAtEntity;
+    private long lastChatInteraction;
     private UUID clientId;
     private boolean onGround;
     private int dimension;
@@ -179,9 +180,9 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
     }
 
     public int getPing() {
-        if (getModernSession() != null) {
+        /*if (getModernSession() != null) {
             return (int) (long) getModernSession().getFlag("ping");
-        }
+        }*/
 
         return 0;
     }

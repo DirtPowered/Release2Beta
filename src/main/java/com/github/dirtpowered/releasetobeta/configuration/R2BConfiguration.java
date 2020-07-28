@@ -57,6 +57,8 @@ public class R2BConfiguration {
     public static String metricsUniqueId;
     public static boolean logPings;
     public static boolean suppressMappingsErrors;
+    public static boolean spamProtection;
+    public static String noSpamMessage;
 
     private ReleaseToBeta main;
 
@@ -119,7 +121,9 @@ public class R2BConfiguration {
 
             serverFullMessage = config.getString("messages.server_full_message");
             connectionThrottleKickMessage = config.getString("messages.connection_throttle_kick_message");
+            noSpamMessage = config.getString("messages.no_spam_message");
             logPings = config.getBoolean("messages.log_pings");
+            spamProtection = config.getBoolean("messages.spam_protection");
 
             testMode = config.getBoolean("experimental.enable_chunk_updates");
 
