@@ -80,18 +80,6 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
 
         ItemStack itemStack = packet.getClickedItem() == null ? (slot < 0 ? null : player.getInventory().getItem(slot)) : packet.getClickedItem();
 
-        // update local inventory
-        if (slot > 0) {
-            if (packet.getClickedItem() != null) {
-                inventory.setItem(slot, new ItemStack(0));
-                inventory.setLastClickedItem(packet.getClickedItem());
-            } else {
-                inventory.setItem(slot, inventory.getLastClickedItem());
-            }
-
-            main.getServer().updatePlayerProperties(modernSession, player);
-        }
-
         if (itemStack == null)
             return;
 
