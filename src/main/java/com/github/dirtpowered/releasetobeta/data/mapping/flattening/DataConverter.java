@@ -60,8 +60,11 @@ public class DataConverter {
             return oldToNewBlocksMap.get(sum);
         } else {
             if (!R2BConfiguration.suppressMappingsErrors)
-                main.getLogger().warning("missing mapping for block " + blockId + ":" + data + "(" + combineId(blockId, data) + ")");
-            return 1; //stone
+                main.getLogger().warning("missing mapping for block " + blockId + ":" + data + "(" + sum + ")");
+
+            int combinedNoData = combineId(blockId, 0);
+            int noDataBlock = oldToNewBlocksMap.get(combinedNoData);
+            return oldToNewBlocksMap.containsKey(combinedNoData) ? noDataBlock : 1;
         }
     }
 
@@ -71,7 +74,7 @@ public class DataConverter {
             return oldToNewItemsMap.get(sum);
         } else {
             if (!R2BConfiguration.suppressMappingsErrors)
-                main.getLogger().warning("missing mapping for item " + itemId + ":" + data + "(" + combineId(itemId, data) + ")");
+                main.getLogger().warning("missing mapping for item " + itemId + ":" + data + "(" + sum + ")");
             return 1; //stone
         }
     }
