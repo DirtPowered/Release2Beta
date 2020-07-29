@@ -251,6 +251,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             main.getServer().sendInitialPlayerAbilities(player);
             main.getServer().sendWorldBorder(session);
             main.getServer().sendBlockTags(session);
+            main.getServer().sendServerBrand(session);
 
             oldChunkData.initialize(player.getSeed());
             setLoggedIn(true);

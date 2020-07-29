@@ -32,4 +32,5 @@ public class Constants {
     public final static double SOUND_RANGE = 20.0D;
     public final static double PLAYER_HEIGHT = 1.8D;
     public final static int NO_SPRING_FOOD_LEVEL = 6;
+    public final static String SERVER_BRAND = "&3ReleaseToBeta&r";
 }

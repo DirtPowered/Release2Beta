@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.server;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.command.CommandRegistry;
 import com.github.dirtpowered.releasetobeta.data.command.R2BCommand;
 import com.github.dirtpowered.releasetobeta.data.command.model.Command;
@@ -33,17 +34,22 @@ import com.github.dirtpowered.releasetobeta.data.location.MovementTranslator;
 import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.data.skin.ProfileCache;
+import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.mc.protocol.data.game.entity.attribute.Attribute;
 import com.github.steveice10.mc.protocol.data.game.entity.attribute.AttributeType;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDeclareTagsPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPluginMessagePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityPropertiesPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerAbilitiesPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayBuiltinSoundPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerWorldBorderPacket;
 import com.github.steveice10.packetlib.Session;
+import com.github.steveice10.packetlib.tcp.io.ByteBufNetOutput;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import lombok.Getter;
 
 import javax.imageio.ImageIO;
@@ -152,6 +158,20 @@ public class ModernServer {
 
     public void sendBlockTags(Session session) {
         session.send(new ServerDeclareTagsPacket(Collections.emptyMap(), Collections.emptyMap(), fluidTags, Collections.emptyMap()));
+    }
+
+    public void sendServerBrand(Session session) {
+        ByteBuf buffer = Unpooled.buffer();
+        ByteBufNetOutput adapter = new ByteBufNetOutput(buffer);
+
+        try {
+            adapter.writeString(ChatUtils.colorize(Constants.SERVER_BRAND));
+            session.send(new ServerPluginMessagePacket("minecraft:brand", buffer.array()));
+        } catch (IOException e) {
+            main.getLogger().warning("unable to send server brand: " + e.getMessage());
+        } finally {
+            buffer.release();
+        }
     }
 
     public void sendWorldBorder(Session session) {
