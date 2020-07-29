@@ -31,6 +31,7 @@ import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
+import com.github.dirtpowered.releasetobeta.data.biome.OldChunkData;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.ClientWorldTracker;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
@@ -60,6 +61,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
 
     private final Channel channel;
+
+    @Getter
+    private OldChunkData oldChunkData;
 
     @Getter
     private ReleaseToBeta main;
@@ -108,6 +112,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
         // connection callback
         this.connectionCallback = onConnect;
+
+        // biome related stuff
+        this.oldChunkData = new OldChunkData();
     }
 
     @Override
@@ -244,22 +251,10 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             main.getServer().sendInitialPlayerAbilities(player);
             main.getServer().sendWorldBorder(session);
             main.getServer().sendBlockTags(session);
+
+            oldChunkData.initialize(player.getSeed());
             setLoggedIn(true);
         }
-    }
-
-    public String[] combinedPlayerList() {
-        List<String> combinedPlayers = new ArrayList<>();
-        //Players joined from R2B
-        for (ModernPlayer modernPlayer : main.getServer().getServerConnection().getPlayerList().getPlayers()) {
-            combinedPlayers.add(modernPlayer.getUsername());
-        }
-        //Players using beta client
-        for (BetaPlayer betaPlayer : betaPlayers) {
-            combinedPlayers.add(betaPlayer.getUsername());
-        }
-
-        return combinedPlayers.toArray(new String[0]);
     }
 
     public void handleMapPacket(MapDataPacketData mapData) {

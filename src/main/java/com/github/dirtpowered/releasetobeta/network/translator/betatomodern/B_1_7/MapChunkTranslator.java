@@ -35,7 +35,6 @@ import com.github.dirtpowered.releasetobeta.data.chunk.ModernChunk;
 import com.github.dirtpowered.releasetobeta.data.entity.tile.TileEntity;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
-import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.steveice10.mc.protocol.data.game.chunk.Chunk;
 import com.github.steveice10.mc.protocol.data.game.chunk.Column;
 import com.github.steveice10.mc.protocol.data.game.chunk.NibbleArray3d;
@@ -52,6 +51,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
+
+    private final static CompoundTag[] EMPTY_TAG_ARRAY;
+
+    static {
+        EMPTY_TAG_ARRAY = new CompoundTag[0];
+    }
 
     @Override
     public void translate(ReleaseToBeta main, MapChunkPacketData packet, BetaClientSession session, Session modernSession) {
@@ -91,8 +96,13 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                 }
 
                 modernSession.send(new ServerChunkDataPacket(
-                        new Column(chunkX, chunkZ, chunks, chunkTileEntities.toArray(new CompoundTag[0]), new CompoundTag(StringUtil.EMPTY_STRING), Utils.getFilledBiomeData()))
+                                new Column(
+                                        chunkX, chunkZ, chunks, chunkTileEntities.toArray(EMPTY_TAG_ARRAY),
+                                        new CompoundTag(StringUtil.EMPTY_STRING),
+                                        session.getOldChunkData().getBiomeDataAt(chunkX, chunkZ))
+                        )
                 );
+
 
                 modernSession.send(new ServerUpdateLightPacket(chunkX, chunkZ, skyLight, blockLight));
             } else if (R2BConfiguration.testMode) {
