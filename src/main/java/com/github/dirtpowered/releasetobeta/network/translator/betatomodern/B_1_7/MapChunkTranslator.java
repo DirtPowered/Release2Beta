@@ -118,9 +118,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
                     Chunk[] chunks = new Chunk[16];
 
-                    int startIndex = fullChunk ? 0 : (height / 16); // reduce amount of chunks to update
-
-                    for (int k = startIndex; k < 8; k++) {
+                    for (int k = 0; k < 8; k++) {
                         modernChunks[k] = translateChunk(main, session, chunk, k * 16, skylight, fullChunk);
                         chunks[k] = modernChunks[k].getChunk();
 
