@@ -104,7 +104,8 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
                     break;
             }
 
-            modernSession.send(new ServerPlayBuiltinSoundPacket(builtinSound, SoundCategory.BLOCK, x, y, z, 1.33f, pitch));
+            float correctedPitch = (float) (0.5f * (Math.pow(2, pitch / 12.0f)));
+            modernSession.send(new ServerPlayBuiltinSoundPacket(builtinSound, SoundCategory.BLOCK, x, y, z, 1.33f, correctedPitch));
 
             if (type instanceof ChestValueType) {
                 modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, new ChestValue(pitch /* 0/1 */), 145));
