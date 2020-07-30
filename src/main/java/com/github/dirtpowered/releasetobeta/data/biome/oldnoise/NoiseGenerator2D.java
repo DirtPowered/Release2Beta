@@ -2,26 +2,25 @@ package com.github.dirtpowered.releasetobeta.data.biome.oldnoise;
 
 import java.util.Random;
 
+//TODO: Guess what is what and rename everything
 public class NoiseGenerator2D {
     private static final double f = 0.5D * (Math.sqrt(3.0D) - 1.0D);
     private static final double g = (3.0D - Math.sqrt(3.0D)) / 6.0D;
     private static int[][] d = new int[][]{{1, 1, 0}, {-1, 1, 0}, {1, -1, 0}, {-1, -1, 0}, {1, 0, 1}, {-1, 0, 1}, {1, 0, -1}, {-1, 0, -1}, {0, 1, 1}, {0, -1, 1}, {0, 1, -1}, {0, -1, -1}};
-    private int[] e;
     public double a;
     public double b;
     public double c;
     private int[] premutationTable;
 
-    NoiseGenerator2D(Random var1) {
-        this.e = new int[512];
-        this.a = var1.nextDouble() * 256.0D;
-        this.b = var1.nextDouble() * 256.0D;
-        this.c = var1.nextDouble() * 256.0D;
+    NoiseGenerator2D(Random seededRandom) {
+        this.premutationTable = new int[512];
+        this.a = seededRandom.nextDouble() * 256.0D;
+        this.b = seededRandom.nextDouble() * 256.0D;
+        this.c = seededRandom.nextDouble() * 256.0D;
 
-        int var2;
-        var2 = 0;
-        while (var2 < 256) {
-            this.e[var2] = var2++;
+        int i = 0;
+        while (i < 256) {
+            this.premutationTable[i] = i++;
         }
 
         for (i = 0; i < 256; ++i) {
@@ -42,8 +41,8 @@ public class NoiseGenerator2D {
         return (double) var0[0] * var1 + (double) var0[1] * var3;
     }
 
-    void generateNoise(double[] var1, double var2, double var4, int var6, int var7, double var8, double var10, double var12) {
-        int var14 = 0;
+    void generateNoise(double[] array, double x, double z, int xSize, int zSize, double gridX, double gridZ, double noiseFrequency) {
+        int index = 0;
 
         for (int x1 = 0; x1 < xSize; ++x1) {
             double var16 = (x + (double) x1) * gridX + this.a;
@@ -74,9 +73,9 @@ public class NoiseGenerator2D {
                 double var43 = var33 - 1.0D + 2.0D * g;
                 int var45 = var23 & 255;
                 int var46 = var24 & 255;
-                int var47 = this.e[var45 + this.e[var46]] % 12;
-                int var48 = this.e[var45 + var35 + this.e[var46 + var36]] % 12;
-                int var49 = this.e[var45 + 1 + this.e[var46 + 1]] % 12;
+                int var47 = this.premutationTable[var45 + this.premutationTable[var46]] % 12;
+                int var48 = this.premutationTable[var45 + var35 + this.premutationTable[var46 + var36]] % 12;
+                int var49 = this.premutationTable[var45 + 1 + this.premutationTable[var46 + 1]] % 12;
                 double var50 = 0.5D - var31 * var31 - var33 * var33;
                 double var52;
                 if (var50 < 0.0D) {
@@ -104,10 +103,10 @@ public class NoiseGenerator2D {
                     var60 = var58 * var58 * a(d[var49], var41, var43);
                 }
 
-                int var62 = var14++;
-                var1[var62] += 70.0D * (var52 + var56 + var60) * var12;
+                array[index] += 70.0D * (var52 + var56 + var60) * noiseFrequency;
+
+                index++;
             }
         }
-
     }
 }
