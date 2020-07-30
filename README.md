@@ -21,6 +21,7 @@ Proxy, Bukkit plugin that allows connecting to beta (b1.6.6-1.9-pre6) servers us
 - [x] Switching worlds 
 - [x] Signs
 - [x] Redstone, pistons
+- [x] Biomes
 
 ### Bugs
 - [x] non-full chunks
@@ -28,7 +29,6 @@ Proxy, Bukkit plugin that allows connecting to beta (b1.6.6-1.9-pre6) servers us
 
 ### What can't be done
 - [x] Detecting all beta players at join (b1.7 only)
-- [x] Biomes (needs some code on server side)
 - [x] Boat controlling
 
 ### Screenshots
