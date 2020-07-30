@@ -52,12 +52,6 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
 
         if (BlockDataFixer.canFix(typeId)) dataFix = true;
 
-        modernSession.send(
-                new ServerBlockChangePacket(
-                        new BlockChangeRecord(new Position(x, y, z), new BlockState(internalBlockId))
-                )
-        );
-
         session.getChunkCache().onBlockUpdate(x, y, z, typeId, data);
 
         if (dataFix) {
@@ -70,6 +64,12 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
                         new BlockChangeRecord(new Position(b.getX(), b.getY(), b.getZ()), new BlockState(newId))
                 ));
             }
+        } else {
+            modernSession.send(
+                    new ServerBlockChangePacket(
+                            new BlockChangeRecord(new Position(x, y, z), new BlockState(internalBlockId))
+                    )
+            );
         }
     }
 }
