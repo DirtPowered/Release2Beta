@@ -38,7 +38,8 @@ public class EntityEquipmentTranslator implements BetaToModern<EntityEquipmentPa
         int entityId = packet.getEntityId();
 
         int legacyId = packet.getItemId();
-        int internalItemId = legacyId == -1 ? 0 : main.getServer().convertBlockData(packet.getItemId(), packet.getItemData(), true);
+        int internalItemId = legacyId == -1 ? 0 : main.getServer()
+                .convertBlockData(packet.getItemId(), packet.getItemData() > 16 ? 0 : packet.getItemData(), true);
 
         ItemStack itemStack = new ItemStack(internalItemId, 1);
 
