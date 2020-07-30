@@ -58,23 +58,23 @@ public class BlockDataFixer {
         return blockConnections.containsKey(typeId);
     }
 
-    private static int connectTo(ClientWorldTracker worldTracker, BlockLocation loc, int block, int data) {
+    private static int connectTo(ChunkCache chunkCache, BlockLocation loc, int block, int data) {
         int x = loc.getX();
         int y = loc.getY();
         int z = loc.getZ();
 
-        boolean west = worldTracker.getBlock(x - 1, y, z) == block;
-        boolean east = worldTracker.getBlock(x + 1, y, z) == block;
-        boolean north = worldTracker.getBlock(x, y, z - 1) == block;
-        boolean south = worldTracker.getBlock(x, y, z + 1) == block;
+        boolean west = chunkCache.getBlockAt(x - 1, y, z) == block;
+        boolean east = chunkCache.getBlockAt(x + 1, y, z) == block;
+        boolean north = chunkCache.getBlockAt(x, y, z - 1) == block;
+        boolean south = chunkCache.getBlockAt(x, y, z + 1) == block;
 
-        boolean up = worldTracker.getBlock(x, y + 1, z) == block;
-        boolean down = worldTracker.getBlock(x, y - 1, z) == block;
+        boolean up = chunkCache.getBlockAt(x, y + 1, z) == block;
+        boolean down = chunkCache.getBlockAt(x, y - 1, z) == block;
 
         return containsId(block) ? blockConnections.get(block).connect(west, east, north, south, up, down, data) : -1;
     }
 
-    public static CachedBlock fixSingleBlockData(ClientWorldTracker worldTracker, CachedBlock cachedBlock) {
+    public static CachedBlock fixSingleBlockData(ChunkCache chunkCache, CachedBlock cachedBlock) {
         BlockLocation loc = cachedBlock.getBlockLocation();
 
         int typeId = cachedBlock.getTypeId();
@@ -86,30 +86,30 @@ public class BlockDataFixer {
 
         switch (typeId) {
             case Block.FENCE:
-                return new CachedBlock(loc, Block.FENCE, connectTo(worldTracker, loc, Block.FENCE, 0));
+                return new CachedBlock(loc, Block.FENCE, connectTo(chunkCache, loc, Block.FENCE, 0));
             case Block.PORTAL:
-                return new CachedBlock(loc, Block.PORTAL, connectTo(worldTracker, loc, Block.OBSIDIAN, 0));
+                return new CachedBlock(loc, Block.PORTAL, connectTo(chunkCache, loc, Block.OBSIDIAN, 0));
             case Block.CHEST:
-                return new CachedBlock(loc, Block.CHEST, connectTo(worldTracker, loc, Block.CHEST, typeData));
+                return new CachedBlock(loc, Block.CHEST, connectTo(chunkCache, loc, Block.CHEST, typeData));
         }
 
         // special case
         if (typeId == Block.SNOW_LAYER) {
             BlockLocation below = new BlockLocation(x, y - 1, z);
 
-            if (worldTracker.getBlockAt(below).getTypeId() == Block.GRASS_BLOCK) {
-                return new CachedBlock(below, Block.GRASS_BLOCK, connectTo(worldTracker, below, Block.SNOW_LAYER, 0));
+            if (chunkCache.getBlockAt(x, y - 1, z) == Block.GRASS_BLOCK) {
+                return new CachedBlock(below, Block.GRASS_BLOCK, connectTo(chunkCache, below, Block.SNOW_LAYER, 0));
             }
         }
 
         return null;
     }
 
-    public static List<CachedBlock> fixBlockData(ClientWorldTracker worldTracker, int chunkX, int chunkZ) {
+    public static List<CachedBlock> fixBlockData(ChunkCache chunkCache, int chunkX, int chunkZ) {
         List<CachedBlock> cachedBlocks = new ArrayList<>();
 
-        for (CachedBlock cachedBlock : worldTracker.getCachedBlocksInChunk(chunkX, chunkZ)) {
-            CachedBlock ready = fixSingleBlockData(worldTracker, cachedBlock);
+        for (CachedBlock cachedBlock : chunkCache.getCachedBlocksInChunk(chunkX, chunkZ)) {
+            CachedBlock ready = fixSingleBlockData(chunkCache, cachedBlock);
             if (ready != null) {
                 cachedBlocks.add(ready);
             }

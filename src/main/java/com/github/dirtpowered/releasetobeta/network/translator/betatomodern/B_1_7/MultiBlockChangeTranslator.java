@@ -75,10 +75,10 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
             if (BlockDataFixer.canFix(typeId)) dataFix = true;
         }
 
-        session.getClientWorldTracker().onMultiBlockUpdate(blockList);
+        session.getChunkCache().onMultiBlockUpdate(blockList);
 
         if (dataFix) {
-            for (CachedBlock block : BlockDataFixer.fixBlockData(session.getClientWorldTracker(), chunkX, chunkZ)) {
+            for (CachedBlock block : BlockDataFixer.fixBlockData(session.getChunkCache(), chunkX, chunkZ)) {
                 BlockLocation b = block.getBlockLocation();
 
                 records.add(new BlockChangeRecord(

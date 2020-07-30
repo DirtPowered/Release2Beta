@@ -10,7 +10,7 @@ public class NoiseOctaves2D {
         this.size = size;
         this.generators = new NoiseGenerator2D[size];
 
-        for(int i = 0; i < size; ++i) {
+        for (int i = 0; i < size; ++i) {
             this.generators[i] = new NoiseGenerator2D(seededRandom);
         }
     }
@@ -20,7 +20,7 @@ public class NoiseOctaves2D {
         gridZ /= 1.5D;
 
         if (array != null && array.length >= xSize * zSize) {
-            for(int i = 0; i < array.length; ++i) {
+            for (int i = 0; i < array.length; ++i) {
                 array[i] = 0.0D;
             }
         } else {
@@ -30,7 +30,7 @@ public class NoiseOctaves2D {
         double amplitude = 1.0D;
         double frequency = 1.0D;
 
-        for(int j = 0; j < this.size; ++j) {
+        for (int j = 0; j < this.size; ++j) {
             this.generators[j].generateNoise(array, x, z, xSize, zSize, gridX * frequency, gridZ * frequency, 0.55D / amplitude);
             frequency *= noiseFrequency;
             amplitude *= 0.5D;

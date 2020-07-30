@@ -32,7 +32,7 @@ import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.biome.OldChunkData;
-import com.github.dirtpowered.releasetobeta.data.blockstorage.ClientWorldTracker;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.ChunkCache;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
@@ -86,7 +86,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     private List<BetaPlayer> betaPlayers;
 
     @Getter
-    private ClientWorldTracker clientWorldTracker;
+    private ChunkCache chunkCache;
 
     private boolean resourcepack;
     private int i;
@@ -107,14 +107,14 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         this.updateProgressHandler = new UpdateProgressHandler();
         this.betaPlayers = new ArrayList<>();
 
-        // world tracker
-        this.clientWorldTracker = new ClientWorldTracker();
-
         // connection callback
         this.connectionCallback = onConnect;
 
         // biome related stuff
         this.oldChunkData = new OldChunkData();
+
+        // chunk cache
+        this.chunkCache = new ChunkCache();
     }
 
     @Override
@@ -238,7 +238,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         entityCache.getEntities().clear();
         betaPlayers.clear();
 
-        getClientWorldTracker().purge();
+        chunkCache.purge();
+
         main.getSessionRegistry().removeSession(player.getClientId());
     }
 

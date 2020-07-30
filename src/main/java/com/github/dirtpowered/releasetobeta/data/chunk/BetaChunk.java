@@ -52,32 +52,73 @@ public class BetaChunk {
     }
 
     public int getTypeAt(int x, int y, int z) {
-        return types[getIndex(x, y, z)];
+        return this.types[getIndex(x, y, z)];
     }
 
     public int getMetadataAt(int x, int y, int z) {
-        return metadata.getNibble(x, y, z);
+        return this.metadata.getNibble(x, y, z);
     }
 
     public int getBlockLightAt(int x, int y, int z) {
-        return blocklight.getNibble(x, y, z);
+        return this.blocklight.getNibble(x, y, z);
     }
 
     public int getSkyLightAt(int x, int y, int z) {
-        return skylight.getNibble(x, y, z);
+        return this.skylight.getNibble(x, y, z);
     }
 
-    public void fillData(byte[] data, boolean withSkyLight) {
-        int metadataOffset = types.length;
-        int blockLightOffset = types.length + metadata.getData().length;
-        int skyLightOffset = data.length - blocklight.getData().length;
+    public void setTypeAt(int x, int y, int z, int id) {
+        this.types[getIndex(x, y, z)] = (byte) id;
+    }
 
-        System.arraycopy(data, 0, types, 0, types.length);
-        System.arraycopy(data, metadataOffset, metadata.getData(), 0, metadata.getData().length);
-        System.arraycopy(data, blockLightOffset, blocklight.getData(), 0, blocklight.getData().length);
+    public void setMetadataAt(int x, int y, int z, int data) {
+        this.metadata.setNibble(x, y, z, (byte) data);
+    }
+
+    public void fillData(byte[] data, int x, int y, int z, int xSize, int ySize, int zSize, boolean withSkyLight) {
+        int i;
+        int j;
+        int index;
+        int length;
+
+        int offset = 0;
+
+        for (i = x; i < xSize; ++i) {
+            for (j = z; j < zSize; ++j) {
+                index = i << 11 | j << 7 | y; // normal index
+                length = ySize - y;
+                System.arraycopy(data, offset, this.types, index, length);
+                offset += length;
+            }
+        }
+
+        for (i = x; i < xSize; ++i) {
+            for (j = z; j < zSize; ++j) {
+                index = (i << 11 | j << 7 | y) >> 1; // nibble index
+                length = (ySize - y) / 2;
+                System.arraycopy(data, offset, this.metadata.getData(), index, length);
+                offset += length;
+            }
+        }
+
+        for (i = x; i < xSize; ++i) {
+            for (j = z; j < zSize; ++j) {
+                index = (i << 11 | j << 7 | y) >> 1;
+                length = (ySize - y) / 2;
+                System.arraycopy(data, offset, this.blocklight.getData(), index, length);
+                offset += length;
+            }
+        }
 
         if (withSkyLight) {
-            System.arraycopy(data, skyLightOffset, skylight.getData(), 0, skylight.getData().length);
+            for (i = x; i < xSize; ++i) {
+                for (j = z; j < zSize; ++j) {
+                    index = (i << 11 | j << 7 | y) >> 1;
+                    length = (ySize - y) / 2;
+                    System.arraycopy(data, offset, this.skylight.getData(), index, length);
+                    offset += length;
+                }
+            }
         }
     }
 }

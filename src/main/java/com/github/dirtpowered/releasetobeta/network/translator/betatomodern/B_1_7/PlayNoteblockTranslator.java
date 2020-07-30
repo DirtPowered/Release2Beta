@@ -27,7 +27,6 @@ import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.data.Constants;
-import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -58,12 +57,11 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
         BlockValueType type;
 
         BlockLocation l = new BlockLocation(x, y, z);
-
         double dist = l.distanceTo(session.getPlayer().getLocation());
-        if (dist < Constants.SOUND_RANGE) {
-            CachedBlock b = session.getClientWorldTracker().getBlockAt(l);
 
-            int blockId = b.getTypeId();
+        if (dist < Constants.SOUND_RANGE) {
+            int blockId = session.getChunkCache().getBlockAt(x, y, z);
+
             switch (packet.getInstrumentType()) {
                 case 0:
                     if (blockId == Block.PISTON || blockId == Block.STICKY_PISTON) {
@@ -107,6 +105,7 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
             }
 
             modernSession.send(new ServerPlayBuiltinSoundPacket(builtinSound, SoundCategory.BLOCK, x, y, z, 1.33f, pitch));
+
             if (type instanceof ChestValueType) {
                 modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, new ChestValue(pitch /* 0/1 */), 145));
             } else if (type instanceof NoteBlockValueType) {

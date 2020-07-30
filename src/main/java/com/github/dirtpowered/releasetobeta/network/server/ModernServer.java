@@ -107,8 +107,8 @@ public class ModernServer {
     }
 
     private void registerTags() {
-        fluidTags.put("minecraft:water", new int[] {1, 2});
-        fluidTags.put("minecraft:lava", new int[] {3, 4});
+        fluidTags.put("minecraft:water", new int[]{1, 2});
+        fluidTags.put("minecraft:lava", new int[]{3, 4});
     }
 
     private void registerInternalCommands() {

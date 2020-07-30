@@ -41,7 +41,7 @@ public class PreChunkTranslator implements BetaToModern<PreChunkPacketData> {
         if (!packet.isFull()) {
             //unload
             modernSession.send(new ServerUnloadChunkPacket(chunkX, chunkZ));
-            session.getClientWorldTracker().onChunkUnload(chunkX, chunkZ);
+            session.getChunkCache().onChunkUnload(chunkX, chunkZ);
         } else {
             ModernPlayer player = session.getPlayer();
             /*

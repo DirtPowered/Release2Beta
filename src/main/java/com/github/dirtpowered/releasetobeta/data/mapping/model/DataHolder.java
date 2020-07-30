@@ -25,7 +25,7 @@ package com.github.dirtpowered.releasetobeta.data.mapping.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class DataHolder<K,V> {
+public abstract class DataHolder<K, V> {
     private Map<K, V> registry = new HashMap<>();
 
     protected void add(K from, V to) {

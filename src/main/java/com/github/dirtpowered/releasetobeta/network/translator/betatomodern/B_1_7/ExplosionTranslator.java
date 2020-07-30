@@ -69,7 +69,7 @@ public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
             for (BlockChangeRecord record : records) {
                 Position position = record.getPosition();
 
-                session.getClientWorldTracker().onBlockUpdate(position.getX(), position.getY(), position.getZ(), Block.AIR, 0);
+                session.getChunkCache().onBlockUpdate(position.getX(), position.getY(), position.getZ(), Block.AIR, 0);
             }
         }
         main.getServer().playWorldSound(modernSession, (int) x, (int) y, (int) z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT);

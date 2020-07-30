@@ -58,10 +58,10 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
                 )
         );
 
-        session.getClientWorldTracker().onBlockUpdate(x, y, z, typeId, data);
+        session.getChunkCache().onBlockUpdate(x, y, z, typeId, data);
 
         if (dataFix) {
-            CachedBlock block = BlockDataFixer.fixSingleBlockData(session.getClientWorldTracker(), new CachedBlock(new BlockLocation(x, y, z), typeId, data));
+            CachedBlock block = BlockDataFixer.fixSingleBlockData(session.getChunkCache(), new CachedBlock(new BlockLocation(x, y, z), typeId, data));
             if (block != null) {
                 int newId = main.getServer().convertBlockData(block.getTypeId(), block.getData(), false);
 

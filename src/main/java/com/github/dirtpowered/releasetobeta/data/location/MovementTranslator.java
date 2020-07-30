@@ -22,11 +22,10 @@
 
 package com.github.dirtpowered.releasetobeta.data.location;
 
-import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.data.Constants;
-import com.github.dirtpowered.releasetobeta.data.blockstorage.ClientWorldTracker;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.ChunkCache;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +41,7 @@ public class MovementTranslator {
         //TODO: add more
     }
 
-    public Location translate(ClientWorldTracker worldTracker, double xPos, double yPos, double zPos) {
+    public Location translate(ChunkCache chunkCache, double xPos, double yPos, double zPos) {
         BoundingBox boundingBox = new BoundingBox(xPos, yPos + 0.9D, zPos, 0.6D, Constants.PLAYER_HEIGHT, 0.6D);
         Location loc = new Location(xPos, yPos, zPos);
 
@@ -58,7 +57,7 @@ public class MovementTranslator {
         for (int y = minY; y < maxY + 1; y++) {
             for (int x = minX; x < maxX + 1; x++) {
                 for (int z = minZ; z < maxZ + 1; z++) {
-                    int blockId = worldTracker.getBlockAt(new BlockLocation(x, y, z)).getTypeId();
+                    int blockId = chunkCache.getBlockAt(x, y, z);
 
                     if (items.containsKey(blockId)) {
                         return correctPosition(x, y, z, boundingBox, items.get(blockId));
