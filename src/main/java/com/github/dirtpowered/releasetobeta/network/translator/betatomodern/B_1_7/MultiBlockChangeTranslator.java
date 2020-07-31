@@ -23,10 +23,8 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MultiBlockChangePacketData;
-import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.BlockDataFixer;
-import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -50,10 +48,7 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
         int chunkX = packet.getX();
         int chunkZ = packet.getZ();
 
-        boolean dataFix = false;
-
         List<BlockChangeRecord> records = new ArrayList<>();
-        List<CachedBlock> blockList = new ArrayList<>();
 
         for (int index = 0; index < size; ++index) {
             short coord = coordinateArray[index];
@@ -71,23 +66,16 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
                     new Position(blockX, blockY, blockZ), new BlockState(internalBlockId))
             );
 
-            blockList.add(new CachedBlock(new BlockLocation(blockX, blockY, blockZ), typeId, data));
-            if (BlockDataFixer.canFix(typeId)) dataFix = true;
-        }
-
-        session.getChunkCache().onMultiBlockUpdate(blockList);
-
-        if (dataFix) {
-            for (CachedBlock block : BlockDataFixer.fixBlockData(session.getChunkCache(), chunkX, chunkZ)) {
-                BlockLocation b = block.getBlockLocation();
-
-                records.add(new BlockChangeRecord(
-                        new Position(b.getX(), b.getY(), b.getZ()),
-                        new BlockState(main.getServer().convertBlockData(block.getTypeId(), block.getData(), false)))
-                );
-            }
+            session.getChunkCache().onBlockUpdate(blockX, blockY, blockZ, typeId, data);
         }
 
         modernSession.send(new ServerMultiBlockChangePacket(records.toArray(new BlockChangeRecord[0])));
+
+        // send corrected packets
+        records.forEach(record -> {
+            Position pos = record.getPosition();
+
+            BlockDataFixer.updateNearby(modernSession, session.getChunkCache(), pos.getX(), pos.getY(), pos.getZ(), false);
+        });
     }
 }

@@ -20,17 +20,14 @@
  * SOFTWARE.
  */
 
-package com.github.dirtpowered.releasetobeta.data;
+package com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections;
 
-public class Block {
-    public final static int AIR = 0;
-    public final static int GRASS_BLOCK = 2;
-    public final static int STICKY_PISTON = 29;
-    public final static int PISTON = 33;
-    public final static int OBSIDIAN = 49;
-    public final static int CHEST = 54;
-    public final static int REDSTONE = 55;
-    public final static int FENCE = 85;
-    public final static int SNOW_LAYER = 78;
-    public final static int PORTAL = 90;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.model.BlockConnection;
+
+public class RedstoneConnection implements BlockConnection {
+
+    @Override
+    public int connect(boolean west, boolean east, boolean north, boolean south, boolean up, boolean down, int originalData) {
+        return 0;
+    }
 }

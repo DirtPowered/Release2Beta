@@ -119,7 +119,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     Chunk[] chunks = new Chunk[16];
 
                     for (int k = 0; k < 8; k++) {
-                        modernChunks[k] = translateChunk(main, session, chunk, k * 16, skylight, fullChunk);
+                        modernChunks[k] = translateChunk(main, session, chunk, k * 16, skylight);
                         chunks[k] = modernChunks[k].getChunk();
 
                         chunkTileEntities.addAll(modernChunks[k].getChunkTileEntities());
@@ -148,7 +148,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         }
     }
 
-    private ModernChunk translateChunk(ReleaseToBeta main, BetaClientSession session, BetaChunk chunk, int height, boolean skylight, boolean full) {
+    private ModernChunk translateChunk(ReleaseToBeta main, BetaClientSession session, BetaChunk chunk, int height, boolean skylight) {
         Chunk modernChunk = new Chunk();
         List<CompoundTag> chunkTileEntities = new ArrayList<>();
 
@@ -190,7 +190,8 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
             }
         }
 
-        if (dataFix && full) {
+        if (dataFix) {
+            //BlockDataFixer.handleChunkBlockConnections(modernSession, modernChunk, chunkCache, chunk.getX(), chunk.getZ(), height);
             for (CachedBlock block : BlockDataFixer.fixBlockData(chunkCache, chunk.getX(), chunk.getZ())) {
                 BlockLocation loc = block.getBlockLocation();
 

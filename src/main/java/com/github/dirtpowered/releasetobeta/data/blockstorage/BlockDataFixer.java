@@ -27,9 +27,16 @@ import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.ChestConnection;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.FenceConnection;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.NetherPortalConnection;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.RedstoneConnection;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.SnowLayerConnection;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.blockconnections.model.BlockConnection;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
+import com.github.dirtpowered.releasetobeta.data.mapping.flattening.DataConverter;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
+import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockChangePacket;
+import com.github.steveice10.packetlib.Session;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +51,7 @@ public class BlockDataFixer {
         register(Block.OBSIDIAN, new NetherPortalConnection());
         register(Block.SNOW_LAYER, new SnowLayerConnection());
         register(Block.CHEST, new ChestConnection());
+        register(Block.REDSTONE, new RedstoneConnection());
     }
 
     public static boolean canFix(int legacyId) {
@@ -74,12 +82,7 @@ public class BlockDataFixer {
         return containsId(block) ? blockConnections.get(block).connect(west, east, north, south, up, down, data) : -1;
     }
 
-    public static CachedBlock fixSingleBlockData(ChunkCache chunkCache, CachedBlock cachedBlock) {
-        BlockLocation loc = cachedBlock.getBlockLocation();
-
-        int typeId = cachedBlock.getTypeId();
-        int typeData = cachedBlock.getData();
-
+    private static CachedBlock fixSingleBlockData(ChunkCache chunkCache, BlockLocation loc, int typeId, int typeData) {
         int x = loc.getX();
         int y = loc.getY();
         int z = loc.getZ();
@@ -91,6 +94,8 @@ public class BlockDataFixer {
                 return new CachedBlock(loc, Block.PORTAL, connectTo(chunkCache, loc, Block.OBSIDIAN, 0));
             case Block.CHEST:
                 return new CachedBlock(loc, Block.CHEST, connectTo(chunkCache, loc, Block.CHEST, typeData));
+            case Block.REDSTONE:
+                return new CachedBlock(loc, Block.REDSTONE, connectTo(chunkCache, loc, Block.REDSTONE, typeData));
         }
 
         // special case
@@ -109,12 +114,45 @@ public class BlockDataFixer {
         List<CachedBlock> cachedBlocks = new ArrayList<>();
 
         for (CachedBlock cachedBlock : chunkCache.getCachedBlocksInChunk(chunkX, chunkZ)) {
-            CachedBlock ready = fixSingleBlockData(chunkCache, cachedBlock);
+            CachedBlock ready = fixSingleBlockData(chunkCache, cachedBlock.getBlockLocation(), cachedBlock.getTypeId(), cachedBlock.getData());
             if (ready != null) {
                 cachedBlocks.add(ready);
             }
         }
 
         return cachedBlocks;
+    }
+
+    public static void updateNearby(Session session, ChunkCache cache, int posX, int posY, int posZ, boolean chunkChange) {
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                int newX = posX + x;
+                int newZ = posZ + z;
+
+                int typeId = cache.getBlockAt(newX, posY, newZ);
+                int data = cache.getBlockDataAt(newX, posY, newZ);
+
+                if (canFix(typeId) || typeId == Block.AIR && !chunkChange) {
+                    if (typeId == Block.AIR) {
+                        cache.onBlockUpdate(newX, posY, newZ, Block.AIR, 0);
+
+                        sendBlockChangeAt(session, newX, posY, newZ, 0, 0);
+                    }
+
+                    CachedBlock b = fixSingleBlockData(cache, new BlockLocation(newX, posY, newZ), typeId, data);
+                    if (b != null) {
+                        cache.onBlockUpdate(newX, posY, newZ, b.getTypeId(), b.getData());
+
+                        sendBlockChangeAt(session, newX, posY, newZ, b.getTypeId(), b.getData());
+                    }
+                }
+            }
+        }
+    }
+
+    private static void sendBlockChangeAt(Session session, int x, int y, int z, int typeId, int data) {
+        session.send(new ServerBlockChangePacket(new BlockChangeRecord(
+                new Position(x, y, z), new BlockState(DataConverter.getNewBlockId(typeId, data))
+        )));
     }
 }

@@ -79,18 +79,21 @@ public class ChunkCache implements WorldTrackerImpl {
         return chunk.getTypeAt(chunkPosX, chunkPosY, chunkPosZ);
     }
 
-    @Override
-    public void onBlockUpdate(int x, int y, int z, int typeId, int data) {
-        setBlockAndDataAt(x, y, z, typeId, data);
+    int getBlockDataAt(int x, int y, int z) {
+        BetaChunk chunk = getChunk(Utils.toChunkPos(x), Utils.toChunkPos(z));
+        if (chunk == null)
+            return 0;
+
+        int chunkPosX = x & 0xF;
+        int chunkPosY = y & 0x7F;
+        int chunkPosZ = z & 0xF;
+
+        return chunk.getMetadataAt(chunkPosX, chunkPosY, chunkPosZ);
     }
 
     @Override
-    public void onMultiBlockUpdate(List<CachedBlock> blocks) {
-        for (CachedBlock block : blocks) {
-            BlockLocation l = block.getBlockLocation();
-
-            setBlockAndDataAt(l.getX(), l.getY(), l.getZ(), block.getTypeId(), block.getData());
-        }
+    public void onBlockUpdate(int x, int y, int z, int typeId, int data) {
+        setBlockAndDataAt(x, y, z, typeId, data);
     }
 
     @Override

@@ -76,6 +76,7 @@ public class ModernServer {
     private MetadataTranslator metadataTranslator;
     private MovementTranslator movementTranslator;
 
+    private Map<String, int[]> blockTags = new HashMap<>();
     private Map<String, int[]> fluidTags = new HashMap<>();
 
     public ModernServer(ReleaseToBeta main) {
@@ -107,6 +108,8 @@ public class ModernServer {
     }
 
     private void registerTags() {
+        blockTags.put("minecraft:fences", new int[]{189});
+
         fluidTags.put("minecraft:water", new int[]{1, 2});
         fluidTags.put("minecraft:lava", new int[]{3, 4});
     }
@@ -128,7 +131,6 @@ public class ModernServer {
 
         return false;
     }
-
 
     public void playWorldSound(Session session, int x, int y, int z, BuiltinSound sound, SoundCategory category) {
         session.send(new ServerPlayBuiltinSoundPacket(sound, category, x, y, z, 1.f, 1.f));
@@ -157,7 +159,7 @@ public class ModernServer {
     }
 
     public void sendBlockTags(Session session) {
-        session.send(new ServerDeclareTagsPacket(Collections.emptyMap(), Collections.emptyMap(), fluidTags, Collections.emptyMap()));
+        session.send(new ServerDeclareTagsPacket(blockTags, Collections.emptyMap(), fluidTags, Collections.emptyMap()));
     }
 
     public void sendServerBrand(Session session) {
