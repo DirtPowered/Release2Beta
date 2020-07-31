@@ -45,7 +45,6 @@ public class DataConverter {
     private static Int2IntMap oldToNewBlocksMap = new Int2IntOpenHashMap();
     private static Int2IntMap oldToNewItemsMap = new Int2IntOpenHashMap();
     private static Int2IntMap newToOldItemsMap = new Int2IntOpenHashMap();
-    private static Int2IntMap newToOldBlocksMap = new Int2IntOpenHashMap();
 
     private static ReleaseToBeta main;
 
@@ -83,16 +82,6 @@ public class DataConverter {
     public static int getOldItemId(int internalItemId) {
         if (newToOldItemsMap.containsKey(internalItemId)) {
             return newToOldItemsMap.get(internalItemId);
-        } else {
-            if (!R2BConfiguration.suppressMappingsErrors)
-                main.getLogger().warning("missing mapping for item (" + internalItemId + ")");
-            return 16; //stone
-        }
-    }
-
-    public static int getOldBlockId(int internalItemId) {
-        if (newToOldBlocksMap.containsKey(internalItemId)) {
-            return newToOldBlocksMap.get(internalItemId);
         } else {
             if (!R2BConfiguration.suppressMappingsErrors)
                 main.getLogger().warning("missing mapping for item (" + internalItemId + ")");
@@ -141,7 +130,6 @@ public class DataConverter {
                     int internalId = data.getAsJsonObject().get("internalId").getAsInt();
 
                     oldToNewBlocksMap.put(legacyIdData, internalId);
-                    newToOldBlocksMap.put(internalId, legacyIdData);
                     count++;
                 }
             }
@@ -171,6 +159,5 @@ public class DataConverter {
         oldToNewItemsMap.clear();
         oldToNewBlocksMap.clear();
         newToOldItemsMap.clear();
-        newToOldBlocksMap.clear();
     }
 }

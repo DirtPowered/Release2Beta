@@ -191,7 +191,6 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         }
 
         if (dataFix) {
-            //BlockDataFixer.handleChunkBlockConnections(modernSession, modernChunk, chunkCache, chunk.getX(), chunk.getZ(), height);
             for (CachedBlock block : BlockDataFixer.fixBlockData(chunkCache, chunk.getX(), chunk.getZ())) {
                 BlockLocation loc = block.getBlockLocation();
 
