@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateSignPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
@@ -33,7 +34,7 @@ import com.github.steveice10.packetlib.Session;
 public class ClientUpdateSignTranslator implements ModernToBeta<ClientUpdateSignPacket> {
 
     @Override
-    public void translate(ClientUpdateSignPacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientUpdateSignPacket packet, Session modernSession, BetaClientSession betaSession) {
         Position pos = packet.getPosition();
         String[] lines = packet.getLines();
 

@@ -22,17 +22,9 @@
 
 package com.github.dirtpowered.releasetobeta.data.blockstorage.model;
 
-import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
-
-import java.util.List;
-
 public interface WorldTrackerImpl {
 
-    void onBlockUpdate(BlockLocation blockLocation, int typeId, int data);
-
-    void onMultiBlockUpdate(List<CachedBlock> blocks);
-
-    void onChunkBlockUpdate(int chunkX, int chunkZ, List<CachedBlock> cachedBlocks);
+    void onBlockUpdate(int x, int y, int z, int typeId, int data);
 
     void onChunkUnload(int chunkX, int chunkZ);
 

@@ -45,13 +45,13 @@ class TileEntityMobSpawner extends TileEntity {
         tileTag.put(new IntTag("y", position.getY()));
         tileTag.put(new IntTag("z", position.getZ()));
 
-        tileTag.put(new ShortTag("SpawnRange", (short)4));
-        tileTag.put(new ShortTag("MaxNearbyEntities", (short)6));
-        tileTag.put(new ShortTag("RequiredPlayerRange", (short)16));
-        tileTag.put(new ShortTag("SpawnCount", (short)4));
-        tileTag.put(new ShortTag("MaxSpawnDelay", (short)800));
-        tileTag.put(new ShortTag("Delay", (short)20));
-        tileTag.put(new ShortTag("MinSpawnDelay", (short)200));
+        tileTag.put(new ShortTag("SpawnRange", (short) 4));
+        tileTag.put(new ShortTag("MaxNearbyEntities", (short) 6));
+        tileTag.put(new ShortTag("RequiredPlayerRange", (short) 16));
+        tileTag.put(new ShortTag("SpawnCount", (short) 4));
+        tileTag.put(new ShortTag("MaxSpawnDelay", (short) 800));
+        tileTag.put(new ShortTag("Delay", (short) 20));
+        tileTag.put(new ShortTag("MinSpawnDelay", (short) 200));
 
         CompoundTag mobData = new CompoundTag("SpawnData");
         mobData.put(new StringTag("id", "minecraft:pig")); //TODO: Get entity type from Bukkit API

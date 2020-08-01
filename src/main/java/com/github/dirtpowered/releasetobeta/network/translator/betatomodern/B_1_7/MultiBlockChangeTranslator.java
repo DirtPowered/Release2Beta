@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MultiBlockChangePacketData;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.BlockDataFixer;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -34,14 +35,13 @@ import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerMultiBlockChangePacket;
 import com.github.steveice10.packetlib.Session;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChangePacketData> {
 
     @Override
-    public void translate(MultiBlockChangePacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, MultiBlockChangePacketData packet, BetaClientSession session, Session modernSession) {
         int size = packet.getSize();
         short[] coordinateArray = packet.getCoordinateArray();
         byte[] blockArray = packet.getTypeArray();
@@ -53,7 +53,6 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
         boolean dataFix = false;
 
         List<BlockChangeRecord> records = new LinkedList<>();
-        List<CachedBlock> blockList = new ArrayList<>();
 
         for (int index = 0; index < size; ++index) {
             short coord = coordinateArray[index];
@@ -69,14 +68,17 @@ public class MultiBlockChangeTranslator implements BetaToModern<MultiBlockChange
                     new Position(blockX, blockY, blockZ), new BlockState(block, session.remapMetadata(block, metadata)))
             );
 
-            blockList.add(new CachedBlock(new BlockLocation(blockX, blockY, blockZ), block, metadata));
             if (BlockDataFixer.canFix(block)) dataFix = true;
         }
 
-        session.getWorldTracker().onMultiBlockUpdate(blockList);
+        for (BlockChangeRecord record : records) {
+            Position pos = record.getPosition();
+
+            session.getChunkCache().onBlockUpdate(pos.getX(), pos.getY(), pos.getZ(), record.getBlock().getId(), record.getBlock().getData());
+        }
 
         if (dataFix) {
-            for (CachedBlock block : BlockDataFixer.fixBlockData(session.getWorldTracker(), chunkX, chunkZ)) {
+            for (CachedBlock block : BlockDataFixer.fixBlockData(session.getChunkCache(), chunkX, chunkZ)) {
                 BlockLocation b = block.getBlockLocation();
 
                 records.add(new BlockChangeRecord(

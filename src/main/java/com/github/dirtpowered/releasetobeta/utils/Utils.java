@@ -29,12 +29,24 @@ import com.github.dirtpowered.releasetobeta.data.entity.DummyEntity;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
+import lombok.Getter;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class Utils {
+
+    @Getter
+    final static byte[] filledBiomeData;
+
+    static {
+        filledBiomeData = new byte[256];
+        Arrays.fill(filledBiomeData, (byte) 129);
+    }
+
+
     public static double toModernPos(int pos) {
         return pos / 32.0D;
     }
@@ -78,13 +90,6 @@ public class Utils {
         }
 
         return (dimension == -1 ? -1 : 0);
-    }
-
-    public static long coordsToLong(int x, int z) {
-        int chunkX = (int) Math.floor(x) << 4;
-        int chunkZ = (int) Math.floor(z) << 4;
-
-        return (long) chunkX & 0xffffffffL | ((long) chunkZ & 0xffffffffL) << 32;
     }
 
     public static int toChunkPos(int posArg) {

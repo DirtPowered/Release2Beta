@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.LoginPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -37,14 +38,14 @@ import com.github.steveice10.packetlib.Session;
 public class LoginTranslator implements BetaToModern<LoginPacketData> {
 
     @Override
-    public void translate(LoginPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, LoginPacketData packet, BetaClientSession session, Session modernSession) {
         ModernPlayer player = session.getPlayer();
         int entityId = packet.getEntityId();
         int dimension = Utils.fixDimension(packet.getDimension());
 
         int maxPlayers = packet.getMaxPlayers();
         GameMode gameMode = packet.getGamemode() == 0 ? GameMode.SURVIVAL : GameMode.CREATIVE;
-        Difficulty difficulty = session.getMain().getDifficultyMap().getFromId(packet.getDifficulty());
+        Difficulty difficulty = main.getDifficultyMap().getFromId(packet.getDifficulty());
 
         session.setProtocolState(ProtocolState.PLAY);
         modernSession.send(new ServerJoinGamePacket(

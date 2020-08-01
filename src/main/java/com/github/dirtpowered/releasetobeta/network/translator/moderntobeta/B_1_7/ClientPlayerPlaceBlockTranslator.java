@@ -25,6 +25,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockPlacePacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.data.item.ItemFood;
@@ -44,7 +45,7 @@ import com.github.steveice10.packetlib.Session;
 public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlayerPlaceBlockPacket> {
 
     @Override
-    public void translate(ClientPlayerPlaceBlockPacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientPlayerPlaceBlockPacket packet, Session modernSession, BetaClientSession betaSession) {
         ModernPlayer player = betaSession.getPlayer();
         Position pos = packet.getPosition();
         int x = pos.getX();
@@ -53,10 +54,6 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
 
         int face = MagicValues.value(Integer.class, packet.getFace());
         PlayerInventory inventory = player.getInventory();
-
-        ItemStack itemStack = inventory.getItemInHand();
-        if (itemStack == null)
-            return;
 
         BlockPlacePacketData blockPlacePacketData = new BlockPlacePacketData(x, y, z, face, new BetaItemStack()); //item-stack is ignored
 
@@ -70,6 +67,11 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
          * Special note on using buckets: When using buckets, the Notchian client might send two packets: first a normal and then a special case
          * https://wiki.vg/index.php?title=Protocol&oldid=689#Player_Block_Placement_.280x0F.29
          */
+
+        ItemStack itemStack = inventory.getItemInHand();
+        if (itemStack == null)
+            return;
+
         if (itemStack.getId() == 327 || itemStack.getId() == 326 || itemStack.getId() == 325 | itemStack.getId() == 335)
             betaSession.sendPacket(blockPlacePacketData);
 

@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.SetSlotPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -37,7 +38,7 @@ import com.github.steveice10.packetlib.Session;
 public class SetSlotTranslator implements BetaToModern<SetSlotPacketData> {
 
     @Override
-    public void translate(SetSlotPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, SetSlotPacketData packet, BetaClientSession session, Session modernSession) {
         ModernPlayer player = session.getPlayer();
 
         int windowId = packet.getWindowId();
@@ -55,7 +56,7 @@ public class SetSlotTranslator implements BetaToModern<SetSlotPacketData> {
             inventory.setItem(itemSlot, modernItemStack);
 
         //Update armor bar
-        session.getMain().getServer().updatePlayerProperties(modernSession, session.getPlayer());
+        main.getServer().updatePlayerProperties(modernSession, session.getPlayer());
 
         //Fix enchanting table de-syncs
         if (player.getOpenedInventoryType() == WindowType.ENCHANTING_TABLE) {

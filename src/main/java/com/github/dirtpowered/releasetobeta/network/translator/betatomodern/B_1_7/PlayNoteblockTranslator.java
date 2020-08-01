@@ -24,8 +24,8 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayNoteblockPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Constants;
-import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
@@ -43,7 +43,7 @@ import com.github.steveice10.packetlib.Session;
 public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacketData> {
 
     @Override
-    public void translate(PlayNoteblockPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, PlayNoteblockPacketData packet, BetaClientSession session, Session modernSession) {
         int x = packet.getX();
         int y = packet.getY();
         int z = packet.getZ();
@@ -57,9 +57,8 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
 
         double dist = l.distanceTo(session.getPlayer().getLocation());
         if (dist < Constants.SOUND_RANGE) {
-            CachedBlock b = session.getWorldTracker().getBlockAt(l);
+            int blockId = session.getChunkCache().getBlockAt(x, y, z);
 
-            int blockId = b.getTypeId();
             switch (packet.getInstrumentType()) {
                 case 0:
                     if (blockId == 33 || blockId == 29) {
@@ -102,7 +101,9 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
                     break;
             }
 
-            modernSession.send(new ServerPlayBuiltinSoundPacket(builtinSound, SoundCategory.BLOCK, x, y, z, 1.33f, pitch));
+            float correctedPitch = (float) (0.5f * (Math.pow(2, pitch / 12.0f)));
+
+            modernSession.send(new ServerPlayBuiltinSoundPacket(builtinSound, SoundCategory.BLOCK, x, y, z, 1.33f, correctedPitch));
             modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, new GenericBlockValue(pitch), blockId));
         }
     }

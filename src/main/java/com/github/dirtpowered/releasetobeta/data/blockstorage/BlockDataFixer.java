@@ -33,11 +33,11 @@ import java.util.List;
 
 public class BlockDataFixer {
 
-    public static List<CachedBlock> fixBlockData(ClientWorldTracker worldTracker, int chunkX, int chunkZ) {
+    public static List<CachedBlock> fixBlockData(ChunkCache chunkCache, int chunkX, int chunkZ) {
         List<CachedBlock> cachedBlocks = new ArrayList<>();
 
-        for (CachedBlock cachedBlock : worldTracker.getCachedBlocksInChunk(chunkX, chunkZ)) {
-            CachedBlock ready = fixSingleBlockData(worldTracker, cachedBlock);
+        for (CachedBlock cachedBlock : chunkCache.getCachedBlocksInChunk(chunkX, chunkZ)) {
+            CachedBlock ready = fixSingleBlockData(chunkCache, cachedBlock);
             if (ready != null) {
                 cachedBlocks.add(ready);
             }
@@ -46,20 +46,20 @@ public class BlockDataFixer {
         return cachedBlocks;
     }
 
-    public static CachedBlock fixSingleBlockData(ClientWorldTracker worldTracker, CachedBlock cachedBlock) {
+    public static CachedBlock fixSingleBlockData(ChunkCache chunkCache, CachedBlock cachedBlock) {
         BlockLocation loc = cachedBlock.getBlockLocation();
         int typeId = cachedBlock.getTypeId();
 
         if (typeId == Block.PORTAL) {
             int data = 0;
 
-            if (worldTracker.getBlockAt(loc.getX() - 1, loc.getY(), loc.getZ()).getTypeId() == Block.OBSIDIAN
-                    || worldTracker.getBlockAt(loc.getX() + 1, loc.getY(), loc.getZ()).getTypeId() == Block.OBSIDIAN) {
+            if (chunkCache.getBlockAt(loc.getX() - 1, loc.getY(), loc.getZ()) == Block.OBSIDIAN
+                    || chunkCache.getBlockAt(loc.getX() + 1, loc.getY(), loc.getZ()) == Block.OBSIDIAN) {
                 data = 1;
             }
 
-            if (worldTracker.getBlockAt(loc.getX(), loc.getY(), loc.getZ() - 1).getTypeId() == Block.OBSIDIAN
-                    || worldTracker.getBlockAt(loc.getX(), loc.getY(), loc.getZ() + 1).getTypeId() == Block.OBSIDIAN) {
+            if (chunkCache.getBlockAt(loc.getX(), loc.getY(), loc.getZ() - 1) == Block.OBSIDIAN
+                    || chunkCache.getBlockAt(loc.getX(), loc.getY(), loc.getZ() + 1) == Block.OBSIDIAN) {
                 data = 2;
             }
 
@@ -68,13 +68,13 @@ public class BlockDataFixer {
         } else if (typeId == Block.CHEST && !MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version)) {
             int data = 0;
 
-            if (worldTracker.getBlockAt(loc.getX() - 1, loc.getY(), loc.getZ()).getTypeId() == Block.CHEST
-                    || worldTracker.getBlockAt(loc.getX() + 1, loc.getY(), loc.getZ()).getTypeId() == Block.CHEST) {
+            if (chunkCache.getBlockAt(loc.getX() - 1, loc.getY(), loc.getZ()) == Block.CHEST
+                    || chunkCache.getBlockAt(loc.getX() + 1, loc.getY(), loc.getZ()) == Block.CHEST) {
                 data = 3;
             }
 
-            if (worldTracker.getBlockAt(loc.getX(), loc.getY(), loc.getZ() - 1).getTypeId() == Block.CHEST
-                    || worldTracker.getBlockAt(loc.getX(), loc.getY(), loc.getZ() + 1).getTypeId() == Block.CHEST) {
+            if (chunkCache.getBlockAt(loc.getX(), loc.getY(), loc.getZ() - 1) == Block.CHEST
+                    || chunkCache.getBlockAt(loc.getX(), loc.getY(), loc.getZ() + 1) == Block.CHEST) {
                 data = 4;
             }
 

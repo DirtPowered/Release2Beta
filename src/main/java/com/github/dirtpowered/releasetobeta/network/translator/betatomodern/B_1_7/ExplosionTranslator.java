@@ -24,12 +24,11 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.ExplosionPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
-import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
-import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
 import com.github.steveice10.mc.protocol.data.game.world.block.ExplodedBlockRecord;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
@@ -42,7 +41,7 @@ import java.util.List;
 public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
 
     @Override
-    public void translate(ExplosionPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, ExplosionPacketData packet, BetaClientSession session, Session modernSession) {
         float x = Utils.toFloat(packet.getX());
         float y = Utils.toFloat(packet.getY());
         float z = Utils.toFloat(packet.getZ());
@@ -60,10 +59,10 @@ public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
 
         // update block cache
         for (ExplodedBlockRecord record : records) {
-            session.getWorldTracker().onBlockUpdate(record.getX(), record.getY(), record.getZ(), Block.AIR, 0);
+            session.getChunkCache().onBlockUpdate(record.getX(), record.getY(), record.getZ(), Block.AIR, 0);
         }
 
         modernSession.send(new ServerExplosionPacket(x, y, z, explosionSize, records, 0, 0, 0));
-        session.getMain().getServer().playWorldSound(modernSession, (int) x, (int) y, (int) z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT);
+        main.getServer().playWorldSound(modernSession, (int) x, (int) y, (int) z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT);
     }
 }

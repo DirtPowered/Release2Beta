@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.SetSlotPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -35,19 +36,12 @@ import com.github.steveice10.packetlib.Session;
 public class SetSlotTranslator implements BetaToModern<SetSlotPacketData> {
 
     @Override
-    public void translate(SetSlotPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, SetSlotPacketData packet, BetaClientSession session, Session modernSession) {
         int windowId = packet.getWindowId();
         int itemSlot = packet.getItemSlot();
         BetaItemStack itemStack = packet.getItemStack();
         PlayerInventory inventory = session.getPlayer().getInventory();
         ItemStack modernItemStack = ItemConverter.betaToModern(session, itemStack);
-
-        if (itemStack != null) {
-            int itemId = itemStack.getBlockId();
-
-            itemStack.setBlockId(session.remapBlock(itemId, itemStack.getData(), true));
-            itemStack.setData(session.remapMetadata(itemId, itemStack.getData(), itemId == 54));
-        }
 
         if (itemSlot != -1) //item in hand index
             inventory.setItem(itemSlot, modernItemStack);

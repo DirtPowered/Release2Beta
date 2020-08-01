@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerLookMovePacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -34,11 +35,11 @@ import com.github.steveice10.packetlib.Session;
 public class ClientPlayerPositionRotationTranslator implements ModernToBeta<ClientPlayerPositionRotationPacket> {
 
     @Override
-    public void translate(ClientPlayerPositionRotationPacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientPlayerPositionRotationPacket packet, Session modernSession, BetaClientSession betaSession) {
         ModernPlayer player = betaSession.getPlayer();
 
         Location location = betaSession.getMain().getServer().getMovementTranslator().translate(
-                betaSession.getWorldTracker(), packet.getX(), packet.getY(), packet.getZ()
+                betaSession.getChunkCache(), packet.getX(), packet.getY(), packet.getZ()
         );
 
         double x = location.getX();

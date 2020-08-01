@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateSignPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
@@ -38,7 +39,7 @@ import io.netty.util.internal.StringUtil;
 public class UpdateSignTranslator implements BetaToModern<UpdateSignPacketData> {
 
     @Override
-    public void translate(UpdateSignPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, UpdateSignPacketData packet, BetaClientSession session, Session modernSession) {
         int x = packet.getX();
         int y = packet.getY();
         int z = packet.getZ();

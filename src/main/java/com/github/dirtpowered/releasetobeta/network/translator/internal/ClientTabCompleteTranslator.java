@@ -22,6 +22,7 @@
 
 package com.github.dirtpowered.releasetobeta.network.translator.internal;
 
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientTabCompletePacket;
@@ -35,7 +36,7 @@ import java.util.List;
 public class ClientTabCompleteTranslator implements ModernToBeta<ClientTabCompletePacket> {
 
     @Override
-    public void translate(ClientTabCompletePacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientTabCompletePacket packet, Session modernSession, BetaClientSession betaSession) {
         String[] clientCommands = packet.getText().split("\\s+");
         String[] commands = betaSession.getMain().getServer().getCommands().clone();
 

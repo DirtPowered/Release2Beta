@@ -26,7 +26,7 @@ import lombok.Getter;
 
 @Getter
 class NibbleArray {
-    private final byte[] data;
+    private byte[] data;
 
     NibbleArray(int initialSize) {
         this.data = new byte[initialSize >> 1];
@@ -37,5 +37,17 @@ class NibbleArray {
         int value = index >> 1;
         boolean above = (index & 1) == 0;
         return above ? this.data[value] & 15 : this.data[value] >> 4 & 15;
+    }
+
+    void setNibble(int x, int y, int z, int value) {
+        int index = x << 11 | z << 7 | y;
+        int dividedVal = index >> 1;
+        boolean above = (index & 1) == 0;
+
+        if (above) {
+            this.data[dividedVal] = (byte) (this.data[dividedVal] & 240 | value & 15);
+        } else {
+            this.data[dividedVal] = (byte) (this.data[dividedVal] & 15 | (value & 15) << 4);
+        }
     }
 }

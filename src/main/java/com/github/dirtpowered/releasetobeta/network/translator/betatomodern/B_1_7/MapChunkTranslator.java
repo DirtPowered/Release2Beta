@@ -24,10 +24,10 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapChunkPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
-import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Block;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.BlockDataFixer;
-import com.github.dirtpowered.releasetobeta.data.blockstorage.ClientWorldTracker;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.ChunkCache;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.data.chunk.BetaChunk;
 import com.github.dirtpowered.releasetobeta.data.chunk.ModernChunk;
@@ -50,38 +50,71 @@ import java.util.List;
 public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
     @Override
-    public void translate(MapChunkPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, MapChunkPacketData packet, BetaClientSession session, Session modernSession) {
         boolean skylight = session.getPlayer().getDimension() == 0;
 
         byte[] data = packet.getChunk();
 
-        int x = packet.getX();
-        int y = packet.getY();
-        int z = packet.getZ();
+        int rawX = packet.getX();
+        int rawY = packet.getY();
+        int rawZ = packet.getZ();
 
-        int chunkX = x / 16;
-        int chunkZ = z / 16;
+        int xSize = packet.getXSize();
+        int ySize = packet.getYSize();
+        int zSize = packet.getZSize();
+
+        int chunkX = rawX / 16;
+        int chunkZ = rawZ / 16;
+
+        int chunkEdgeX = (rawX + xSize - 1) / 16;
+        int chunkEdgeZ = (rawZ + zSize - 1) / 16;
+
+        int height = rawY + ySize;
+
+        boolean fullChunk = height == 128;
 
         try {
-            if (y == 0) { //full chunks
-                BetaChunk chunk = new BetaChunk(chunkX, chunkZ, x, z);
-                List<CompoundTag> chunkTileEntities = new ArrayList<>();
+            for (int i = chunkX; i <= chunkEdgeX; ++i) {
+                int x = Math.max(rawX - i * 16, 0);
+                int newXSize = Math.min(rawX + xSize - i * 16, 16);
 
-                chunk.fillData(data, skylight);
-                ModernChunk[] chunks = new ModernChunk[16];
-                Chunk[] _chunks = new Chunk[16];
-                for (int i = 0; i < 8; i++) {
-                    chunks[i] = translateChunk(session, chunk, i * 16, skylight);
+                for (int j = chunkZ; j <= chunkEdgeZ; ++j) {
+                    int z = Math.max(rawZ - j * 16, 0);
+                    int newZSize = Math.min(rawZ + zSize - j * 16, 16);
 
-                    chunkTileEntities.addAll(chunks[i].getChunkTileEntities());
-                    _chunks[i] = chunks[i].getChunk();
+                    BetaChunk chunk;
+
+                    if (session.getChunkCache().getChunk(chunkX, chunkZ) == null) {
+                        chunk = new BetaChunk(chunkX, chunkZ, rawX, rawZ);
+                    } else {
+                        // get if cached
+                        chunk = session.getChunkCache().getChunk(chunkX, chunkZ);
+                    }
+
+                    if (fullChunk) {
+                        chunk.fillData(data, x, rawY, z, newXSize, height, newZSize, skylight);
+                        session.getChunkCache().addChunk(chunkX, chunkZ, chunk);
+                    } else {
+                        // merge with full chunk data
+                        chunk.fillData(data, x, rawY, z, newXSize, height, newZSize, skylight);
+                    }
+
+                    List<CompoundTag> chunkTileEntities = new ArrayList<>();
+                    ModernChunk[] chunks = new ModernChunk[16];
+                    Chunk[] _chunks = new Chunk[16];
+
+                    for (int k = 0; k < 8; k++) {
+                        chunks[k] = translateChunk(session, chunk, k * 16, skylight);
+
+                        chunkTileEntities.addAll(chunks[k].getChunkTileEntities());
+                        _chunks[k] = chunks[k].getChunk();
+                    }
+
+                    modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, _chunks, chunkTileEntities.toArray(new CompoundTag[0]))));
                 }
-                modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, _chunks, chunkTileEntities.toArray(new CompoundTag[0]))));
-            } else if (R2BConfiguration.testMode) {
-                //TODO: non-full chunks
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            session.getMain().getLogger().warning("Chunk at [x=" + chunkX + " z=" + chunkZ + "] was skipped");
+            main.getLogger().error("unable to convert chunk at x: " + chunkX + ", z: " + chunkZ);
         }
     }
 
@@ -90,7 +123,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         NibbleArray3d nibbleBlockLight = new NibbleArray3d(4096);
         NibbleArray3d nibbleSkyLight = new NibbleArray3d(4096);
 
-        ClientWorldTracker worldTracker = session.getWorldTracker();
+        ChunkCache chunkCache = session.getChunkCache();
 
         boolean dataFix = false;
 
@@ -127,21 +160,13 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                         }
                     }
 
-                    if (worldTracker.needsCaching(blockId)) {
-                        blockList.add(new CachedBlock(
-                                new BlockLocation(chunk.getRawX() + x, y + height, chunk.getRawZ() + z), blockId, blockData)
-                        );
-
-                        if (BlockDataFixer.canFix(blockId)) dataFix = true;
-                    }
+                    if (BlockDataFixer.canFix(blockId)) dataFix = true;
                 }
             }
         }
 
-        worldTracker.onChunkBlockUpdate(chunk.getX(), chunk.getZ(), blockList);
-
         if (dataFix) {
-            for (CachedBlock block : BlockDataFixer.fixBlockData(worldTracker, chunk.getX(), chunk.getZ())) {
+            for (CachedBlock block : BlockDataFixer.fixBlockData(chunkCache, chunk.getX(), chunk.getZ())) {
                 BlockLocation loc = block.getBlockLocation();
 
                 if ((loc.getY() >> 4 == height >> 4)) {

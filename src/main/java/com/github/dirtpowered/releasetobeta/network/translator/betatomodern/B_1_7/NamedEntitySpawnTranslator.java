@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.NamedEntitySpawnPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.player.BetaPlayer;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -37,7 +38,7 @@ import java.util.UUID;
 public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawnPacketData> {
 
     @Override
-    public void translate(NamedEntitySpawnPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, NamedEntitySpawnPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
         String username = packet.getName();
 
@@ -47,7 +48,7 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
 
         float yaw = Utils.toModernYaw(packet.getRotation());
         float pitch = Utils.toModernPitch(packet.getPitch());
-        UUID uuid = session.getMain().getServer().getServerConnection().getPlayerList().getUUIDFromUsername(username);
+        UUID uuid = main.getServer().getServerConnection().getPlayerList().getUUIDFromUsername(username);
 
         if (uuid == null) {
             //spawn players using beta client too
@@ -62,7 +63,7 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
             return;
         }
 
-        ModernPlayer player = session.getMain().getServer().getPlayer(entityId);
+        ModernPlayer player = main.getServer().getPlayer(entityId);
 
         if (player != null) {
             player.onSpawn(modernSession);

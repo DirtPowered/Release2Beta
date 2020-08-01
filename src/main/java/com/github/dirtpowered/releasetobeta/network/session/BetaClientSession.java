@@ -29,10 +29,10 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerPos
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateProgressPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
-import com.github.dirtpowered.releasetobeta.api.plugin.event.player.PlayerJoinEvent;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
-import com.github.dirtpowered.releasetobeta.data.blockstorage.ClientWorldTracker;
+import com.github.dirtpowered.releasetobeta.data.biome.OldChunkData;
+import com.github.dirtpowered.releasetobeta.data.blockstorage.ChunkCache;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.mapping.BlockMap;
@@ -65,9 +65,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BetaClientSession extends SimpleChannelInboundHandler<Packet> implements Tickable {
 
-    @Getter
-    private ClientWorldTracker worldTracker;
-
     private final Channel channel;
 
     @Getter
@@ -90,6 +87,12 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
     @Getter
     private List<BetaPlayer> betaPlayers;
 
+    @Getter
+    private OldChunkData oldChunkData;
+
+    @Getter
+    private ChunkCache chunkCache;
+
     private boolean resourcepack;
     private int i;
     private MapDataHandler mapDataHandler;
@@ -109,11 +112,14 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         this.updateProgressHandler = new UpdateProgressHandler();
         this.betaPlayers = new ArrayList<>();
 
-        // world tracker
-        this.worldTracker = new ClientWorldTracker();
-
         // connection callback
         this.connectionCallback = onConnect;
+
+        // biome stuff
+        this.oldChunkData = new OldChunkData();
+
+        // chunk cache
+        this.chunkCache = new ChunkCache();
     }
 
     @Override
@@ -171,7 +177,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
             }
 
             for (Entity entity : entityCache.getEntities().values())
-               entity.updateEntity(player, session);
+                entity.updateEntity(player, session);
 
             i++;
         }
@@ -190,7 +196,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         if (handler != null && channel.isActive()) {
             Session session = main.getSessionRegistry().getSession(player.getClientId()).getModernSession();
             if (session != null) {
-                handler.translate(packet, this, session);
+                handler.translate(main, packet, this, session);
             }
         } else {
             main.getLogger().warning("[" + player.getClientId() + "/" + player.getUsername() + "]" + " missing 'BetaToModern' translator for: " + packet.getClass().getSimpleName());
@@ -238,7 +244,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         entityCache.getEntities().clear();
         betaPlayers.clear();
 
-        worldTracker.purge();
+        chunkCache.purge();
+
         main.getSessionRegistry().removeSession(player.getClientId());
     }
 
@@ -250,9 +257,10 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
             main.getServer().sendInitialPlayerAbilities(player);
             main.getServer().sendWorldBorder(session);
-            setLoggedIn(true);
 
-            main.getEventManager().fireEvent(new PlayerJoinEvent(player));
+            oldChunkData.initialize(player.getSeed());
+
+            setLoggedIn(true);
         }
     }
 

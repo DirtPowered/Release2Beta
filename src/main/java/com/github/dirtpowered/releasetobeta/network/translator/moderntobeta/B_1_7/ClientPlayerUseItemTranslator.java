@@ -25,6 +25,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockPlacePacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
@@ -46,7 +47,7 @@ public class ClientPlayerUseItemTranslator implements ModernToBeta<ClientPlayerU
      */
 
     @Override
-    public void translate(ClientPlayerUseItemPacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientPlayerUseItemPacket packet, Session modernSession, BetaClientSession betaSession) {
         betaSession.sendPacket(new BlockPlacePacketData(-1, -1, -1, -1, new BetaItemStack()));
 
         ModernPlayer player = betaSession.getPlayer();

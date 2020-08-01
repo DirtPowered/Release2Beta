@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockChangePacketData;
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.BlockDataFixer;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -37,7 +38,7 @@ import com.github.steveice10.packetlib.Session;
 public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData> {
 
     @Override
-    public void translate(BlockChangePacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, BlockChangePacketData packet, BetaClientSession session, Session modernSession) {
         int x = packet.getXPosition();
         int y = packet.getYPosition();
         int z = packet.getZPosition();
@@ -55,13 +56,14 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
                 )
         );
 
-        session.getWorldTracker().onBlockUpdate(x, y, z, typeId, data);
+        session.getChunkCache().onBlockUpdate(x, y, z, typeId, data);
 
         if (dataFix) {
-            CachedBlock block = BlockDataFixer.fixSingleBlockData(session.getWorldTracker(), new CachedBlock(new BlockLocation(x, y, z), typeId, session.remapMetadata(typeId, data)));
+            CachedBlock block = BlockDataFixer.fixSingleBlockData(session.getChunkCache(), new CachedBlock(new BlockLocation(x, y, z), typeId, session.remapMetadata(typeId, data)));
             if (block != null) {
 
                 BlockLocation b = block.getBlockLocation();
+
                 modernSession.send(new ServerBlockChangePacket(
                         new BlockChangeRecord(new Position(b.getX(), b.getY(), b.getZ()), new BlockState(block.getTypeId(), block.getData()))
                 ));

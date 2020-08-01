@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PlayerLookMovePacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -33,7 +34,7 @@ import com.github.steveice10.packetlib.Session;
 public class PlayerLookMoveTranslator implements BetaToModern<PlayerLookMovePacketData> {
 
     @Override
-    public void translate(PlayerLookMovePacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, PlayerLookMovePacketData packet, BetaClientSession session, Session modernSession) {
         ModernPlayer player = session.getPlayer();
 
         double x = packet.getX();

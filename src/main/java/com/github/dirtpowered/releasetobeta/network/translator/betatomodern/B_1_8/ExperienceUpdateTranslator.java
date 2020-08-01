@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.ExperienceUpdatePacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerSetExperiencePacket;
@@ -31,7 +32,7 @@ import com.github.steveice10.packetlib.Session;
 public class ExperienceUpdateTranslator implements BetaToModern<ExperienceUpdatePacketData> {
 
     @Override
-    public void translate(ExperienceUpdatePacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, ExperienceUpdatePacketData packet, BetaClientSession session, Session modernSession) {
         float exp = packet.getProgress();
         int level = packet.getLevel();
         int totalExperience = packet.getLevel();

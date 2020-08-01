@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.WindowClickPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
@@ -42,7 +43,7 @@ import com.github.steveice10.packetlib.Session;
 public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowActionPacket> {
 
     @Override
-    public void translate(ClientWindowActionPacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientWindowActionPacket packet, Session modernSession, BetaClientSession betaSession) {
         ModernPlayer player = betaSession.getPlayer();
         PlayerInventory inventory = player.getInventory();
 
@@ -78,18 +79,6 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
         }
 
         ItemStack itemStack = packet.getClickedItem() == null ? (slot < 0 ? null : player.getInventory().getItem(slot)) : packet.getClickedItem();
-
-        // update local inventory
-        if (slot > 0) {
-            if (packet.getClickedItem() != null) {
-                inventory.setItem(slot, new ItemStack(0));
-                inventory.setLastClickedItem(packet.getClickedItem());
-            } else {
-                inventory.setItem(slot, inventory.getLastClickedItem());
-            }
-
-            betaSession.getMain().getServer().updatePlayerProperties(modernSession, player);
-        }
 
         if (itemStack == null)
             return;

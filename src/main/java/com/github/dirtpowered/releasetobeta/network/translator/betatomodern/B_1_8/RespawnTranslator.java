@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.RespawnPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -36,16 +37,16 @@ import com.github.steveice10.packetlib.Session;
 public class RespawnTranslator implements BetaToModern<RespawnPacketData> {
 
     @Override
-    public void translate(RespawnPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, RespawnPacketData packet, BetaClientSession session, Session modernSession) {
         ModernPlayer player = session.getPlayer();
 
         int dimension = Utils.fixDimension(packet.getDimension());
         player.setDimension(dimension);
 
         GameMode gameMode = packet.getGamemode() == 0 ? GameMode.SURVIVAL : GameMode.CREATIVE;
-        Difficulty difficulty = session.getMain().getDifficultyMap().getFromId(packet.getDifficulty());
+        Difficulty difficulty = main.getDifficultyMap().getFromId(packet.getDifficulty());
 
         modernSession.send(new ServerRespawnPacket(dimension, difficulty, gameMode, WorldType.DEFAULT));
-        session.getMain().getServer().sendInitialPlayerAbilities(player);
+        main.getServer().sendInitialPlayerAbilities(player);
     }
 }

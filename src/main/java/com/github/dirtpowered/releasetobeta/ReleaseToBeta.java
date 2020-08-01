@@ -24,7 +24,6 @@ package com.github.dirtpowered.releasetobeta;
 
 import com.github.dirtpowered.betaprotocollib.BetaLib;
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
-import com.github.dirtpowered.releasetobeta.api.plugin.event.EventManager;
 import com.github.dirtpowered.releasetobeta.bootstrap.AbstractBootstrap;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.Constants;
@@ -69,7 +68,6 @@ public class ReleaseToBeta implements Runnable {
     private ModernServer server;
     private PingPassthroughThread pingPassthroughThread;
     private AbstractBootstrap bootstrap;
-    private EventManager eventManager;
 
     public ReleaseToBeta(AbstractBootstrap bootstrap) {
         long startTime = System.nanoTime();
@@ -89,7 +87,6 @@ public class ReleaseToBeta implements Runnable {
         this.entityEffectMap = new EntityEffectMap();
         this.mobTypeMap = new MobTypeMap();
         this.server = new ModernServer(this);
-        this.eventManager = new EventManager();
 
         BetaLib.inject(R2BConfiguration.version);
 
@@ -137,7 +134,6 @@ public class ReleaseToBeta implements Runnable {
     }
 
     public void stop() {
-        eventManager.clear();
         server.getServerConnection().shutdown();
     }
 

@@ -44,7 +44,6 @@ import com.github.steveice10.mc.protocol.packet.status.client.StatusQueryPacket;
 import com.github.steveice10.packetlib.Server;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.server.ServerAdapter;
-import com.github.steveice10.packetlib.event.server.ServerClosingEvent;
 import com.github.steveice10.packetlib.event.server.SessionAddedEvent;
 import com.github.steveice10.packetlib.event.server.SessionRemovedEvent;
 import com.github.steveice10.packetlib.event.session.DisconnectingEvent;
@@ -97,14 +96,6 @@ public class ServerConnection implements Tickable {
         server.addListener(new ServerAdapter() {
 
             @Override
-            public void serverClosing(ServerClosingEvent event) {
-                event.getServer().getSessions().forEach(session -> {
-                    if (session != null)
-                        session.disconnect("Server closed", true);
-                });
-            }
-
-            @Override
             public void sessionAdded(SessionAddedEvent event) {
                 event.getSession().addListener(new SessionAdapter() {
 
@@ -118,7 +109,8 @@ public class ServerConnection implements Tickable {
                         Packet packet = event.getPacket();
 
                         if (packet instanceof StatusQueryPacket) {
-                            if (R2BConfiguration.logPings) main.getLogger().info(event.getSession().getLocalAddress() + " has pinged");
+                            if (R2BConfiguration.logPings)
+                                main.getLogger().info(event.getSession().getLocalAddress() + " has pinged");
                             return;
                         } else if (packet instanceof HandshakePacket) {
                             return;
@@ -140,7 +132,7 @@ public class ServerConnection implements Tickable {
             }
         });
 
-        server.bind();
+        server.bind(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -150,7 +142,7 @@ public class ServerConnection implements Tickable {
             if (queuedPacket.session.getFlag("ready") != null) {
                 UUID uuid = queuedPacket.session.getFlag("uniqueId");
                 BetaClientSession clientSession = main.getSessionRegistry().getSession(uuid).getBetaClientSession();
-                handler.translate(queuedPacket.packet, queuedPacket.session, clientSession);
+                handler.translate(main, queuedPacket.packet, queuedPacket.session, clientSession);
             } else {
                 if (queuedPacket.packet instanceof LoginStartPacket && !queuedPacket.session.hasFlag("login_packet")) {
                     queuedPacket.session.setFlag("login_packet", queuedPacket.packet);

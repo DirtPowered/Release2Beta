@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.PickupSpawnPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -41,7 +42,7 @@ import java.util.UUID;
 public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData> {
 
     @Override
-    public void translate(PickupSpawnPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, PickupSpawnPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
         UUID uuid = UUID.randomUUID();
 

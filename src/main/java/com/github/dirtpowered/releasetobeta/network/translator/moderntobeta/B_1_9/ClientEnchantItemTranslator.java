@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_9;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_9.data.EnchantItemPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.packet.ingame.client.window.ClientEnchantItemPacket;
@@ -31,7 +32,7 @@ import com.github.steveice10.packetlib.Session;
 public class ClientEnchantItemTranslator implements ModernToBeta<ClientEnchantItemPacket> {
 
     @Override
-    public void translate(ClientEnchantItemPacket packet, Session modernSession, BetaClientSession betaSession) {
+    public void translate(ReleaseToBeta main, ClientEnchantItemPacket packet, Session modernSession, BetaClientSession betaSession) {
         int windowId = packet.getWindowId();
         int enchantmentId = packet.getEnchantment();
 

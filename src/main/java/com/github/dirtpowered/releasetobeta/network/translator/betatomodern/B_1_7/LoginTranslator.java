@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.LoginPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.ProtocolState;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
@@ -38,7 +39,7 @@ import com.github.steveice10.packetlib.Session;
 public class LoginTranslator implements BetaToModern<LoginPacketData> {
 
     @Override
-    public void translate(LoginPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, LoginPacketData packet, BetaClientSession session, Session modernSession) {
         ModernPlayer player = session.getPlayer();
         int entityId = packet.getEntityId();
         int dimension = Utils.fixDimension(packet.getDimension());
@@ -55,6 +56,7 @@ public class LoginTranslator implements BetaToModern<LoginPacketData> {
                 false
         ));
 
+        player.setSeed(packet.getSeed());
         player.setEntityId(entityId);
         player.setDimension(dimension);
         session.joinPlayer();

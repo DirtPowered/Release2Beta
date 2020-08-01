@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.OpenWindowPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
@@ -34,7 +35,7 @@ import com.github.steveice10.packetlib.Session;
 public class OpenWindowTranslator implements BetaToModern<OpenWindowPacketData> {
 
     @Override
-    public void translate(OpenWindowPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, OpenWindowPacketData packet, BetaClientSession session, Session modernSession) {
         ModernPlayer player = session.getPlayer();
         int windowId = packet.getWindowId();
         int inventoryType = packet.getInventoryType();

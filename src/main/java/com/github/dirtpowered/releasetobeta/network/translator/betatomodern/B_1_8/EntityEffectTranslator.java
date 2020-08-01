@@ -23,6 +23,7 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8;
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_8.data.EntityEffectPacketData;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.steveice10.mc.protocol.data.game.entity.Effect;
@@ -32,12 +33,12 @@ import com.github.steveice10.packetlib.Session;
 public class EntityEffectTranslator implements BetaToModern<EntityEffectPacketData> {
 
     @Override
-    public void translate(EntityEffectPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, EntityEffectPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
         int duration = packet.getDuration();
         int amplifier = packet.getAmplifier();
 
-        Effect effect = session.getMain().getEntityEffectMap().getFromId(packet.getEffectId());
+        Effect effect = main.getEntityEffectMap().getFromId(packet.getEffectId());
 
         modernSession.send(new ServerEntityEffectPacket(entityId, effect, amplifier, duration, false, true));
     }

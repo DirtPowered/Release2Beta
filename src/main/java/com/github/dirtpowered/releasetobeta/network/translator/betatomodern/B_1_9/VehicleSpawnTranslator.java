@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.VehicleSpawnPacketData;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
+import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.vehicle.EntityBoat;
 import com.github.dirtpowered.releasetobeta.data.entity.vehicle.EntityMinecart;
@@ -44,7 +45,7 @@ import java.util.UUID;
 public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketData> {
 
     @Override
-    public void translate(VehicleSpawnPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, VehicleSpawnPacketData packet, BetaClientSession session, Session modernSession) {
         int ownerId = packet.getThrowerEntityId();
         int entityId = packet.getEntityId();
         UUID uuid = UUID.randomUUID();
