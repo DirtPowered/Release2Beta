@@ -38,7 +38,7 @@ public class ClientTabCompleteTranslator implements ModernToBeta<ClientTabComple
     @Override
     public void translate(ReleaseToBeta main, ClientTabCompletePacket packet, Session modernSession, BetaClientSession betaSession) {
         String[] clientCommands = packet.getText().split("\\s+");
-        String[] commands = betaSession.getMain().getServer().getCommands().clone();
+        String[] commands = main.getServer().getCommands().clone();
 
         //ugly hack
         for (int i = 0; i < commands.length; i++) {

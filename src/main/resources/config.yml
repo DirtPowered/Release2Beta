@@ -30,10 +30,9 @@ messages:
   # Ignored if running on bukkit
   server_full_message: Server is full
   connection_throttle_kick_message: '&cConnection Throttled! Try again later'
+  no_spam_message: '&cyou''re sending messages too quickly'
+  spam_protection: true
   log_pings: true
-experimental:
-  # Do not enable this unless you know what you're doing
-  enable_chunk_updates: false
 metrics:
   enable_metrics: true
   unique_id: default
