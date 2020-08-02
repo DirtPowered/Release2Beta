@@ -73,6 +73,7 @@ public class ModernPlayer extends Entity implements Mob {
     private long lastLocationUpdate;
     private PlayerEvent playerEvent;
     private Session modernSession;
+    private long lastChatInteraction;
 
     public ModernPlayer(BetaClientSession betaSession, Session modernSession, UUID clientId) {
         super(0); //will be changed later

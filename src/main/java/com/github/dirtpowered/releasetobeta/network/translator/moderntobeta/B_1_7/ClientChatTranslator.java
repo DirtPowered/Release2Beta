@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.ChatPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
@@ -36,18 +37,27 @@ public class ClientChatTranslator implements ModernToBeta<ClientChatPacket> {
     @Override
     public void translate(ReleaseToBeta main, ClientChatPacket packet, Session modernSession, BetaClientSession betaSession) {
         ModernPlayer player = betaSession.getPlayer();
+
+        if (System.currentTimeMillis() - player.getLastChatInteraction() < 750L && R2BConfiguration.spamProtection) {
+            player.sendMessage(ChatUtils.colorize(R2BConfiguration.noSpamMessage));
+
+            return;
+        }
+
         String message = ChatUtils.replaceIllegal(packet.getMessage());
 
         if (!message.startsWith("/"))
-            betaSession.getMain().getLogger().info("[CHAT] " + player.getUsername() + ": " + message);
+            main.getLogger().info("[CHAT] " + player.getUsername() + ": " + message);
         else {
-            if (betaSession.getMain().getServer().executeCommand(player, message)) {
-                betaSession.getMain().getLogger().info("[COMMAND] " + player.getUsername() + ": " + message);
+            if (main.getServer().executeCommand(player, message)) {
+                main.getLogger().info("[COMMAND] " + player.getUsername() + ": " + message);
                 return;
             }
         }
 
         message = ChatUtils.toBetaChatColors(message.length() > 100 ? message.substring(0, 100) : message);
         betaSession.sendPacket(new ChatPacketData(message));
+
+        player.setLastChatInteraction(System.currentTimeMillis());
     }
 }
