@@ -30,6 +30,7 @@ import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientUpdateSignPacket;
 import com.github.steveice10.packetlib.Session;
+import org.apache.commons.lang3.StringUtils;
 
 public class ClientUpdateSignTranslator implements ModernToBeta<ClientUpdateSignPacket> {
 
@@ -40,7 +41,7 @@ public class ClientUpdateSignTranslator implements ModernToBeta<ClientUpdateSign
 
         for (int i = 0; i < lines.length; i++)
             if (!lines[i].isEmpty())
-                lines[i] = ChatUtils.replaceIllegal(lines[i]).substring(0, lines[i].length() <= 15 ? lines[i].length() : 15);
+                lines[i] = StringUtils.substring(ChatUtils.replaceIllegal(lines[i]), 0, 15);
 
         betaSession.sendPacket(new UpdateSignPacketData(pos.getX(), pos.getY(), pos.getZ(), lines));
     }
