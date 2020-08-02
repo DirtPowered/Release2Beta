@@ -100,7 +100,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         this.main = server;
         this.channel = channel;
         this.protocolState = ProtocolState.LOGIN;
-        this.player = new ModernPlayer(this, clientId);
+        this.player = new ModernPlayer(this, session, clientId);
         this.session = session;
         this.entityCache = new EntityCache();
         this.mapDataHandler = new MapDataHandler();
@@ -170,6 +170,9 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
                 player.sendResourcePack();
                 resourcepack = true;
             }
+
+            // oh, yeah! let's use main thread!
+            player.getPlayerEvent().tick();
 
             for (Entity entity : entityCache.getEntities().values())
                 entity.updateEntity(player, session);

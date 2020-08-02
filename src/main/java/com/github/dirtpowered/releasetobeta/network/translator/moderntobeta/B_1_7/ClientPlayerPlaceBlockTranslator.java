@@ -88,6 +88,6 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
             modernSession.send(new ServerSetSlotPacket(0, currentSlot, inventory.getItem(currentSlot)));
         }
 
-        player.onBlockPlace(face, x, y, z, itemStack);
+        player.getPlayerEvent().onBlockPlace(face, x, y, z, itemStack);
     }
 }

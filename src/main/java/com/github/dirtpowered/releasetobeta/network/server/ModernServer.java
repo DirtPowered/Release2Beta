@@ -24,6 +24,7 @@ package com.github.dirtpowered.releasetobeta.network.server;
 
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Constants;
+import com.github.dirtpowered.releasetobeta.data.command.BlockCommand;
 import com.github.dirtpowered.releasetobeta.data.command.CommandRegistry;
 import com.github.dirtpowered.releasetobeta.data.command.R2BCommand;
 import com.github.dirtpowered.releasetobeta.data.command.model.Command;
@@ -116,6 +117,7 @@ public class ModernServer {
 
     private void registerInternalCommands() {
         commandRegistry.register("releasetobeta", new R2BCommand());
+        commandRegistry.register("b", new BlockCommand());
     }
 
     public boolean executeCommand(ModernPlayer player, String message) {

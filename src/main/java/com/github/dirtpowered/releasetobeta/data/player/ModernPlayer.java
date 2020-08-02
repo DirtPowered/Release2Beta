@@ -25,7 +25,6 @@ package com.github.dirtpowered.releasetobeta.data.player;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
-import com.github.dirtpowered.releasetobeta.data.entity.model.PlayerAction;
 import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
@@ -34,8 +33,6 @@ import com.github.dirtpowered.releasetobeta.utils.interfaces.Callback;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.MessageType;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
-import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
-import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.game.window.WindowType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
@@ -45,7 +42,6 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerResourcePackSendPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerCloseWindowPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerOpenTileEntityEditorPacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.packet.Packet;
 import lombok.Getter;
@@ -55,7 +51,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class ModernPlayer extends Entity implements PlayerAction, Mob {
+public class ModernPlayer extends Entity implements Mob {
     private String username;
     private BetaClientSession session;
     private GameProfile gameProfile;
@@ -78,15 +74,21 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
     private long lastLocationUpdate;
     private int viewPosX;
     private int viewPosZ;
+    private PlayerEvent playerEvent;
+    private Session modernSession;
 
-    public ModernPlayer(BetaClientSession session, UUID clientId) {
+    public ModernPlayer(BetaClientSession betaSession, Session modernSession, UUID clientId) {
         super(0); //will be changed later
 
-        this.session = session;
+        this.session = betaSession;
+        this.modernSession = modernSession;
+
         this.clientId = clientId;
 
         this.inventory = new PlayerInventory();
         this.openedInventoryType = WindowType.GENERIC_3X3;
+
+        this.playerEvent = new PlayerEvent(this);
     }
 
     public PlayerListEntry getTabEntry() {
@@ -108,16 +110,7 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
     }
 
     public void sendPacket(Packet modernPacket) {
-        if (getModernSession() != null) {
-            getModernSession().send(modernPacket);
-        }
-    }
-
-    public Session getModernSession() {
-        if (!session.getMain().getSessionRegistry().getSessions().containsKey(clientId))
-            return null;
-
-        return session.getMain().getSessionRegistry().getSession(clientId).getModernSession();
+        modernSession.send(modernPacket);
     }
 
     public void sendResourcePack() {
@@ -134,43 +127,6 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
         sendPacket(new ServerCloseWindowPacket(0));
     }
 
-    @Override
-    public void onBlockPlace(int face, int x, int y, int z, ItemStack itemstack) {
-        switch (face) {
-            case 1:
-                ++y;
-                break;
-            case 2:
-                --z;
-                break;
-            case 3:
-                ++z;
-                break;
-            case 4:
-                --x;
-                break;
-            case 5:
-                ++x;
-                break;
-        }
-
-        int itemId = itemstack.getId();
-
-        if (itemId == 589) {
-            sendPacket(new ServerOpenTileEntityEditorPacket(new Position(x, y, z)));
-        }
-    }
-
-    @Override
-    public void onInventoryClose() {
-        this.openedInventoryType = WindowType.GENERIC_3X3;
-    }
-
-    @Override
-    public void onInventoryOpen(WindowType windowType) {
-        this.openedInventoryType = windowType;
-    }
-
     public void sendMessage(String message) {
         sendPacket(new ServerChatPacket(ChatUtils.toModernMessage(message, false)));
     }
@@ -180,10 +136,6 @@ public class ModernPlayer extends Entity implements PlayerAction, Mob {
     }
 
     public int getPing() {
-        /*if (getModernSession() != null) {
-            return (int) (long) getModernSession().getFlag("ping");
-        }*/
-
         return 0;
     }
 

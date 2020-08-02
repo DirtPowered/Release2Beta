@@ -71,6 +71,6 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
         if (itemStack.getId() == 597 || itemStack.getId() == 596 || itemStack.getId() == 595 | itemStack.getId() == 604)
             betaSession.sendPacket(blockPlacePacketData);
 
-        player.onBlockPlace(face, x, y, z, itemStack);
+        player.getPlayerEvent().onBlockPlace(face, x, y, z, itemStack);
     }
 }

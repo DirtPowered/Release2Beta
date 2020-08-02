@@ -23,11 +23,16 @@
 package com.github.dirtpowered.releasetobeta.data.entity.model;
 
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.window.WindowType;
 
 public interface PlayerAction {
 
     void onBlockPlace(int face, int x, int y, int z, ItemStack itemstack);
+
+    void onBlockStartBreaking(Position position);
+
+    void onBlockCancelBreaking(Position position);
 
     void onInventoryClose();
 
