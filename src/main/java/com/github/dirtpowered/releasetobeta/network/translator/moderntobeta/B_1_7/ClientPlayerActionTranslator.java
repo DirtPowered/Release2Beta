@@ -24,6 +24,8 @@ package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1
 
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockDigPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
+import com.github.dirtpowered.releasetobeta.data.block.HardnessTable;
+import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
 import com.github.steveice10.mc.protocol.data.MagicValues;
@@ -43,6 +45,8 @@ public class ClientPlayerActionTranslator implements ModernToBeta<ClientPlayerAc
 
     @Override
     public void translate(ReleaseToBeta main, ClientPlayerActionPacket packet, Session modernSession, BetaClientSession betaSession) {
+        ModernPlayer player = betaSession.getPlayer();
+
         PlayerAction action = packet.getAction();
         Position pos = packet.getPosition();
         int x = pos.getX();
@@ -50,20 +54,28 @@ public class ClientPlayerActionTranslator implements ModernToBeta<ClientPlayerAc
         int z = pos.getZ();
 
         int face = MagicValues.value(Integer.class, packet.getFace());
-        int newAction;
+        int newAction = -1;
 
         switch (action) {
             case START_DIGGING:
                 newAction = 0;
+                player.getPlayerEvent().onBlockStartBreaking(pos);
                 break;
             case FINISH_DIGGING:
-                newAction = 2;
+                if (HardnessTable.exist(betaSession.getChunkCache().getBlockAt(x, y, z))) {
+                    newAction = -1; // we'll handle it later
+                } else {
+                    newAction = 2;
+                }
                 break;
             case DROP_ITEM:
                 newAction = 4;
                 break;
             case RELEASE_USE_ITEM:
                 newAction = 5;
+                break;
+            case CANCEL_DIGGING:
+                player.getPlayerEvent().onBlockCancelBreaking(pos);
                 break;
             default:
                 newAction = -1;

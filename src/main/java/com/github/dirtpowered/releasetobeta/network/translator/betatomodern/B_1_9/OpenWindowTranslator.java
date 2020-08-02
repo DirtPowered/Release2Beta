@@ -68,6 +68,6 @@ public class OpenWindowTranslator implements BetaToModern<OpenWindowPacketData> 
         }
 
         modernSession.send(new ServerOpenWindowPacket(windowId, windowType, inventoryTitle, slots));
-        player.onInventoryOpen(windowType);
+        player.getPlayerEvent().onInventoryOpen(windowType);
     }
 }

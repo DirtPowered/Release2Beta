@@ -38,6 +38,6 @@ public class ClientCloseWindowTranslator implements ModernToBeta<ClientCloseWind
         int windowId = packet.getWindowId();
 
         betaSession.sendPacket(new CloseWindowPacketData(windowId));
-        player.onInventoryClose();
+        player.getPlayerEvent().onInventoryClose();
     }
 }
