@@ -43,6 +43,8 @@ public class PlayerEvent implements PlayerAction, Tickable {
     private int currentMiningTicks;
     private Position pos;
     private int blockId;
+    private int lastBreakingStage;
+    private int randomEid;
 
     PlayerEvent(ModernPlayer player) {
         this.player = player;
@@ -60,7 +62,7 @@ public class PlayerEvent implements PlayerAction, Tickable {
 
     private void sendSlownessEffect() {
         player.sendPacket(new ServerEntityEffectPacket(
-                player.getEntityId(), Effect.SLOWER_DIG, Integer.MAX_VALUE, Integer.MAX_VALUE, false, false)
+                player.getEntityId(), Effect.SLOWER_DIG, -1, -1, false, false)
         );
     }
 
@@ -80,6 +82,7 @@ public class PlayerEvent implements PlayerAction, Tickable {
             this.currentMiningTicks = HardnessTable.getMiningTicks(typeId, getItemInHand());
             this.pos = p;
             this.blockId = typeId;
+            this.randomEid = player.getRand().nextInt(5);
 
             sendSlownessEffect();
         }
@@ -125,52 +128,55 @@ public class PlayerEvent implements PlayerAction, Tickable {
 
     private void cancelCracks() {
         if (pos != null) {
-            player.sendPacket(new ServerBlockBreakAnimPacket(player.getEntityId(), pos, BlockBreakStage.RESET));
+            player.sendPacket(new ServerBlockBreakAnimPacket(randomEid, pos, BlockBreakStage.RESET));
         }
     }
 
     private void sendBlockCracks() {
         int originalTime = HardnessTable.getMiningTicks(blockId, getItemInHand());
-        int flag = (currentMiningTicks * 9 / originalTime);
+        int flag = (currentMiningTicks * 10 / originalTime);
 
         BlockBreakStage stage = BlockBreakStage.RESET;
+        if (flag != lastBreakingStage) {
+            switch (flag) {
+                case 9:
+                    stage = BlockBreakStage.STAGE_1;
+                    break;
+                case 8:
+                    stage = BlockBreakStage.STAGE_2;
+                    break;
+                case 7:
+                    stage = BlockBreakStage.STAGE_3;
+                    break;
+                case 6:
+                    stage = BlockBreakStage.STAGE_4;
+                    break;
+                case 5:
+                    stage = BlockBreakStage.STAGE_5;
+                    break;
+                case 4:
+                    stage = BlockBreakStage.STAGE_6;
+                    break;
+                case 3:
+                    stage = BlockBreakStage.STAGE_7;
+                    break;
+                case 2:
+                    stage = BlockBreakStage.STAGE_8;
+                    break;
+                case 1:
+                    stage = BlockBreakStage.STAGE_9;
+                    break;
+                case 0:
+                    stage = BlockBreakStage.STAGE_9;
+                    break;
+            }
 
-        switch (flag) {
-            case 9:
-                stage = BlockBreakStage.STAGE_1;
-                break;
-            case 8:
-                stage = BlockBreakStage.STAGE_2;
-                break;
-            case 7:
-                stage = BlockBreakStage.STAGE_3;
-                break;
-            case 6:
-                stage = BlockBreakStage.STAGE_4;
-                break;
-            case 5:
-                stage = BlockBreakStage.STAGE_5;
-                break;
-            case 4:
-                stage = BlockBreakStage.STAGE_6;
-                break;
-            case 3:
-                stage = BlockBreakStage.STAGE_7;
-                break;
-            case 2:
-                stage = BlockBreakStage.STAGE_8;
-                break;
-            case 1:
-                stage = BlockBreakStage.STAGE_9;
-                break;
-            case 0:
-                stage = BlockBreakStage.STAGE_9;
-                break;
+            if (pos != null) {
+                player.sendPacket(new ServerBlockBreakAnimPacket(randomEid, pos, stage));
+            }
         }
 
-        if (pos != null) {
-            player.sendPacket(new ServerBlockBreakAnimPacket(player.getEntityId(), pos, stage));
-        }
+        this.lastBreakingStage = flag;
     }
 
     @Override
