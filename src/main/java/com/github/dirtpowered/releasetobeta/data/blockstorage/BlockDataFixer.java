@@ -67,33 +67,38 @@ public class BlockDataFixer {
 
         } else if (typeId == Block.CHEST && !MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version)) {
             int data = 2;
+            boolean doubleChest = false;
 
             // double chests
             if (chunkCache.getBlockAt(loc.getX() - 1, loc.getY(), loc.getZ()) == Block.CHEST
                     || chunkCache.getBlockAt(loc.getX() + 1, loc.getY(), loc.getZ()) == Block.CHEST) {
                 data = 3;
+                doubleChest = true;
             }
 
             if (chunkCache.getBlockAt(loc.getX(), loc.getY(), loc.getZ() - 1) == Block.CHEST
                     || chunkCache.getBlockAt(loc.getX(), loc.getY(), loc.getZ() + 1) == Block.CHEST) {
                 data = 4;
+                doubleChest = true;
             }
 
             // single chests
-            if (isSolid(chunkCache.getBlockAt(loc.getX() - 1, loc.getY(), loc.getZ()))) {
-                data = 5;
-            }
+            if (!doubleChest) {
+                if (isSolid(chunkCache.getBlockAt(loc.getX() - 1, loc.getY(), loc.getZ()))) {
+                    data = 5;
+                }
 
-            if (isSolid(chunkCache.getBlockAt(loc.getX() + 1, loc.getY(), loc.getZ()))) {
-                data = 4;
-            }
+                if (isSolid(chunkCache.getBlockAt(loc.getX() + 1, loc.getY(), loc.getZ()))) {
+                    data = 4;
+                }
 
-            if (isSolid(chunkCache.getBlockAt(loc.getX(), loc.getY(), loc.getZ() - 1))) {
-                data = 3;
-            }
+                if (isSolid(chunkCache.getBlockAt(loc.getX(), loc.getY(), loc.getZ() - 1))) {
+                    data = 3;
+                }
 
-            if (isSolid(chunkCache.getBlockAt(loc.getX(), loc.getY(), loc.getZ() + 1))) {
-                data = 2;
+                if (isSolid(chunkCache.getBlockAt(loc.getX(), loc.getY(), loc.getZ() + 1))) {
+                    data = 2;
+                }
             }
 
             return new CachedBlock(loc, Block.CHEST, data);
