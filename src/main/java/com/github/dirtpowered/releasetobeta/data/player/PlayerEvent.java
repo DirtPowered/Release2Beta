@@ -32,10 +32,14 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.entity.player.BlockBreakStage;
 import com.github.steveice10.mc.protocol.data.game.window.WindowType;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
+import com.github.steveice10.mc.protocol.data.game.world.effect.BreakBlockEffectData;
+import com.github.steveice10.mc.protocol.data.game.world.effect.ParticleEffect;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityEffectPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityRemoveEffectPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerBlockBreakAnimPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerOpenTileEntityEditorPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerPlayEffectPacket;
 
 public class PlayerEvent implements PlayerAction, Tickable {
 
@@ -72,6 +76,10 @@ public class PlayerEvent implements PlayerAction, Tickable {
 
     private void finishBreaking() {
         player.getSession().sendPacket(new BlockDigPacketData(pos.getX(), pos.getY(), pos.getZ(), 0, 2));
+
+        // send block break effect
+        BreakBlockEffectData particleData = new BreakBlockEffectData(new BlockState(blockId));
+        player.sendPacket(new ServerPlayEffectPacket(ParticleEffect.BREAK_BLOCK, pos, particleData));
     }
 
     @Override
