@@ -32,7 +32,6 @@ import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.status.ServerStatusInfo;
 import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoBuilder;
 import com.github.steveice10.packetlib.Session;
-import org.apache.commons.lang3.StringUtils;
 
 public class ServerInfoListener implements ServerInfoBuilder {
 
@@ -79,7 +78,7 @@ public class ServerInfoListener implements ServerInfoBuilder {
     private ServerStatusInfo getOfflineMessage() {
         return ServerListPing.builder()
                 .protocolVersion(-1)
-                .versionString(StringUtils.EMPTY)
+                .versionString("")
                 .maxPlayers(0)
                 .onlinePlayers(0)
                 .motd(ChatUtils.colorize("&9Can't connect to remote server"))

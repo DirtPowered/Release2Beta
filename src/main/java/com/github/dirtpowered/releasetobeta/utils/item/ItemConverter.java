@@ -30,7 +30,6 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.opennbt.tag.builtin.ListTag;
 import com.github.steveice10.opennbt.tag.builtin.ShortTag;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 
@@ -50,7 +49,7 @@ public class ItemConverter {
             if (itemTag.contains("ench")) {
                 com.mojang.nbt.ListTag listTag = itemTag.getList("ench");
 
-                CompoundTag rootTag = new CompoundTag(StringUtils.EMPTY);
+                CompoundTag rootTag = new CompoundTag("");
                 rootTag.put(new ListTag("AttributeModifiers", Collections.emptyList()));
                 rootTag.put(new ListTag("ench", CompoundTag.class));
 
@@ -61,7 +60,7 @@ public class ItemConverter {
                     short enchantId = compoundTag.getShort("id");
 
                     ListTag compoundList = rootTag.get("ench");
-                    CompoundTag valueHolder = new CompoundTag(StringUtils.EMPTY);
+                    CompoundTag valueHolder = new CompoundTag("");
 
                     //seems that nothing really was changed in enchant ids since beta
                     valueHolder.put(new ShortTag("id", enchantId));
@@ -95,7 +94,7 @@ public class ItemConverter {
     }
 
     private static CompoundTag removeItemAttributes() {
-        CompoundTag tag = new CompoundTag(StringUtils.EMPTY);
+        CompoundTag tag = new CompoundTag("");
         tag.put(new ListTag("AttributeModifiers", Collections.emptyList()));
         return tag;
     }

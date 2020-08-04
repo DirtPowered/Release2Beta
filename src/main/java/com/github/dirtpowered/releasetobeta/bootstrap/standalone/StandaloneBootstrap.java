@@ -27,7 +27,6 @@ import com.github.dirtpowered.releasetobeta.bootstrap.AbstractBootstrap;
 import com.github.dirtpowered.releasetobeta.bootstrap.Platform;
 import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import com.github.dirtpowered.releasetobeta.logger.DefaultLogger;
-import org.apache.commons.lang3.StringUtils;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.writers.FileWriter;
 
@@ -64,7 +63,7 @@ public class StandaloneBootstrap implements AbstractBootstrap {
 
     @Override
     public String getConfigPath() {
-        return StringUtils.EMPTY;
+        return "";
     }
 
     @Override

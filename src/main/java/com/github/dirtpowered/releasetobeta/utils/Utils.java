@@ -28,10 +28,7 @@ import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.DummyEntity;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
-import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
 import lombok.Getter;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -64,10 +61,6 @@ public class Utils {
         return (float) doubleValue;
     }
 
-    public static void debug(AbstractLogger logger, Object clazz) {
-        logger.info("[DEBUG] " + ReflectionToStringBuilder.toString(clazz, ToStringStyle.SHORT_PREFIX_STYLE));
-    }
-
     public static UUID getOfflineUUID(String username) {
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes());
     }
@@ -94,5 +87,33 @@ public class Utils {
 
     public static int toChunkPos(int posArg) {
         return (int) Math.floor(posArg) >> 4;
+    }
+
+    public static String safeSubstring(String str, int start, int end) {
+        if (end < 0) {
+            end += str.length();
+        }
+
+        if (start < 0) {
+            start += str.length();
+        }
+
+        if (end > str.length()) {
+            end = str.length();
+        }
+
+        if (start > end) {
+            return "";
+        } else {
+            if (start < 0) {
+                start = 0;
+            }
+
+            if (end < 0) {
+                end = 0;
+            }
+
+            return str.substring(start, end);
+        }
     }
 }

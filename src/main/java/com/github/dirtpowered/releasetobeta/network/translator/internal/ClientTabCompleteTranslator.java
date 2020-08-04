@@ -28,7 +28,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBet
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientTabCompletePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerTabCompletePacket;
 import com.github.steveice10.packetlib.Session;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +59,7 @@ public class ClientTabCompleteTranslator implements ModernToBeta<ClientTabComple
         List<String> strList = new ArrayList<>();
 
         for (String word : possibleCompletions) {
-            if (StringUtils.startsWithIgnoreCase(word, current)) {
+            if (word.regionMatches(true, 0, current, 0, current.length())) {
                 strList.add(current + word.substring(current.length()));
             }
         }

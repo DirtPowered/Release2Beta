@@ -30,7 +30,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModer
 import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
 import com.github.steveice10.packetlib.Session;
-import org.apache.commons.lang3.StringUtils;
 
 public class KickDisconnectTranslator implements BetaToModern<KickDisconnectPacketData> {
 
@@ -42,6 +41,6 @@ public class KickDisconnectTranslator implements BetaToModern<KickDisconnectPack
         String n = username == null ? session.getPlayer().getClientId().toString() : username;
         main.getLogger().warning("[" + n + "] kicked from server: " + reason);
 
-        modernSession.send(new ServerDisconnectPacket(reason == null ? TextMessage.fromString(StringUtils.EMPTY) : ServerMessages.translate(reason).getMessage()));
+        modernSession.send(new ServerDisconnectPacket(reason == null ? TextMessage.fromString("") : ServerMessages.translate(reason).getMessage()));
     }
 }

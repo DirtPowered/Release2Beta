@@ -26,11 +26,11 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.UpdateSig
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
+import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientUpdateSignPacket;
 import com.github.steveice10.packetlib.Session;
-import org.apache.commons.lang3.StringUtils;
 
 public class ClientUpdateSignTranslator implements ModernToBeta<ClientUpdateSignPacket> {
 
@@ -41,7 +41,7 @@ public class ClientUpdateSignTranslator implements ModernToBeta<ClientUpdateSign
 
         for (int i = 0; i < lines.length; i++)
             if (!lines[i].isEmpty())
-                lines[i] = StringUtils.substring(ChatUtils.replaceIllegal(lines[i]), 0, 15);
+                lines[i] = Utils.safeSubstring(ChatUtils.replaceIllegal(lines[i]), 0, 15);
 
         betaSession.sendPacket(new UpdateSignPacketData(pos.getX(), pos.getY(), pos.getZ(), lines));
     }

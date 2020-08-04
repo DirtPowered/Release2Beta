@@ -22,8 +22,6 @@
 
 package com.github.dirtpowered.releasetobeta.data.block;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import java.util.Arrays;
 
 public enum HardnessTable {
@@ -68,7 +66,7 @@ public enum HardnessTable {
         float multipler = 1.5F;
 
         HardnessTable block = getBlockById(blockId);
-        boolean b = ArrayUtils.contains(block.allowedTools, toolId);
+        boolean b = Arrays.stream(block.allowedTools).anyMatch(i -> i == toolId);
 
         if (!b && block.allowedTools[0] != -1) {
             multipler = 5.0F;

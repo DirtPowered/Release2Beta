@@ -24,7 +24,6 @@ package com.github.dirtpowered.releasetobeta.configuration;
 
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
-import org.apache.commons.lang3.StringUtils;
 import org.simpleyaml.configuration.file.YamlFile;
 
 import java.io.InputStream;
@@ -65,7 +64,7 @@ public class R2BConfiguration {
     }
 
     private String fixPath(String path) {
-        return path.isEmpty() ? StringUtils.EMPTY : path + "/";
+        return path.isEmpty() ? "" : path + "/";
     }
 
     public void loadConfiguration(String path) {

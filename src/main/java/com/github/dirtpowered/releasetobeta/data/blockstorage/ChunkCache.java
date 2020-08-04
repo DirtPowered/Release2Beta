@@ -27,8 +27,8 @@ import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.WorldTrackerImpl;
 import com.github.dirtpowered.releasetobeta.data.chunk.BetaChunk;
 import com.github.dirtpowered.releasetobeta.utils.Utils;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import io.netty.util.collection.LongObjectHashMap;
+import io.netty.util.collection.LongObjectMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +36,7 @@ import java.util.List;
 
 public class ChunkCache implements WorldTrackerImpl {
 
-    private Long2ObjectMap<BetaChunk> chunks = new Long2ObjectOpenHashMap<>();
+    private LongObjectMap<BetaChunk> chunks = new LongObjectHashMap<>();
 
     private long getKey(int chunkX, int chunkZ) {
         return (long) chunkX & 0xffffffffL | ((long) chunkZ & 0xffffffffL) << 32;
