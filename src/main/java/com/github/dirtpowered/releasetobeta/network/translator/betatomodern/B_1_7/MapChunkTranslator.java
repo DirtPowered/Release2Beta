@@ -127,7 +127,6 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
         boolean dataFix = false;
 
-        List<CachedBlock> blockList = new ArrayList<>();
         List<CompoundTag> chunkTileEntities = new ArrayList<>();
 
 

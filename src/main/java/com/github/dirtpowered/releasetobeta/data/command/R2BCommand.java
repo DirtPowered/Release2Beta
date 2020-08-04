@@ -25,14 +25,15 @@ package com.github.dirtpowered.releasetobeta.data.command;
 import com.github.dirtpowered.releasetobeta.data.command.model.Command;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
-import lombok.NoArgsConstructor;
+import io.netty.util.internal.StringUtil;
 
-@NoArgsConstructor
 public class R2BCommand extends Command {
 
     @Override
     public void execute(ModernPlayer sender, String[] args) {
-        sender.sendMessage(ChatUtils.colorize("&fThis server is using &bReleaseToBeta &fversion: &b"
-                + getClass().getPackage().getImplementationVersion()));
+        sender.sendMessage(ChatUtils.colorize("&fThis server is using &bReleaseToBeta &fversion: &b" + getClass().getPackage().getImplementationVersion()));
+        sender.sendMessage(StringUtil.EMPTY_STRING);
+        sender.sendMessage(ChatUtils.colorize("&7If you find any bug let me know on my discord server:"));
+        sender.sendMessage(ChatUtils.colorize("&ahttps://discord.com/invite/v6xsRdc"));
     }
 }

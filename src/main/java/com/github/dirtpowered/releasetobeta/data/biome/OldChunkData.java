@@ -35,35 +35,40 @@ public class OldChunkData {
     private final static int BIOME_ARRAY_LENGTH = 256;
     private final static double TEMP_NOISE_FREQ = 0.25D;
     private final static double HUMID_NOISE_FREQ = 0.3333333333333333D;
+    private final static double SMOOTH_NOISE_FREQ = 0.5882352941176471D;
     private final static double TEMP_GRID = 0.02500000037252903D;
     private final static double HUMID_GRID = 0.05000000074505806D;
+    private final static double SMOOTH_GRID = 0.25D;
     private double[] temperature;
     private double[] humidity;
+    private double[] smoothTable;
     private NoiseOctaves2D noise1;
     private NoiseOctaves2D noise2;
+    private NoiseOctaves2D noise3;
 
     public void initialize(long worldSeed) {
         noise1 = new NoiseOctaves2D(new Random(worldSeed * 9871L), 4);
         noise2 = new NoiseOctaves2D(new Random(worldSeed * 39811L), 4);
+        noise3 = new NoiseOctaves2D(new Random(worldSeed * 543321L), 2);
     }
 
     private BiomeType getBiomeType(double temperature, double humidity) {
         humidity = humidity * temperature;
 
-        if (temperature < 0.1D) {
+        if (temperature < 0.1F) {
             return BiomeType.TUNDRA;
-        } else if (humidity < 0.2D) {
-            return temperature < 0.5D ? BiomeType.TUNDRA : temperature < 0.95D ? BiomeType.SAVANNA : BiomeType.DESERT;
-        } else if (humidity > 0.5D && temperature < 0.7D) {
-            return BiomeType.SWAMP;
-        } else if (temperature < 0.5D) {
+        } else if (humidity < 0.2F) {
+            return temperature < 0.5F ? BiomeType.TUNDRA : temperature < 0.95F ? BiomeType.SAVANNA : BiomeType.DESERT;
+        } else if (humidity > 0.5F && temperature < 0.7F) {
+            return BiomeType.SWAMPLAND;
+        } else if (temperature < 0.5F) {
             return BiomeType.TAIGA;
-        } else if (temperature < 0.97D) {
-            return humidity < 0.35D ? BiomeType.SHRUBLAND : BiomeType.FOREST;
-        } else if (humidity < 0.45D) {
+        } else if (temperature < 0.97F) {
+            return humidity < 0.35F ? BiomeType.SHRUBLAND : BiomeType.FOREST;
+        } else if (humidity < 0.45F) {
             return BiomeType.PLAINS;
         } else {
-            return humidity < 0.9D ? BiomeType.SEASONAL_FOREST : BiomeType.RAINFOREST;
+            return humidity < 0.9F ? BiomeType.SEASONAL_FOREST : BiomeType.RAINFOREST;
         }
     }
 
@@ -80,12 +85,20 @@ public class OldChunkData {
 
         temperature = noise1.generateNoise(temperature, x, z, 16, 16, TEMP_GRID, TEMP_GRID, TEMP_NOISE_FREQ);
         humidity = noise2.generateNoise(humidity, x, z, 16, 16, HUMID_GRID, HUMID_GRID, HUMID_NOISE_FREQ);
+        smoothTable = noise3.generateNoise(smoothTable, x, z, 16, 16, SMOOTH_GRID, SMOOTH_GRID, SMOOTH_NOISE_FREQ);
 
         for (int i = 0; i < BIOME_ARRAY_LENGTH; ++i) {
-            double rawBiomeTemperature = (temperature[i] * 0.15D + 0.7D) * 0.99D + 0.0105;
+            double var9 = smoothTable[i] * 1.1D + 0.5D;
+            double var11 = 0.01D;
+            double var13 = 1.0D - var11;
+
+            double rawBiomeTemperature = (temperature[i] * 0.15D + 0.7D) * var13 + var9 * var11;
             double biomeTemperature = 1.0D - (1.0D - rawBiomeTemperature) * (1.0D - rawBiomeTemperature);
 
-            double biomeHumidity = (humidity[i] * 0.15D + 0.5D) * 0.99D + 0.0021;
+            var11 = 0.002D;
+            var13 = 1.0D - var11;
+
+            double biomeHumidity = (humidity[i] * 0.15D + 0.5D) * var13 + var9 * var11;
 
             biomeTemperature = Doubles.constrainToRange(biomeTemperature, 0.0D, 1.0D);
             biomeHumidity = Doubles.constrainToRange(biomeHumidity, 0.0D, 1.0D);
@@ -98,16 +111,16 @@ public class OldChunkData {
     }
 
     enum BiomeType {
-        RAINFOREST(21),
-        SWAMP(6),
-        SEASONAL_FOREST(12),
-        FOREST(4),
-        SAVANNA(35),
-        SHRUBLAND(35),
-        TAIGA(5),
-        DESERT(2),
-        PLAINS(1),
-        TUNDRA(12);
+        RAINFOREST(21 /* jungle */),
+        SWAMPLAND(1 /* plains */),
+        SEASONAL_FOREST(4 /* forest */),
+        FOREST(4 /* forest */),
+        SAVANNA(35 /* savanna */),
+        SHRUBLAND(151 /* mutated jungle edge */),
+        TAIGA(5 /* taiga */),
+        DESERT(2 /* desert */),
+        PLAINS(1 /* plains */),
+        TUNDRA(12 /* ice plains */);
 
         @Getter
         private int biomeId;
