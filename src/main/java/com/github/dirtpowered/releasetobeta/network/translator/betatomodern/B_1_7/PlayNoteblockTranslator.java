@@ -64,7 +64,6 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
                     if (blockId == 33 || blockId == 29) {
                         builtinSound = BuiltinSound.BLOCK_PISTON_EXTEND;
                         type = PistonValueType.PUSHING;
-                        pitch = 0;
                     } else {
                         builtinSound = BuiltinSound.BLOCK_NOTE_HARP;
                         type = NoteBlockValueType.HARP;
@@ -77,7 +76,6 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
                     } else if (blockId == 33 || blockId == 29) {
                         builtinSound = BuiltinSound.BLOCK_PISTON_CONTRACT;
                         type = PistonValueType.PULLING;
-                        pitch = 0;
                     } else {
                         builtinSound = BuiltinSound.BLOCK_NOTE_BASEDRUM;
                         type = NoteBlockValueType.BASS_DRUM;
