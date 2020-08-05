@@ -108,7 +108,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
                         List<BlockChangeRecord> blockChangeRecords = new ArrayList<>();
 
-                        if (rawX >= 0 || rawZ >= 0) {
+                        if (rawX >= 0 && rawZ >= 0) {
                             for (int x1 = 0; x1 < (newXSize < 0 ? 16 : newXSize); x1++) {
                                 for (int y1 = 0; y1 < height; y1++) {
                                     for (int z1 = 0; z1 < (newZSize < 0 ? 16 : newZSize); z1++) {
