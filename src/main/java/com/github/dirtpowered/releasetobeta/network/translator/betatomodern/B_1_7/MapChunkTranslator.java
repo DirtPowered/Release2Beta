@@ -39,8 +39,10 @@ import com.github.steveice10.mc.protocol.data.game.chunk.Chunk;
 import com.github.steveice10.mc.protocol.data.game.chunk.Column;
 import com.github.steveice10.mc.protocol.data.game.chunk.NibbleArray3d;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockChangeRecord;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockState;
 import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerMultiBlockChangePacket;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.packetlib.Session;
 
@@ -66,51 +68,87 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
         int chunkX = rawX / 16;
         int chunkZ = rawZ / 16;
 
-        int chunkEdgeX = (rawX + xSize - 1) / 16;
-        int chunkEdgeZ = (rawZ + zSize - 1) / 16;
+        int offsetX = (rawX + xSize - 1) / 16;
+        int offsetZ = (rawZ + zSize - 1) / 16;
 
         int height = rawY + ySize;
 
-        boolean fullChunk = height == 128;
+        boolean fullChunk = rawY == 0;
 
         try {
-            for (int i = chunkX; i <= chunkEdgeX; ++i) {
-                int x = Math.max(rawX - i * 16, 0);
-                int newXSize = Math.min(rawX + xSize - i * 16, 16);
+            if (fullChunk) {
+                BetaChunk chunk = new BetaChunk(chunkX, chunkZ, rawX, rawZ);
 
-                for (int j = chunkZ; j <= chunkEdgeZ; ++j) {
-                    int z = Math.max(rawZ - j * 16, 0);
-                    int newZSize = Math.min(rawZ + zSize - j * 16, 16);
+                chunk.fillData(data, skylight);
+                session.getChunkCache().addChunk(chunkX, chunkZ, chunk);
 
-                    BetaChunk chunk;
+                List<CompoundTag> chunkTileEntities = new ArrayList<>();
+                ModernChunk[] chunks = new ModernChunk[16];
+                Chunk[] _chunks = new Chunk[16];
 
-                    if (session.getChunkCache().getChunk(chunkX, chunkZ) == null) {
-                        chunk = new BetaChunk(chunkX, chunkZ, rawX, rawZ);
-                    } else {
-                        // get if cached
-                        chunk = session.getChunkCache().getChunk(chunkX, chunkZ);
+                for (int k = 0; k < 8; k++) {
+                    chunks[k] = translateChunk(session, chunk, k * 16, skylight);
+
+                    chunkTileEntities.addAll(chunks[k].getChunkTileEntities());
+                    _chunks[k] = chunks[k].getChunk();
+                }
+
+                modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, _chunks, chunkTileEntities.toArray(new CompoundTag[0]))));
+            } else {
+                for (int i = chunkX; i <= offsetX; ++i) {
+                    int x = Math.max(rawX - i * 16, 0);
+                    int newXSize = Math.min(rawX + xSize - i * 16, 16);
+
+                    for (int j = chunkZ; j <= offsetZ; ++j) {
+                        int z = Math.max(rawZ - j * 16, 0);
+                        int newZSize = Math.min(rawZ + zSize - j * 16, 16);
+
+                        BetaChunk testChunk = new BetaChunk(chunkX, chunkZ, rawX, rawZ);
+                        testChunk.fillData(data, x, rawY, z, newXSize, height, newZSize, skylight, false);
+
+                        List<BlockChangeRecord> blockChangeRecords = new ArrayList<>();
+
+                        if (rawX >= 0 || rawZ >= 0) {
+                            for (int x1 = 0; x1 < (newXSize < 0 ? 16 : newXSize); x1++) {
+                                for (int y1 = 0; y1 < height; y1++) {
+                                    for (int z1 = 0; z1 < (newZSize < 0 ? 16 : newZSize); z1++) {
+                                        int blockId = testChunk.getTypeAt(x1, y1, z1);
+                                        if (blockId != -1) {
+                                            int blockData = testChunk.getMetadataAt(x1, y1, z1);
+
+                                            blockChangeRecords.add(new BlockChangeRecord(
+                                                    new Position(rawX + (x1 - x), y1, rawZ + (z1 - z)), new BlockState(blockId, blockData)
+                                            ));
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            // negative X, Z workaround
+                            int newIndex = 0;
+
+                            if (data.length >= 8) {
+                                for (int x1 = 0; x1 < xSize; x1++) {
+                                    for (int z1 = 0; z1 < zSize; z1++) {
+                                        for (int y1 = 0; y1 < ySize; y1++) {
+                                            int blockId = data[newIndex];
+
+                                            //TODO: get block data index
+                                            blockChangeRecords.add(new BlockChangeRecord(
+                                                    new Position(rawX + x1, rawY + y1, rawZ + z1), new BlockState(blockId, 0)
+                                            ));
+
+                                            newIndex++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!blockChangeRecords.isEmpty()) {
+                            modernSession.send(new ServerMultiBlockChangePacket(blockChangeRecords.toArray(new BlockChangeRecord[0])));
+                        }
                     }
-
-                    if (fullChunk) {
-                        chunk.fillData(data, x, rawY, z, newXSize, height, newZSize, skylight);
-                        session.getChunkCache().addChunk(chunkX, chunkZ, chunk);
-                    } else {
-                        // merge with full chunk data
-                        chunk.fillData(data, x, rawY, z, newXSize, height, newZSize, skylight);
-                    }
-
-                    List<CompoundTag> chunkTileEntities = new ArrayList<>();
-                    ModernChunk[] chunks = new ModernChunk[16];
-                    Chunk[] _chunks = new Chunk[16];
-
-                    for (int k = 0; k < 8; k++) {
-                        chunks[k] = translateChunk(session, chunk, k * 16, skylight);
-
-                        chunkTileEntities.addAll(chunks[k].getChunkTileEntities());
-                        _chunks[k] = chunks[k].getChunk();
-                    }
-
-                    modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, _chunks, chunkTileEntities.toArray(new CompoundTag[0]))));
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -129,37 +167,37 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
         List<CompoundTag> chunkTileEntities = new ArrayList<>();
 
-
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
+                    if (chunk.getTypeAt(x, y + height, z) != -1) {
+                        int data = chunk.getMetadataAt(x, y + height, z);
 
-                    int data = chunk.getMetadataAt(x, y + height, z);
+                        int blockId = session.remapBlock(chunk.getTypeAt(x, y + height, z), data, false);
+                        int blockData = session.remapMetadata(blockId, data);
 
-                    int blockId = session.remapBlock(chunk.getTypeAt(x, y + height, z), data, false);
-                    int blockData = session.remapMetadata(blockId, data);
+                        storage.set(x, y, z, new BlockState(blockId, blockData));
 
-                    storage.set(x, y, z, new BlockState(blockId, blockData));
-
-                    if (skylight) {
-                        if (blockId == Block.CHEST) {
-                            nibbleSkyLight.set(x, y, z, 15); // fix chest lighting
-                        } else {
-                            nibbleSkyLight.set(x, y, z, chunk.getSkyLightAt(x, y + height, z));
+                        if (skylight) {
+                            if (blockId == Block.CHEST) {
+                                nibbleSkyLight.set(x, y, z, 15); // fix chest lighting
+                            } else {
+                                nibbleSkyLight.set(x, y, z, chunk.getSkyLightAt(x, y + height, z));
+                            }
                         }
-                    }
 
-                    nibbleBlockLight.set(x, y, z, chunk.getBlockLightAt(x, y + height, z));
+                        nibbleBlockLight.set(x, y, z, chunk.getBlockLightAt(x, y + height, z));
 
-                    if (TileEntity.containsId(blockId)) {
-                        TileEntity tile = TileEntity.create(blockId);
+                        if (TileEntity.containsId(blockId)) {
+                            TileEntity tile = TileEntity.create(blockId);
 
-                        if (tile != null) {
-                            chunkTileEntities.add(tile.getNBT(new Position(chunk.getRawX() + x, y + height, chunk.getRawZ() + z)));
+                            if (tile != null) {
+                                chunkTileEntities.add(tile.getNBT(new Position(chunk.getRawX() + x, y + height, chunk.getRawZ() + z)));
+                            }
                         }
-                    }
 
-                    if (BlockDataFixer.canFix(blockId)) dataFix = true;
+                        if (BlockDataFixer.canFix(blockId)) dataFix = true;
+                    }
                 }
             }
         }
