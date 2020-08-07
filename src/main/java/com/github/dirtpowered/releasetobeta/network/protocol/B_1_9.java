@@ -142,7 +142,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientTeleportConfirmTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientUpdateSignTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientWindowActionTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientCreativeInventoryActionTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_9.ClientCreativeInventoryActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientKeepAliveTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientPlayerStateTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientRequestTranslator;

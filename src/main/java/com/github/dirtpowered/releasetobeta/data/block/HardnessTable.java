@@ -22,45 +22,55 @@
 
 package com.github.dirtpowered.releasetobeta.data.block;
 
+import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
+import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+
 import java.util.Arrays;
 
 public enum HardnessTable {
-    BURNING_FURNACE(62, 3.5F, false, 278, 257, 274, 270, 285),
-    DETECTOR_RAIL(28, 0.7F, false, -1),
-    DISPENSER(23, 3.5F, false, 278, 257, 274, 270, 285),
-    FENCE(85, 2.0F, false, -1),
-    FURNACE(61, 3.5F, false, 278, 257, 274, 270, 285),
-    GLOWING_REDSTONE_ORE(74, 3.0F, true, 278, 257, 274, 270, 285),
-    JUKEBOX(84, 2.0F, false, -1),
-    LADDER(65, 0.4F, false, -1),
-    MOB_SPAWNER(52, 5.0F, false, 278, 257, 274, 270, 285),
-    NOTE_BLOCK(25, 0.8F, false, -1),
-    OBSIDIAN(49, 10.0F, false, 278),
-    POWERED_RAIL(27, 0.7F, false, -1),
-    RAIL(66, 0.7F, false, -1),
-    REDSTONE_ORE(73, 3.0F, true, 278, 257, 274, 270, 285),
-    STONE_PRESSURE_PLATE(70, 0.5F, false, 278, 257, 274, 270, 285),
-    WOODEN_PRESSURE_PLATE(72, 0.5F, false, -1),
-    WOODEN_TRAP_DOOR(96, 3.0F, false, -1),
-    WOOD_STAIRS(53, 2.0F, false, -1),
-    WORKBENCH(58, 2.5F, false, -1),
-    IRON_DOOR_BLOCK(71, 5.0F, false, 278, 257, 274, 270, 285),
-    SOUL_SAND(88, 0.5F, false, 277, 256, 284, 273);
+    BURNING_FURNACE(62, 3.5F, false, MinecraftVersion.B_1_9, 278, 257, 274, 270, 285),
+    DETECTOR_RAIL(28, 0.7F, false, null, -1),
+    DISPENSER(23, 3.5F, false, null, 278, 257, 274, 270, 285),
+    FENCE(85, 2.0F, false, MinecraftVersion.B_1_9, -1),
+    FURNACE(61, 3.5F, false, MinecraftVersion.B_1_9, 278, 257, 274, 270, 285),
+    GLOWING_REDSTONE_ORE(74, 3.0F, true, MinecraftVersion.B_1_9, 278, 257, 274, 270, 285),
+    JUKEBOX(84, 2.0F, false, null, -1),
+    LADDER(65, 0.4F, false, null, -1),
+    MOB_SPAWNER(52, 5.0F, false, MinecraftVersion.B_1_9, 278, 257, 274, 270, 285),
+    NOTE_BLOCK(25, 0.8F, false, null, -1),
+    OBSIDIAN(49, 10.0F, false, MinecraftVersion.B_1_9, 278),
+    POWERED_RAIL(27, 0.7F, false, null, -1),
+    RAIL(66, 0.7F, false, null, -1),
+    REDSTONE_ORE(73, 3.0F, true, MinecraftVersion.B_1_9, 278, 257, 274, 270, 285),
+    STONE_PRESSURE_PLATE(70, 0.5F, false, null, 278, 257, 274, 270, 285),
+    WOODEN_PRESSURE_PLATE(72, 0.5F, false, null, -1),
+    WOODEN_TRAP_DOOR(96, 3.0F, false, null, -1),
+    WOOD_STAIRS(53, 2.0F, false, null, -1),
+    WORKBENCH(58, 2.5F, false, MinecraftVersion.B_1_9, -1),
+    IRON_DOOR_BLOCK(71, 5.0F, false, null, 278, 257, 274, 270, 285),
+    SOUL_SAND(88, 0.5F, false, MinecraftVersion.B_1_9, 277, 256, 284, 273);
 
     private int blockId;
     private float betaHardness;
     private int[] allowedTools;
     private boolean respectToolMultipler;
+    private MinecraftVersion excludedVersion;
 
-    HardnessTable(int blockId, float betaHardness, boolean respectToolMultipler, int... allowedTools) {
+    HardnessTable(int blockId, float betaHardness, boolean respectToolMultipler, MinecraftVersion exclude, int... allowedTools) {
         this.blockId = blockId;
         this.betaHardness = betaHardness;
         this.respectToolMultipler = respectToolMultipler;
+        this.excludedVersion = exclude;
         this.allowedTools = allowedTools;
     }
 
     public static boolean exist(int blockId) {
-        return Arrays.stream(values()).anyMatch(table -> blockId == table.blockId);
+        for (HardnessTable table : values()) {
+            if (blockId == table.blockId && !table.excludedVersion.isNewerOrEqual(R2BConfiguration.version)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static int getMiningTicks(int blockId, int toolId) {
