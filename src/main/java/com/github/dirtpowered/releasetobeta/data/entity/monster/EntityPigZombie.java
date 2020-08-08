@@ -24,15 +24,24 @@ package com.github.dirtpowered.releasetobeta.data.entity.monster;
 
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
+import com.github.steveice10.mc.protocol.data.game.entity.EquipmentSlot;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityEquipmentPacket;
 import com.github.steveice10.packetlib.Session;
 
 public class EntityPigZombie extends Entity implements Mob {
 
     public EntityPigZombie(int entityId) {
         super(entityId, MobType.ZOMBIE_PIGMAN);
+    }
+
+    @Override
+    public void onSpawn(Session session) {
+        ItemStack itemStack = new ItemStack(283, 1, 0);
+        session.send(new ServerEntityEquipmentPacket(getEntityId(), EquipmentSlot.MAIN_HAND, itemStack));
     }
 
     @Override
