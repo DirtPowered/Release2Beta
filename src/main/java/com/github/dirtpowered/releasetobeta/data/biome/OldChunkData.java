@@ -35,21 +35,16 @@ public class OldChunkData {
     private final static int BIOME_ARRAY_LENGTH = 256;
     private final static double TEMP_NOISE_FREQ = 0.25D;
     private final static double HUMID_NOISE_FREQ = 0.3333333333333333D;
-    private final static double SMOOTH_NOISE_FREQ = 0.5882352941176471D;
     private final static double TEMP_GRID = 0.02500000037252903D;
     private final static double HUMID_GRID = 0.05000000074505806D;
-    private final static double SMOOTH_GRID = 0.25D;
     private double[] temperature;
     private double[] humidity;
-    private double[] smoothTable;
     private NoiseOctaves2D noise1;
     private NoiseOctaves2D noise2;
-    private NoiseOctaves2D noise3;
 
     public void initialize(long worldSeed) {
         noise1 = new NoiseOctaves2D(new Random(worldSeed * 9871L), 4);
         noise2 = new NoiseOctaves2D(new Random(worldSeed * 39811L), 4);
-        noise3 = new NoiseOctaves2D(new Random(worldSeed * 543321L), 2);
     }
 
     private BiomeType getBiomeType(double temperature, double humidity) {
@@ -77,7 +72,17 @@ public class OldChunkData {
             return Utils.getFilledBiomeData();
         }
 
-        return getBiomeData(chunkX * 16, chunkZ * 16);
+        byte[] oldData = getBiomeData(chunkX * 16, chunkZ * 16);
+        byte[] newData = new byte[256];
+        int i = 0;
+
+        // The array is indexed by z * 16 | x. ~wiki.vg
+        for (int x1 = 0; x1 < 16; x1++) {
+            for (int z1 = 0; z1 < 16; z1++) {
+                newData[z1 * 16 | x1] = oldData[i++];
+            }
+        }
+        return newData;
     }
 
     private byte[] getBiomeData(int x, int z) {
@@ -85,20 +90,12 @@ public class OldChunkData {
 
         temperature = noise1.generateNoise(temperature, x, z, 16, 16, TEMP_GRID, TEMP_GRID, TEMP_NOISE_FREQ);
         humidity = noise2.generateNoise(humidity, x, z, 16, 16, HUMID_GRID, HUMID_GRID, HUMID_NOISE_FREQ);
-        smoothTable = noise3.generateNoise(smoothTable, x, z, 16, 16, SMOOTH_GRID, SMOOTH_GRID, SMOOTH_NOISE_FREQ);
 
         for (int i = 0; i < BIOME_ARRAY_LENGTH; ++i) {
-            double var9 = smoothTable[i] * 1.1D + 0.5D;
-            double var11 = 0.01D;
-            double var13 = 1.0D - var11;
-
-            double rawBiomeTemperature = (temperature[i] * 0.15D + 0.7D) * var13 + var9 * var11;
+            double rawBiomeTemperature = (temperature[i] * 0.15D + 0.7D) * 0.99D + 0.0105;
             double biomeTemperature = 1.0D - (1.0D - rawBiomeTemperature) * (1.0D - rawBiomeTemperature);
 
-            var11 = 0.002D;
-            var13 = 1.0D - var11;
-
-            double biomeHumidity = (humidity[i] * 0.15D + 0.5D) * var13 + var9 * var11;
+            double biomeHumidity = (humidity[i] * 0.15D + 0.5D) * 0.99D + 0.0021;
 
             biomeTemperature = Doubles.constrainToRange(biomeTemperature, 0.0D, 1.0D);
             biomeHumidity = Doubles.constrainToRange(biomeHumidity, 0.0D, 1.0D);
