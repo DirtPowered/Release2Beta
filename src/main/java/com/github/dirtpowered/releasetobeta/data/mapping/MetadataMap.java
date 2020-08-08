@@ -29,6 +29,13 @@ import com.github.dirtpowered.releasetobeta.data.mapping.model.DataObject;
 public class MetadataMap extends DataHolder<DataObject[]> {
 
     public MetadataMap() {
+        add(6, new DataObject[]{
+                new DataObject(5, 0, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_9),
+                new DataObject(6, 0, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_9),
+                new DataObject(7, 0, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_9),
+                new DataObject(8, 0, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_9),
+        });
+
         add(18, new DataObject[]{
                 new DataObject(4, 0, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_9),
                 new DataObject(5, 1, MinecraftVersion.B_1_8_1, MinecraftVersion.B_1_9),
