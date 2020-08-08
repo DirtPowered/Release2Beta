@@ -50,14 +50,6 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
 
         if (BlockDataFixer.canFix(typeId)) dataFix = true;
 
-        modernSession.send(
-                new ServerBlockChangePacket(
-                        new BlockChangeRecord(new Position(x, y, z), new BlockState(typeId, session.remapMetadata(typeId, data)))
-                )
-        );
-
-        session.getChunkCache().onBlockUpdate(x, y, z, typeId, data);
-
         if (dataFix) {
             CachedBlock block = BlockDataFixer.fixSingleBlockData(session.getChunkCache(), new CachedBlock(new BlockLocation(x, y, z), typeId, session.remapMetadata(typeId, data)));
             if (block != null) {
@@ -68,6 +60,14 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
                         new BlockChangeRecord(new Position(b.getX(), b.getY(), b.getZ()), new BlockState(block.getTypeId(), block.getData()))
                 ));
             }
+        } else {
+            modernSession.send(
+                    new ServerBlockChangePacket(
+                            new BlockChangeRecord(new Position(x, y, z), new BlockState(typeId, session.remapMetadata(typeId, data)))
+                    )
+            );
+
+            session.getChunkCache().onBlockUpdate(x, y, z, typeId, data);
         }
     }
 }
