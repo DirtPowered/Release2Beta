@@ -73,6 +73,8 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
         int height = rawY + ySize;
 
+        if (height > 128) height = 128; // skip that random shit from beta server
+
         boolean fullChunk = rawY == 0;
 
         try {
