@@ -102,6 +102,8 @@ public class ServerConnection implements Tickable {
                     @Override
                     public void disconnecting(DisconnectingEvent event) {
                         getMain().getLogger().warning("[" + event.getSession().getLocalAddress() + "] " + event.getCause().getMessage());
+                        getMain().getLogger().info("detailed stacktrace: ");
+                        event.getCause().printStackTrace();
                     }
 
                     @Override
