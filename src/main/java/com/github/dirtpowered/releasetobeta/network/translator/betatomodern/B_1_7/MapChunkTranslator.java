@@ -81,6 +81,8 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
             if (fullChunk) {
                 BetaChunk chunk = new BetaChunk(chunkX, chunkZ, rawX, rawZ);
 
+                byte[] biomeData = session.getOldChunkData().getBiomeDataAt(chunkX, chunkZ);
+
                 chunk.fillData(data, skylight);
                 session.getChunkCache().addChunk(chunkX, chunkZ, chunk);
 
@@ -95,7 +97,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                     _chunks[k] = chunks[k].getChunk();
                 }
 
-                modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, _chunks, chunkTileEntities.toArray(new CompoundTag[0]))));
+                modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, _chunks, biomeData, chunkTileEntities.toArray(new CompoundTag[0]))));
             } else {
                 for (int i = chunkX; i <= offsetX; ++i) {
                     int x = Math.max(rawX - i * 16, 0);
