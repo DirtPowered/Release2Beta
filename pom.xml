@@ -45,6 +45,18 @@
                         </goals>
                         <configuration>
                             <minimizeJar>true</minimizeJar>
+                            <relocations>
+                                <relocation>
+                                    <!-- Canyon is using netty, so relocate it -->
+                                    <pattern>io.netty</pattern>
+                                    <shadedPattern>libs.netty</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <!-- Relocate other libs, which might conflict with craftbukkit libs -->
+                                    <pattern>com.google</pattern>
+                                    <shadedPattern>libs.google</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
