@@ -59,6 +59,8 @@ public class BlockChangeTranslator implements BetaToModern<BlockChangePacketData
                 modernSession.send(new ServerBlockChangePacket(
                         new BlockChangeRecord(new Position(b.getX(), b.getY(), b.getZ()), new BlockState(block.getTypeId(), block.getData()))
                 ));
+
+                session.getChunkCache().onBlockUpdate(x, y, z, block.getTypeId(), block.getData());
             }
         } else {
             modernSession.send(
