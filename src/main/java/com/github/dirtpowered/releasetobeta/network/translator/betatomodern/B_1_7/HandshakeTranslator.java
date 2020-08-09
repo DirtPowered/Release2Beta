@@ -26,12 +26,21 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.Handshake
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.packetlib.Session;
 
 public class HandshakeTranslator implements BetaToModern<HandshakePacketData> {
 
     @Override
     public void translate(ReleaseToBeta main, HandshakePacketData packet, BetaClientSession session, Session modernSession) {
-        //Logger.info("received handshake. ClientId={}", session.getClientId());
+        String serverKey = packet.getPlayerName();
+
+        if (!serverKey.equals("-")) {
+            main.getLogger().warning("Failed to connect to server!");
+            main.getLogger().warning("Server is in online-mode");
+
+            // kick player
+            modernSession.disconnect(ChatUtils.colorize("&eServer is in online-mode"));
+        }
     }
 }
