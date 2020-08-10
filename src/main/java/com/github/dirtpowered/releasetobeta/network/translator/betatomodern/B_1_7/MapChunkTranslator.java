@@ -26,6 +26,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.MapChunkP
 import com.github.dirtpowered.betaprotocollib.utils.BlockLocation;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.Block;
+import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.BlockDataFixer;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.ChunkCache;
 import com.github.dirtpowered.releasetobeta.data.blockstorage.model.CachedBlock;
@@ -75,7 +76,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
         if (height > 128) height = 128; // skip that random shit from beta server
 
-        boolean fullChunk = rawY == 0;
+        boolean fullChunk = xSize * ySize * zSize == Constants.MAX_CHUNK_SIZE;
 
         try {
             if (fullChunk) {
