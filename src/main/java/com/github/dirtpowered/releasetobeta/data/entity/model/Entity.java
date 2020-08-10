@@ -25,6 +25,7 @@ package com.github.dirtpowered.releasetobeta.data.entity.model;
 import com.github.dirtpowered.betaprotocollib.utils.Location;
 import com.github.dirtpowered.releasetobeta.data.Constants;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
+import com.github.dirtpowered.releasetobeta.utils.interfaces.Tickable;
 import com.github.steveice10.mc.protocol.data.game.entity.type.MobType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
@@ -36,7 +37,7 @@ import lombok.Setter;
 import java.util.Random;
 
 @Getter
-public abstract class Entity {
+public abstract class Entity implements Tickable {
 
     @Setter
     private int entityId;
@@ -89,6 +90,13 @@ public abstract class Entity {
                 }
             }
         }
+
+        tick();
+    }
+
+    @Override
+    public void tick() {
+        // do nothing
     }
 
     protected void playSound(Session session, BuiltinSound sound, SoundCategory category) {
