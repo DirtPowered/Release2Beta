@@ -22,6 +22,8 @@
 
 package com.github.dirtpowered.releasetobeta.data.player;
 
+import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.WindowClickPacketData;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Mob;
@@ -33,6 +35,7 @@ import com.github.dirtpowered.releasetobeta.utils.interfaces.Callback;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.MessageType;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.game.window.WindowType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
@@ -41,7 +44,7 @@ import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerResourcePackSendPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerCloseWindowPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerSetSlotPacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.packet.Packet;
 import lombok.Getter;
@@ -118,7 +121,11 @@ public class ModernPlayer extends Entity implements Mob {
     }
 
     public void updateInventory() {
-        sendPacket(new ServerWindowItemsPacket(0, inventory.getItems()));
+        sendPacket(new ServerSetSlotPacket(0, 45, new ItemStack(0)));
+
+        // force server to send inventory update packet
+        session.sendPacket(new WindowClickPacketData(0, 0, 0, (short) 0, new BetaItemStack(1), false));
+        session.sendPacket(new WindowClickPacketData(0, 1, 1, (short) 0, new BetaItemStack(2), false));
     }
 
     public void closeInventory() {

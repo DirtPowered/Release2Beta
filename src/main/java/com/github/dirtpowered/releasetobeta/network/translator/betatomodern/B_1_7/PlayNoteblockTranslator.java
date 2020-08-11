@@ -55,6 +55,8 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
 
         BlockLocation l = new BlockLocation(x, y, z);
 
+        boolean flag = false;
+
         double dist = l.distanceTo(session.getPlayer().getLocation());
         if (dist < Constants.SOUND_RANGE) {
             int blockId = session.getChunkCache().getBlockAt(x, y, z);
@@ -71,7 +73,13 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
                     break;
                 case 1:
                     if (blockId == 54) {
-                        builtinSound = BuiltinSound.BLOCK_CHEST_OPEN;
+                        if (pitch == 1) {
+                            builtinSound = BuiltinSound.BLOCK_CHEST_OPEN;
+                        } else {
+                            builtinSound = BuiltinSound.BLOCK_CHEST_CLOSE;
+                        }
+
+                        flag = true;
                         type = ChestValueType.VIEWING_PLAYER_COUNT;
                     } else if (blockId == 33 || blockId == 29) {
                         builtinSound = BuiltinSound.BLOCK_PISTON_CONTRACT;
@@ -101,7 +109,10 @@ public class PlayNoteblockTranslator implements BetaToModern<PlayNoteblockPacket
 
             float correctedPitch = (float) (0.5f * (Math.pow(2, pitch / 12.0f)));
 
-            modernSession.send(new ServerPlayBuiltinSoundPacket(builtinSound, SoundCategory.BLOCK, x, y, z, 1.33f, correctedPitch));
+            if (builtinSound != BuiltinSound.BLOCK_CHEST_CLOSE) {
+                modernSession.send(new ServerPlayBuiltinSoundPacket(builtinSound, SoundCategory.BLOCK, x, y, z, 1.33f, flag ? 1 : correctedPitch));
+            }
+
             modernSession.send(new ServerBlockValuePacket(new Position(x, y, z), type, new GenericBlockValue(pitch), blockId));
         }
     }

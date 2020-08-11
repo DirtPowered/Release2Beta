@@ -31,7 +31,7 @@ public enum HardnessTable {
     BURNING_FURNACE(62, 3.5F, false, MinecraftVersion.B_1_9, 278, 257, 274, 270, 285),
     DETECTOR_RAIL(28, 0.7F, false, null, -1),
     DISPENSER(23, 3.5F, false, null, 278, 257, 274, 270, 285),
-    FENCE(85, 2.0F, false, MinecraftVersion.B_1_9, -1),
+    FENCE(85, 2.0F, false, null, -1),
     FURNACE(61, 3.5F, false, MinecraftVersion.B_1_9, 278, 257, 274, 270, 285),
     GLOWING_REDSTONE_ORE(74, 3.0F, true, MinecraftVersion.B_1_9, 278, 257, 274, 270, 285),
     JUKEBOX(84, 2.0F, false, null, -1),
@@ -66,6 +66,9 @@ public enum HardnessTable {
 
     public static boolean exist(int blockId) {
         for (HardnessTable table : values()) {
+            if (table.blockId == blockId && table.excludedVersion == null)
+                return true;
+
             if (blockId == table.blockId && !table.excludedVersion.isNewerOrEqual(R2BConfiguration.version)) {
                 return true;
             }

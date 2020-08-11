@@ -28,7 +28,6 @@ import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
-import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.dirtpowered.releasetobeta.utils.item.ItemConverter;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.window.ClickItemParam;
@@ -65,10 +64,7 @@ public class ClientWindowActionTranslator implements ModernToBeta<ClientWindowAc
         boolean clickingOutside = slot == -999 && inventoryAction != WindowAction.SPREAD_ITEM;
 
         if (player.getOpenedInventoryType() == WindowType.GENERIC_INVENTORY && slot == 45 || droppingUsingQ) {
-            player.closeInventory();
             player.updateInventory();
-
-            player.sendMessage(ChatUtils.colorize("&cunsupported operation"));
             return;
         }
 
