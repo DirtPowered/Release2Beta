@@ -163,10 +163,10 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
 
         // play world sounds
         if (type == ObjectType.TIPPED_ARROW) {
-            float pitch = 1.0F / session.getPlayer().getRand().nextFloat() * 0.4F + 0.8F;
+            float pitch = 1.0F / (session.getPlayer().getRand().nextFloat() * 0.4F + 1.2F) + 0.5F;
 
             session.getMain().getServer().playWorldSound(
-                    modernSession, x, y, z, BuiltinSound.ENTITY_ARROW_SHOOT, SoundCategory.HOSTILE, pitch
+                    modernSession, x, y, z, BuiltinSound.ENTITY_ARROW_SHOOT, SoundCategory.PLAYER, pitch
             );
         }
 

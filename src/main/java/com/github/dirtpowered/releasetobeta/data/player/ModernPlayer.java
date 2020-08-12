@@ -128,10 +128,6 @@ public class ModernPlayer extends Entity implements Mob {
         session.sendPacket(new WindowClickPacketData(0, 1, 1, (short) 0, new BetaItemStack(2), false));
     }
 
-    public void closeInventory() {
-        sendPacket(new ServerCloseWindowPacket(0));
-    }
-
     public void sendMessage(String message) {
         sendPacket(new ServerChatPacket(ChatUtils.toModernMessage(message, false)));
     }

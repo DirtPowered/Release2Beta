@@ -37,6 +37,7 @@ import com.github.steveice10.packetlib.Session;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
 
@@ -63,6 +64,10 @@ public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
         }
 
         modernSession.send(new ServerExplosionPacket(x, y, z, explosionSize, records, 0, 0, 0));
-        main.getServer().playWorldSound(modernSession, x, y, z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT);
+
+        Random rand = session.getPlayer().getRand();
+
+        float pitch = (1.0F + (rand.nextFloat() - rand.nextFloat()) * 0.2F) * 0.7F;
+        main.getServer().playWorldSound(modernSession, x, y, z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT, pitch);
     }
 }
