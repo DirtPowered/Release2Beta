@@ -63,6 +63,6 @@ public class ExplosionTranslator implements BetaToModern<ExplosionPacketData> {
         }
 
         modernSession.send(new ServerExplosionPacket(x, y, z, explosionSize, records, 0, 0, 0));
-        main.getServer().playWorldSound(modernSession, (int) x, (int) y, (int) z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT);
+        main.getServer().playWorldSound(modernSession, x, y, z, BuiltinSound.ENTITY_GENERIC_EXPLODE, SoundCategory.AMBIENT);
     }
 }

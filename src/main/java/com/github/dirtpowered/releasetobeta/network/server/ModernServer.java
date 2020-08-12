@@ -104,8 +104,12 @@ public class ModernServer {
     }
 
 
-    public void playWorldSound(Session session, int x, int y, int z, BuiltinSound sound, SoundCategory category) {
-        session.send(new ServerPlayBuiltinSoundPacket(sound, category, x, y, z, 1.f, 1.f));
+    public void playWorldSound(Session session, double x, double y, double z, BuiltinSound sound, SoundCategory category) {
+        playWorldSound(session, x, y, z, sound, category, 1.f);
+    }
+
+    public void playWorldSound(Session session, double x, double y, double z, BuiltinSound sound, SoundCategory category, float pitch) {
+        session.send(new ServerPlayBuiltinSoundPacket(sound, category, x, y, z, 1.f, pitch));
     }
 
     public void updatePlayerProperties(Session session, ModernPlayer player) {

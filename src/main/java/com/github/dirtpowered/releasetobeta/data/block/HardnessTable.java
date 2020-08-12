@@ -66,12 +66,10 @@ public enum HardnessTable {
 
     public static boolean exist(int blockId) {
         for (HardnessTable table : values()) {
-            if (table.blockId == blockId && table.excludedVersion == null)
+            if (table.blockId == blockId && table.excludedVersion == null
+                    || blockId == table.blockId && !table.excludedVersion.isNewerOrEqual(R2BConfiguration.version))
                 return true;
 
-            if (blockId == table.blockId && !table.excludedVersion.isNewerOrEqual(R2BConfiguration.version)) {
-                return true;
-            }
         }
         return false;
     }

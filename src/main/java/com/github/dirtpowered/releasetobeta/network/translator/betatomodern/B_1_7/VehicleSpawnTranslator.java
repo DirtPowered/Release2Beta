@@ -36,6 +36,8 @@ import com.github.steveice10.mc.protocol.data.game.entity.type.object.MinecartTy
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectData;
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ObjectType;
 import com.github.steveice10.mc.protocol.data.game.entity.type.object.ProjectileData;
+import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
+import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.spawn.ServerSpawnObjectPacket;
 import com.github.steveice10.packetlib.Session;
 
@@ -138,6 +140,15 @@ public class VehicleSpawnTranslator implements BetaToModern<VehicleSpawnPacketDa
 
             boat.setLocation(new Location(x, y, z));
             session.getEntityCache().addEntity(entityId, boat);
+        }
+
+        // play world sounds
+        if (type == ObjectType.TIPPED_ARROW) {
+            float pitch = 1.0F / session.getPlayer().getRand().nextFloat() * 0.4F + 0.8F;
+
+            session.getMain().getServer().playWorldSound(
+                    modernSession, x, y, z, BuiltinSound.ENTITY_ARROW_SHOOT, SoundCategory.HOSTILE, pitch
+            );
         }
 
         if (ownerId > 0 || isFireball) {
