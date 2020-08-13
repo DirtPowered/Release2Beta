@@ -23,43 +23,44 @@
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9;
 
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
-import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.SetSlotPacketData;
+import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.WindowItemsPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
-import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
 import com.github.dirtpowered.releasetobeta.utils.item.ItemConverter;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.window.WindowType;
-import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerSetSlotPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerWindowItemsPacket;
 import com.github.steveice10.packetlib.Session;
 
-public class SetSlotTranslator implements BetaToModern<SetSlotPacketData> {
+public class WindowItemsTranslator implements BetaToModern<WindowItemsPacketData> {
 
     @Override
-    public void translate(ReleaseToBeta main, SetSlotPacketData packet, BetaClientSession session, Session modernSession) {
+    public void translate(ReleaseToBeta main, WindowItemsPacketData packet, BetaClientSession session, Session modernSession) {
+        int windowId = packet.getWindowId();
+        BetaItemStack[] items = packet.getItemStacks();
         ModernPlayer player = session.getPlayer();
 
-        int windowId = packet.getWindowId();
-        int itemSlot = packet.getItemSlot();
-        BetaItemStack itemStack = packet.getItemStack();
-        PlayerInventory inventory = player.getInventory();
-        ItemStack modernItemStack = ItemConverter.betaToModern(session, itemStack);
+        ItemStack[] itemStacks = ItemConverter.betaToModern(session, items);
 
-        if (itemSlot != -1) // item in hand index
-            inventory.setItem(itemSlot, modernItemStack);
-
-        // Update armor bar
-        main.getServer().updatePlayerProperties(modernSession, session.getPlayer());
-
-        // Fix enchanting table inventory slot index
         if (player.getOpenedInventoryType() == WindowType.ENCHANTING_TABLE) {
-            if (itemSlot >= 1) {
-                itemSlot++;
+            ItemStack[] copy = itemStacks;
+
+            itemStacks = new ItemStack[copy.length + 1];
+            itemStacks[0] = copy[0];
+
+            int slot = 0;
+
+            while (slot < copy.length - 1) {
+                itemStacks[slot + 2] = copy[slot + 1];
+                slot++;
             }
+
+            itemStacks[1] = new ItemStack(351, 3, 4);
         }
 
-        modernSession.send(new ServerSetSlotPacket(windowId, itemSlot, modernItemStack));
+        player.getInventory().setItems(itemStacks);
+        modernSession.send(new ServerWindowItemsPacket(windowId, itemStacks));
     }
 }

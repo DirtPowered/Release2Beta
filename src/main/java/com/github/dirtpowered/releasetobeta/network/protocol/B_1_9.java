@@ -111,7 +111,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.UpdateProgressTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.UpdateSignTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.UpdateTimeTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7.WindowItemsTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.BedAndWeatherTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.EntityEffectTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_8.ExperienceOrbTranslator;
@@ -126,6 +125,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9.OpenWindowTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9.SetSlotTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9.VehicleSpawnTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_9.WindowItemsTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientChatTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientCloseWindowTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientConfirmTransactionTranslator;
@@ -141,7 +141,6 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientSteerVehicleTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientTeleportConfirmTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientUpdateSignTranslator;
-import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_7.ClientWindowActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientKeepAliveTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientPlayerStateTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_8.ClientRequestTranslator;
@@ -149,6 +148,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_9.ClientCreativeInventoryActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_9.ClientEnchantItemTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_9.ClientPlayerPlaceBlockTranslator;
+import com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1_9.ClientWindowActionTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.BetaToModernTranslatorRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.ModernToBetaTranslatorRegistry;
 import com.github.steveice10.mc.protocol.packet.handshake.client.HandshakePacket;
