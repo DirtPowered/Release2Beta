@@ -32,6 +32,8 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBet
 import com.github.steveice10.mc.protocol.packet.login.client.LoginStartPacket;
 import com.github.steveice10.packetlib.Session;
 
+import java.net.SocketAddress;
+
 public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
 
     @Override
@@ -40,9 +42,34 @@ public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
         if (betaSession.getProtocolState() != ProtocolState.LOGIN)
             return;
 
+        boolean flag = R2BConfiguration.ipForwarding;
+
+        long address = flag ? serializeAddress(modernSession.getLocalAddress()) : 0;
+        byte header = (byte) (flag ? -999 : 0);
+
         betaSession.getPlayer().fillProfile(username, result -> {
             betaSession.sendPacket(new HandshakePacketData(username));
-            betaSession.sendPacket(new LoginPacketData(R2BConfiguration.version.getProtocolVersion(), username, 0, 0));
+            betaSession.sendPacket(new LoginPacketData(R2BConfiguration.version.getProtocolVersion(), username, address, header));
         });
+    }
+
+    private long serializeAddress(SocketAddress address) {
+        String str = address.toString();
+        String[] parts = str.split(":");
+
+        String realAddress = parts[0].substring(1); // remove '/'
+        String[] ipAddressInArray = realAddress.split("\\.");
+
+        long result = 0;
+
+        // https://mkyong.com/java/java-convert-ip-address-to-decimal-number/
+        for (int i = 0; i < ipAddressInArray.length; i++) {
+            int power = 3 - i;
+            int ip = Integer.parseInt(ipAddressInArray[i]);
+
+            result += ip * Math.pow(256, power);
+        }
+
+        return result;
     }
 }

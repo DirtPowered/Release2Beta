@@ -17,6 +17,9 @@ connection:
   online_mode: false
   # Compression threshold (0 = all packets will be compressed)
   compression_threshold: 256
+  # You need Project Poseidon to make IP Forwarding work
+  # https://github.com/RhysB/Project-Poseidon
+  ip_forwarding: false
 misc:
   resource_pack_url: ''
   resource_pack_hash: ''

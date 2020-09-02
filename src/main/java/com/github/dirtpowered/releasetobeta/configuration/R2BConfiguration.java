@@ -51,6 +51,7 @@ public class R2BConfiguration {
     public static int globalConnectionThrottle;
     public static boolean onlineMode;
     public static int compressionThreshold;
+    public static boolean ipForwarding;
     public static boolean metricsEnabled;
     public static String metricsUniqueId;
     public static boolean logPings;
@@ -108,6 +109,7 @@ public class R2BConfiguration {
             globalConnectionThrottle = config.getInt("connection.global_connection_throttle");
             onlineMode = config.getBoolean("connection.online_mode");
             compressionThreshold = config.getInt("connection.compression_threshold");
+            ipForwarding = config.getBoolean("connection.ip_forwarding");
 
             resourcePack = config.getString("misc.resource_pack_url");
             resourcePackHash = config.getString("misc.resource_pack_hash");
