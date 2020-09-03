@@ -32,7 +32,7 @@ import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBet
 import com.github.steveice10.mc.protocol.packet.login.client.LoginStartPacket;
 import com.github.steveice10.packetlib.Session;
 
-import java.net.SocketAddress;
+import java.net.InetSocketAddress;
 
 public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
 
@@ -44,7 +44,9 @@ public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
 
         boolean flag = R2BConfiguration.ipForwarding;
 
-        long address = flag ? serializeAddress(modernSession.getLocalAddress()) : 0;
+        InetSocketAddress socketAddress = (InetSocketAddress) modernSession.getRemoteAddress();
+
+        long address = flag ? serializeAddress(socketAddress.getAddress().getHostAddress()) : 0;
         byte header = (byte) (flag ? -999 : 0);
 
         betaSession.getPlayer().fillProfile(username, result -> {
@@ -53,12 +55,8 @@ public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
         });
     }
 
-    private long serializeAddress(SocketAddress address) {
-        String str = address.toString();
-        String[] parts = str.split(":");
-
-        String realAddress = parts[0].substring(1); // remove '/'
-        String[] ipAddressInArray = realAddress.split("\\.");
+    private long serializeAddress(String address) {
+        String[] ipAddressInArray = address.split("\\.");
 
         long result = 0;
 
