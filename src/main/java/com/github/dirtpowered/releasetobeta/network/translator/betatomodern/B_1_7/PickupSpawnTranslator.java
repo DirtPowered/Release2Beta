@@ -52,6 +52,9 @@ public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData
         double y = Utils.toModernPos(packet.getY()) - 0.125D;
         double z = Utils.toModernPos(packet.getZ());
 
+        float yaw = Utils.toModernYaw(packet.getYaw());
+        float pitch = Utils.toModernPitch(packet.getPitch());
+
         BetaItemStack itemStack = packet.getItemStack();
         int itemId = itemStack.getBlockId();
 
@@ -65,7 +68,7 @@ public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData
                 new EntityMetadata(6, MetadataType.ITEM, ItemConverter.betaToModern(session, itemStack))
         ).toArray(new EntityMetadata[0]);
 
-        modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, ObjectType.ITEM, x, y, z, 0, 0));
+        modernSession.send(new ServerSpawnObjectPacket(entityId, uuid, ObjectType.ITEM, x, y, z, yaw, pitch));
         modernSession.send(new ServerEntityMetadataPacket(entityId, metadata));
 
         // cache entity
