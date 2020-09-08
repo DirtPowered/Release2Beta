@@ -26,6 +26,7 @@ import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.EntityEqu
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.BetaToModern;
+import com.github.dirtpowered.releasetobeta.utils.item.ItemConverter;
 import com.github.steveice10.mc.protocol.data.game.entity.EquipmentSlot;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityEquipmentPacket;
@@ -37,7 +38,7 @@ public class EntityEquipmentTranslator implements BetaToModern<EntityEquipmentPa
     public void translate(ReleaseToBeta main, EntityEquipmentPacketData packet, BetaClientSession session, Session modernSession) {
         int entityId = packet.getEntityId();
         int itemId = session.remapBlock(packet.getItemId(), packet.getItemData(), false);
-        int data = session.remapMetadata(packet.getItemId(), packet.getItemData(), itemId == 54);
+        int data = session.remapMetadata(packet.getItemId(), packet.getItemData(), ItemConverter.isItemDataIgnored(itemId));
 
         if (itemId == -1) itemId = 0;
         ItemStack itemStack = new ItemStack(itemId, 1, data);

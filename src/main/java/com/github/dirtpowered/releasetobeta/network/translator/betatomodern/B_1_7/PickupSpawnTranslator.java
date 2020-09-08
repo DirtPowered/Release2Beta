@@ -56,7 +56,7 @@ public class PickupSpawnTranslator implements BetaToModern<PickupSpawnPacketData
         int itemId = itemStack.getBlockId();
 
         itemStack.setBlockId(session.remapBlock(itemId, itemStack.getData(), true));
-        itemStack.setData((session.remapMetadata(itemId, itemStack.getData(), itemId == 54)));
+        itemStack.setData((session.remapMetadata(itemId, itemStack.getData(), ItemConverter.isItemDataIgnored(itemId))));
 
         EntityMetadata[] metadata = Arrays.asList(
                 new EntityMetadata(1, MetadataType.INT, 300), //air time

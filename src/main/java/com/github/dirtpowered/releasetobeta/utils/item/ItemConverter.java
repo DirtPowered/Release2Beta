@@ -42,7 +42,7 @@ public class ItemConverter {
         int itemId = item.getBlockId();
 
         item.setBlockId(session.remapBlock(itemId, item.getData(), true));
-        item.setData(session.remapMetadata(itemId, item.getData(), itemId == 54));
+        item.setData(session.remapMetadata(itemId, item.getData(), ItemConverter.isItemDataIgnored(itemId)));
 
         if (MinecraftVersion.B_1_9.isNewerOrEqual(R2BConfiguration.version) && item.hasNbt()) {
             com.mojang.nbt.CompoundTag itemTag = item.getNbt();
@@ -97,5 +97,9 @@ public class ItemConverter {
         CompoundTag tag = new CompoundTag("");
         tag.put(new ListTag("AttributeModifiers", Collections.emptyList()));
         return tag;
+    }
+
+    public static boolean isItemDataIgnored(int itemId) {
+        return itemId == 54 || itemId == 44;
     }
 }

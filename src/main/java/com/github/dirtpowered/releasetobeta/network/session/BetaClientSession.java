@@ -284,8 +284,8 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         return remapMetadata(blockId, rawData, false);
     }
 
-    public int remapMetadata(int blockId, int rawData, boolean custom) {
-        if (blockId == 0 || custom) //skip air
+    public int remapMetadata(int blockId, int rawData, boolean ignoreData) {
+        if (blockId == 0 || ignoreData) //skip air
             return 0;
 
         MetadataMap m = main.getMetadataMap();
