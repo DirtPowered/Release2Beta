@@ -50,6 +50,7 @@ import com.github.dirtpowered.releasetobeta.utils.interfaces.Tickable;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPlayerListEntryPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityMetadataPacket;
 import com.github.steveice10.packetlib.Session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -263,6 +264,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
 
             oldChunkData.initialize(player.getSeed());
 
+            session.send(new ServerEntityMetadataPacket(player.getEntityId(), main.getServer().getPlayerDefaultMetadata()));
             setLoggedIn(true);
         }
     }

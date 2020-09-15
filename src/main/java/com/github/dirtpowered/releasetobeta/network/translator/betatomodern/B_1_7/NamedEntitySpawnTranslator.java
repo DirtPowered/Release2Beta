@@ -57,7 +57,7 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
                 completePlayer.onSpawn(modernSession);
 
                 session.getEntityCache().addEntity(entityId, completePlayer);
-                spawn(modernSession, entityId, completePlayer.getUUID(), x, y, z, yaw, pitch);
+                spawn(modernSession, entityId, completePlayer.getUUID(), x, y, z, yaw, pitch, main.getServer().getPlayerDefaultMetadata());
             });
 
             return;
@@ -67,13 +67,13 @@ public class NamedEntitySpawnTranslator implements BetaToModern<NamedEntitySpawn
 
         if (player != null) {
             player.onSpawn(modernSession);
-            spawn(modernSession, entityId, uuid, x, y, z, yaw, pitch);
+            spawn(modernSession, entityId, uuid, x, y, z, yaw, pitch, main.getServer().getPlayerDefaultMetadata());
 
             session.getEntityCache().addEntity(entityId, player);
         }
     }
 
-    private void spawn(Session session, int entityId, UUID uuid, double x, double y, double z, float yaw, float pitch) {
-        session.send(new ServerSpawnPlayerPacket(entityId, uuid, x, y, z, yaw, pitch, new EntityMetadata[0]));
+    private void spawn(Session session, int entityId, UUID uuid, double x, double y, double z, float yaw, float pitch, EntityMetadata[] metadata) {
+        session.send(new ServerSpawnPlayerPacket(entityId, uuid, x, y, z, yaw, pitch, metadata));
     }
 }

@@ -34,7 +34,9 @@ import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.data.skin.ProfileCache;
 import com.github.steveice10.mc.protocol.data.game.entity.attribute.Attribute;
 import com.github.steveice10.mc.protocol.data.game.entity.attribute.AttributeType;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.EntityMetadata;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.MetadataType;
 import com.github.steveice10.mc.protocol.data.game.world.sound.BuiltinSound;
 import com.github.steveice10.mc.protocol.data.game.world.sound.SoundCategory;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityPropertiesPacket;
@@ -132,6 +134,18 @@ public class ModernServer {
     public void sendWorldBorder(Session session) {
         //default border size
         session.send(new ServerWorldBorderPacket(0.0D, 0.0D, 6.0E07D, 6.0E07D, 0L, 29999984, 5, 15));
+    }
+
+    public EntityMetadata[] getPlayerDefaultMetadata() {
+        return new EntityMetadata[]{
+                new EntityMetadata(13, MetadataType.BYTE, (byte) 0x01), // cape
+                new EntityMetadata(13, MetadataType.BYTE, (byte) 0x02), // jacket
+                new EntityMetadata(13, MetadataType.BYTE, (byte) 0x04), // left sleeve
+                new EntityMetadata(13, MetadataType.BYTE, (byte) 0x08), // right sleeve
+                new EntityMetadata(13, MetadataType.BYTE, (byte) 0x10), // left pants
+                new EntityMetadata(13, MetadataType.BYTE, (byte) 0x20), // right pants
+                new EntityMetadata(13, MetadataType.BYTE, (byte) 0x40), // hat
+        };
     }
 
     public BufferedImage getServerIcon() {
