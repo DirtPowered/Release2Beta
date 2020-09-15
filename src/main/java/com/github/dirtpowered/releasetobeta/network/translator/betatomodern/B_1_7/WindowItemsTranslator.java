@@ -38,11 +38,13 @@ public class WindowItemsTranslator implements BetaToModern<WindowItemsPacketData
     @Override
     public void translate(ReleaseToBeta main, WindowItemsPacketData packet, BetaClientSession session, Session modernSession) {
         int windowId = packet.getWindowId();
-        BetaItemStack[] items = packet.getItemStacks();
+
+        BetaItemStack[] items = new BetaItemStack[46];
+        System.arraycopy(packet.getItemStacks(), 0, items, 0, 45 /* pre 1.9 length */);
+
         ModernPlayer player = session.getPlayer();
 
         ItemStack[] itemStacks = ItemConverter.betaToModern(session, items);
-
         player.getInventory().setItems(itemStacks);
         modernSession.send(new ServerWindowItemsPacket(windowId, itemStacks));
     }
