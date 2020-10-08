@@ -114,7 +114,7 @@ public class OldChunkData {
         FOREST(4 /* forest */),
         SAVANNA(35 /* savanna */),
         SHRUBLAND(151 /* mutated jungle edge */),
-        TAIGA(5 /* taiga */),
+        TAIGA(30 /* cold taiga */),
         DESERT(2 /* desert */),
         PLAINS(1 /* plains */),
         TUNDRA(12 /* ice plains */);
