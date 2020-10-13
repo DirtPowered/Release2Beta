@@ -84,7 +84,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
                 byte[] biomeData = session.getOldChunkData().getBiomeDataAt(chunkX, chunkZ, !skylight);
 
-                chunk.fillData(data, skylight);
+                chunk.setChunkData(data, 0, 0, 0, 16, 128, 16, 0, skylight);
                 session.getChunkCache().addChunk(chunkX, chunkZ, chunk);
 
                 List<CompoundTag> chunkTileEntities = new ArrayList<>();
@@ -100,6 +100,8 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
 
                 modernSession.send(new ServerChunkDataPacket(new Column(chunkX, chunkZ, _chunks, biomeData, chunkTileEntities.toArray(new CompoundTag[0]))));
             } else {
+                int offset = 0;
+
                 for (int i = chunkX; i <= offsetX; ++i) {
                     int x = Math.max(rawX - i * 16, 0);
                     int newXSize = Math.min(rawX + xSize - i * 16, 16);
@@ -108,8 +110,9 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                         int z = Math.max(rawZ - j * 16, 0);
                         int newZSize = Math.min(rawZ + zSize - j * 16, 16);
 
-                        BetaChunk testChunk = new BetaChunk(chunkX, chunkZ, rawX, rawZ);
-                        testChunk.fillData(data, x, rawY, z, newXSize, height, newZSize, skylight, false);
+                        BetaChunk chunk = new BetaChunk(chunkX, chunkZ, rawX, rawZ);
+
+                        offset = chunk.setChunkData(data, x, rawY, z, newXSize, height, newZSize, offset, skylight);
 
                         List<BlockChangeRecord> blockChangeRecords = new ArrayList<>();
 
@@ -117,9 +120,9 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
                             for (int x1 = 0; x1 < (newXSize < 0 ? 16 : newXSize); x1++) {
                                 for (int y1 = 0; y1 < height; y1++) {
                                     for (int z1 = 0; z1 < (newZSize < 0 ? 16 : newZSize); z1++) {
-                                        int blockId = testChunk.getTypeAt(x1, y1, z1);
+                                        int blockId = chunk.getTypeAt(x1, y1, z1);
                                         if (blockId != -1) {
-                                            int blockData = testChunk.getMetadataAt(x1, y1, z1);
+                                            int blockData = chunk.getMetadataAt(x1, y1, z1);
 
                                             blockChangeRecords.add(new BlockChangeRecord(
                                                     new Position(rawX + (x1 - x), y1, rawZ + (z1 - z)), new BlockState(blockId, blockData)
