@@ -82,7 +82,7 @@ public class MapChunkTranslator implements BetaToModern<MapChunkPacketData> {
             if (fullChunk) {
                 BetaChunk chunk = new BetaChunk(chunkX, chunkZ, rawX, rawZ);
 
-                byte[] biomeData = session.getOldChunkData().getBiomeDataAt(chunkX, chunkZ);
+                byte[] biomeData = session.getOldChunkData().getBiomeDataAt(chunkX, chunkZ, !skylight);
 
                 chunk.fillData(data, skylight);
                 session.getChunkCache().addChunk(chunkX, chunkZ, chunk);

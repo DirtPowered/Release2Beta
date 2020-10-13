@@ -29,6 +29,7 @@ import com.github.dirtpowered.releasetobeta.utils.Utils;
 import com.google.common.primitives.Doubles;
 import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class OldChunkData {
@@ -67,12 +68,20 @@ public class OldChunkData {
         }
     }
 
-    public byte[] getBiomeDataAt(int chunkX, int chunkZ) {
+    public byte[] getBiomeDataAt(int chunkX, int chunkZ, boolean customDimension) {
         if (MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version)) {
             return Utils.getFilledBiomeData();
         }
 
-        byte[] oldData = getBiomeData(chunkX * 16, chunkZ * 16);
+        byte[] oldData = new byte[256];
+
+        if (!customDimension) {
+            oldData = getBiomeData(chunkX * 16, chunkZ * 16);
+        } else {
+            // nether
+            Arrays.fill(oldData, (byte) BiomeType.NETHER.getBiomeId());
+        }
+
         byte[] newData = new byte[256];
         int i = 0;
 
@@ -117,7 +126,8 @@ public class OldChunkData {
         TAIGA(30 /* cold taiga */),
         DESERT(2 /* desert */),
         PLAINS(1 /* plains */),
-        TUNDRA(12 /* ice plains */);
+        TUNDRA(12 /* ice plains */),
+        NETHER(8 /* nether */);
 
         @Getter
         private int biomeId;
