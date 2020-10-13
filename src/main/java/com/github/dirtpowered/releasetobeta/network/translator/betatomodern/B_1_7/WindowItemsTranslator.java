@@ -39,8 +39,10 @@ public class WindowItemsTranslator implements BetaToModern<WindowItemsPacketData
     public void translate(ReleaseToBeta main, WindowItemsPacketData packet, BetaClientSession session, Session modernSession) {
         int windowId = packet.getWindowId();
 
+        int originalSize = packet.getItemStacks().length;
+
         BetaItemStack[] items = new BetaItemStack[46];
-        System.arraycopy(packet.getItemStacks(), 0, items, 0, 45 /* pre 1.9 length */);
+        System.arraycopy(packet.getItemStacks(), 0, items, 0, originalSize);
 
         ModernPlayer player = session.getPlayer();
 
