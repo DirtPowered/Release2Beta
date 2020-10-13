@@ -22,7 +22,6 @@
 
 package com.github.dirtpowered.releasetobeta.network.translator.betatomodern.B_1_7;
 
-import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.WindowItemsPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
@@ -39,14 +38,9 @@ public class WindowItemsTranslator implements BetaToModern<WindowItemsPacketData
     public void translate(ReleaseToBeta main, WindowItemsPacketData packet, BetaClientSession session, Session modernSession) {
         int windowId = packet.getWindowId();
 
-        int originalSize = packet.getItemStacks().length;
-
-        BetaItemStack[] items = new BetaItemStack[46];
-        System.arraycopy(packet.getItemStacks(), 0, items, 0, originalSize);
-
         ModernPlayer player = session.getPlayer();
 
-        ItemStack[] itemStacks = ItemConverter.betaToModern(session, items);
+        ItemStack[] itemStacks = ItemConverter.betaToModern(session, packet.getItemStacks());
         player.getInventory().setItems(itemStacks);
         modernSession.send(new ServerWindowItemsPacket(windowId, itemStacks));
     }
