@@ -40,9 +40,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ItemConverter {
 
     public static ItemStack betaToModern(BetaClientSession session, BetaItemStack item) {
-        if (item == null)
-            return new ItemStack(0);
-
         int itemId = item.getBlockId();
 
         item.setBlockId(session.remapBlock(itemId, item.getData(), true));
@@ -109,7 +106,7 @@ public class ItemConverter {
 
         for (int i = 0; i < items.length; i++) {
             BetaItemStack item = items[i];
-            is[i] = betaToModern(session, item);
+            is[i] = item != null ? betaToModern(session, item) : null;
         }
 
         return is;
