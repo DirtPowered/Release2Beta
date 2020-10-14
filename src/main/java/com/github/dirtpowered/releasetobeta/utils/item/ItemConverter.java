@@ -25,13 +25,17 @@ package com.github.dirtpowered.releasetobeta.utils.item;
 import com.github.dirtpowered.betaprotocollib.data.BetaItemStack;
 import com.github.dirtpowered.betaprotocollib.data.version.MinecraftVersion;
 import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
+import com.github.dirtpowered.releasetobeta.data.item.ItemFood;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
+import com.github.dirtpowered.releasetobeta.utils.chat.ChatUtils;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.opennbt.tag.builtin.ListTag;
 import com.github.steveice10.opennbt.tag.builtin.ShortTag;
+import com.github.steveice10.opennbt.tag.builtin.StringTag;
 
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ItemConverter {
 
@@ -74,7 +78,25 @@ public class ItemConverter {
                 return null;
             }
         } else {
-            return new ItemStack(item.getBlockId(), item.getAmount(), item.getData(), removeItemAttributes());
+            CompoundTag tag;
+
+            // prevent food item stacking
+            if (ItemFood.isFoodItem(itemId) && !MinecraftVersion.B_1_8_1.isNewerOrEqual(R2BConfiguration.version)) {
+                tag = new CompoundTag("");
+                CompoundTag parent = new CompoundTag("display");
+
+                ListTag lore = new ListTag("Lore");
+
+                lore.setValue(Collections.singletonList(
+                        new StringTag("lore", ChatUtils.colorize("&0" + ThreadLocalRandom.current().nextInt(99)))
+                ));
+
+                parent.put(lore);
+                tag.put(parent);
+            } else {
+                tag = removeItemAttributes();
+            }
+            return new ItemStack(item.getBlockId(), item.getAmount(), item.getData(), tag);
         }
     }
 

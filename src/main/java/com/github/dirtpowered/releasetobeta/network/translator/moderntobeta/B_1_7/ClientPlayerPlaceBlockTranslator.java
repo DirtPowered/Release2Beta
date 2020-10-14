@@ -39,7 +39,6 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.data.message.TranslationMessage;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPlaceBlockPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerSetSlotPacket;
 import com.github.steveice10.packetlib.Session;
 
 public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlayerPlaceBlockPacket> {
@@ -77,10 +76,7 @@ public class ClientPlayerPlaceBlockTranslator implements ModernToBeta<ClientPlay
 
         // b1.7.3 server sometimes fails to update current slot
         if (ItemFood.isFoodItem(itemStack.getId()) || itemStack.getId() == 323) {
-            int currentSlot = inventory.getCurrentSlot();
-            inventory.decrement(currentSlot);
-
-            modernSession.send(new ServerSetSlotPacket(0, currentSlot, inventory.getItem(currentSlot)));
+            betaSession.getPlayer().updateInventory();
         }
 
         player.getPlayerEvent().onBlockPlace(face, x, y, z, itemStack);

@@ -59,10 +59,6 @@ public class PlayerInventory {
         this.inventoryItems[i] = itemstack;
     }
 
-    public ItemStack[] getItems() {
-        return inventoryItems.clone();
-    }
-
     public void setItems(ItemStack[] items) {
         this.inventoryItems = new ItemStack[90]; // reset
 
@@ -98,18 +94,6 @@ public class PlayerInventory {
         }
 
         return -1;
-    }
-
-    public void decrement(int slot) {
-        ItemStack item = inventoryItems[slot];
-        if (item != null) {
-            int amountAfter = item.getAmount() - 1;
-            if (amountAfter <= 0) {
-                this.inventoryItems[slot] = null;
-            }
-
-            this.inventoryItems[slot] = new ItemStack(item.getId(), amountAfter, item.getData(), item.getNBT());
-        }
     }
 
     public void setCurrentHotbarSlot(int currentSlot) {

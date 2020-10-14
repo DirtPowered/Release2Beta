@@ -25,6 +25,8 @@ package com.github.dirtpowered.releasetobeta.network.translator.moderntobeta.B_1
 import com.github.dirtpowered.betaprotocollib.packet.Version_B1_7.data.BlockDigPacketData;
 import com.github.dirtpowered.releasetobeta.ReleaseToBeta;
 import com.github.dirtpowered.releasetobeta.data.block.HardnessTable;
+import com.github.dirtpowered.releasetobeta.data.inventory.PlayerInventory;
+import com.github.dirtpowered.releasetobeta.data.item.ItemFood;
 import com.github.dirtpowered.releasetobeta.data.player.ModernPlayer;
 import com.github.dirtpowered.releasetobeta.network.session.BetaClientSession;
 import com.github.dirtpowered.releasetobeta.network.translator.model.ModernToBeta;
@@ -32,6 +34,7 @@ import com.github.steveice10.mc.protocol.data.MagicValues;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerActionPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.window.ServerSetSlotPacket;
 import com.github.steveice10.packetlib.Session;
 
 public class ClientPlayerActionTranslator implements ModernToBeta<ClientPlayerActionPacket> {
@@ -85,6 +88,13 @@ public class ClientPlayerActionTranslator implements ModernToBeta<ClientPlayerAc
         if (newAction == -1)
             return;
 
+        if (newAction == 5) {
+            PlayerInventory inventory = betaSession.getPlayer().getInventory();
+
+            if (ItemFood.isFoodItem(inventory.getItemInHand().getId())) {
+                betaSession.getPlayer().updateInventory();
+            }
+        }
         betaSession.sendPacket(new BlockDigPacketData(x, y, z, face, newAction));
     }
 }
