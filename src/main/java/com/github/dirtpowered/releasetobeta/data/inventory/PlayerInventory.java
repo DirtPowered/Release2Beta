@@ -101,6 +101,6 @@ public class PlayerInventory {
     }
 
     public ItemStack getItemInHand() {
-        return inventoryItems[currentSlot];
+        return inventoryItems[currentSlot] == null ? new ItemStack(0) : inventoryItems[currentSlot];
     }
 }
