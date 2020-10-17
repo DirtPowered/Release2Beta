@@ -53,17 +53,18 @@ public class PlayerInventory {
     }
 
     public void setItem(int i, ItemStack itemstack) {
-        if (i > 4 && i < 9)
+        if (i > 4 && i < 9) {
             this.armorItems[i] = itemstack;
+        }
 
-        this.inventoryItems[i] = itemstack;
+        this.inventoryItems[i] = itemstack != null ? itemstack : new ItemStack(0);
     }
 
     public void setItems(ItemStack[] items) {
         this.inventoryItems = new ItemStack[90]; // reset
 
         for (int i = 0; i < items.length; i++) {
-            setItem(i, items[i]);
+            setItem(i, items[i] != null ? items[i] : new ItemStack(0));
         }
     }
 
@@ -101,6 +102,6 @@ public class PlayerInventory {
     }
 
     public ItemStack getItemInHand() {
-        return inventoryItems[currentSlot] == null ? new ItemStack(0) : inventoryItems[currentSlot];
+        return inventoryItems[currentSlot];
     }
 }
