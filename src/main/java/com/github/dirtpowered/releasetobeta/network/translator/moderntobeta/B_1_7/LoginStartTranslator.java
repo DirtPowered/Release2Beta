@@ -47,7 +47,7 @@ public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
         InetSocketAddress socketAddress = (InetSocketAddress) modernSession.getRemoteAddress();
 
         long address = flag ? serializeAddress(socketAddress.getAddress().getHostAddress()) : 0;
-        byte header = (byte) (flag ? -999 : 0);
+        byte header = (byte) (flag ? -999 : 1);
 
         betaSession.getPlayer().fillProfile(username, result -> {
             betaSession.sendPacket(new HandshakePacketData(username));
