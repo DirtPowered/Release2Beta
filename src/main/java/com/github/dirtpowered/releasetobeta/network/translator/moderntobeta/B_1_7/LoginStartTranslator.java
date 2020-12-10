@@ -42,12 +42,18 @@ public class LoginStartTranslator implements ModernToBeta<LoginStartPacket> {
         if (betaSession.getProtocolState() != ProtocolState.LOGIN)
             return;
 
-        boolean flag = R2BConfiguration.ipForwarding;
+        int header = 1;
+        long address = 0;
+        if(R2BConfiguration.ipForwarding) {
+            InetSocketAddress socketAddress = (InetSocketAddress) modernSession.getRemoteAddress();
+            address = serializeAddress(socketAddress.getAddress().getHostAddress());
+            if(R2BConfiguration.onlineMode) {
+                header = 26;
+            } else {
+                header = 25;
+            }
 
-        InetSocketAddress socketAddress = (InetSocketAddress) modernSession.getRemoteAddress();
-
-        long address = flag ? serializeAddress(socketAddress.getAddress().getHostAddress()) : 0;
-        byte header = (byte) (flag ? -999 : 1);
+        }
 
         betaSession.getPlayer().fillProfile(username, result -> {
             betaSession.sendPacket(new HandshakePacketData(username));
