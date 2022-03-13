@@ -28,8 +28,12 @@ import com.github.dirtpowered.releasetobeta.configuration.R2BConfiguration;
 import com.github.dirtpowered.releasetobeta.data.entity.DummyEntity;
 import com.github.dirtpowered.releasetobeta.data.entity.EntityCache;
 import com.github.dirtpowered.releasetobeta.data.entity.model.Entity;
+import com.github.dirtpowered.releasetobeta.logger.AbstractLogger;
+
 import lombok.Getter;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -115,5 +119,11 @@ public class Utils {
 
             return str.substring(start, end);
         }
+    }
+    
+    public static void printException(AbstractLogger logger, Throwable exc, String msg) {
+    	StringWriter sw = new StringWriter().append(msg == null ? "" : msg + "\n");
+    	exc.printStackTrace(new PrintWriter(sw));
+    	logger.error(msg);
     }
 }

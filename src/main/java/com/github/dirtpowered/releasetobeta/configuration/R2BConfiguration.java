@@ -73,7 +73,7 @@ public class R2BConfiguration {
         try {
             if (config.exists()) {
                 main.getLogger().info("Loading configuration file");
-                config.load();
+                config.loadWithComments();
             } else {
                 //not compiled
                 Path p = Paths.get("src/main/resources/config.yml");
@@ -89,7 +89,7 @@ public class R2BConfiguration {
 
                 //unique id for metrics
                 config.set("metrics.unique_id", UUID.randomUUID().toString());
-                config.saveWithComments();
+                config.save();
             }
 
             try {

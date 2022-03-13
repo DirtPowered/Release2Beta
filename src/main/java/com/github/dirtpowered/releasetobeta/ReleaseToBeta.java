@@ -45,10 +45,12 @@ import com.github.dirtpowered.releasetobeta.network.translator.internal.ClientRe
 import com.github.dirtpowered.releasetobeta.network.translator.internal.ClientTabCompleteTranslator;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.BetaToModernTranslatorRegistry;
 import com.github.dirtpowered.releasetobeta.network.translator.registry.ModernToBetaTranslatorRegistry;
+import com.github.dirtpowered.releasetobeta.utils.StatsManager;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientResourcePackStatusPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientTabCompletePacket;
 import lombok.Getter;
 
+import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -68,6 +70,7 @@ public class ReleaseToBeta implements Runnable {
     private ModernServer server;
     private PingPassthroughThread pingPassthroughThread;
     private AbstractBootstrap bootstrap;
+    private StatsManager statsManager;
 
     public ReleaseToBeta(AbstractBootstrap bootstrap) {
         long startTime = System.nanoTime();
@@ -87,14 +90,13 @@ public class ReleaseToBeta implements Runnable {
         this.entityEffectMap = new EntityEffectMap();
         this.mobTypeMap = new MobTypeMap();
         this.server = new ModernServer(this);
+        this.statsManager = new StatsManager(new File("stats"), this);
+        statsManager.loadStats();
 
         BetaLib.inject(R2BConfiguration.version);
 
         switch (R2BConfiguration.version) {
-            case B_1_6_6:
-                //no protocol changes compared to b1.7
-                new B_1_7(betaToModernTranslatorRegistry, modernToBetaTranslatorRegistry);
-                break;
+            case B_1_6_6: //no protocol changes compared to b1.7
             case B_1_7_3:
                 new B_1_7(betaToModernTranslatorRegistry, modernToBetaTranslatorRegistry);
                 break;
@@ -135,6 +137,7 @@ public class ReleaseToBeta implements Runnable {
 
     public void stop() {
         server.getServerConnection().shutdown();
+        statsManager.saveStats();
     }
 
     @Override

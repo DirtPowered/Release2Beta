@@ -37,6 +37,8 @@ public class StatisticsTranslator implements BetaToModern<StatisticsPacketData> 
         int rawId = packet.getStatId();
         ModernPlayer player = session.getPlayer();
 
+        main.getStatsManager().addStats(player.getUsername(), packet.getStatId(), packet.getData());
+        
         if (rawId > 5242999 || rawId < 5000)
             return;
 
