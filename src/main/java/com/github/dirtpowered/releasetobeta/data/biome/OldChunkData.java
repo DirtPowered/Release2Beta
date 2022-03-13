@@ -105,9 +105,16 @@ public class OldChunkData {
             double biomeTemperature = 1.0D - (1.0D - rawBiomeTemperature) * (1.0D - rawBiomeTemperature);
 
             double biomeHumidity = (humidity[i] * 0.15D + 0.5D) * 0.99D + 0.0021;
-
-            biomeTemperature = Doubles.constrainToRange(biomeTemperature, 0.0D, 1.0D);
-            biomeHumidity = Doubles.constrainToRange(biomeHumidity, 0.0D, 1.0D);
+            
+            if(biomeTemperature<0)
+            	biomeTemperature = 0;
+            if(biomeTemperature>1)
+            	biomeTemperature = 1;
+            
+            if(biomeHumidity<0)
+            	biomeHumidity = 0;
+            if(biomeHumidity>1)
+            	biomeHumidity = 1;
 
             BiomeType biome = getBiomeType(biomeTemperature, biomeHumidity);
             biomeArray[i] = (byte) biome.getBiomeId();

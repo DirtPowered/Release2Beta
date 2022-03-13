@@ -251,6 +251,7 @@ public class BetaClientSession extends SimpleChannelInboundHandler<Packet> imple
         chunkCache.purge();
 
         main.getSessionRegistry().removeSession(player.getClientId());
+        main.getStatsManager().saveStats();
     }
 
     public void joinPlayer() {

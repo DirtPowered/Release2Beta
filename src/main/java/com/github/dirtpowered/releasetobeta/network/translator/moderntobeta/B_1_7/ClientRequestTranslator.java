@@ -41,7 +41,7 @@ public class ClientRequestTranslator implements ModernToBeta<ClientRequestPacket
 
         switch (request) {
             case STATS:
-                modernSession.send(new ServerStatisticsPacket(Collections.emptyMap()));
+                modernSession.send(new ServerStatisticsPacket(main.getStatsManager().getPlayerStats(betaSession.getPlayer().getUsername())));
                 break;
             case RESPAWN:
                 betaSession.sendPacket(new RespawnPacketData((byte) betaSession.getPlayer().getDimension()));
